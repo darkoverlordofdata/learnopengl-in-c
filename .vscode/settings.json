@@ -1,0 +1,9 @@
+{
+    "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
+    "files.associations": {
+        "*.h": "objective-c",
+        "array": "c",
+        "string": "c",
+        "string_view": "c"
+    }
+}
