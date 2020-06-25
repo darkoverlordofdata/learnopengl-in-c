@@ -9,12 +9,7 @@
 #include <sys/time.h>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-#include <corefw/object.h>
-#include <corefw/string.h>
-#include <corefw/hash.h>
-#include "corefw/class.h"
-#include "resourcemanager.h"
-#include "game.h"
+#include "object.h"
 #include "dna.h"
 
 /**
@@ -45,20 +40,23 @@
 #define TicksPerSecond TicksPerMillisecond * 1000.0   // 10,000,000
 #define SecondsPerTick  1.0 / (TicksPerSecond)         // 0.0001
 
-void DNA_Game_framebuffer_size_callback(GLFWwindow* window, int width, int height)
+void DNAGame_framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
     // make sure the viewport matches the new window dimensions; note that width and 
     // height will be significantly larger than specified on retina displays.
     glViewport(0, 0, width, height);
 }
 
+/**
+ *  class DNAGame
+ */
 struct DNAGame {
 	CFWObject obj;
-    void* super;
-    struct DNAGameVtbl const *virtual;
+    void* subclass;
+    struct DNAGameVtbl const *override;
     GLFWwindow *window;
     // SDL_GLContext context;
-    DNAResourceManager* resource;
+    struct DNAResourceManager* resource;
     char* title;
     int len;
     bool *keys;
@@ -93,15 +91,27 @@ struct DNAGame {
     bool suppressDraw;
 };
 
+static CFWClass class = {
+	.name = "DNAGame",
+	.size = sizeof(struct DNAGame),
+	.ctor = ctor,
+	.dtor = dtor,
+	.equal = equal,
+	.hash = hash,
+	.copy = copy
+};
+const CFWClass *DNAGame = &class;
+
+
 static bool ctor(void *self, va_list args)
 {
-	// DNAGame *this = self;
+	// struct DNAGame *this = self;
 	return true;
 }
 
 static void dtor(void *self)
 {
-	DNAGame *this = self;
+	struct DNAGame *this = self;
 
     free(this->title);
     free(this->keys);
@@ -112,9 +122,9 @@ static void dtor(void *self)
 static bool equal(void *ptr1, void *ptr2)
 {
 	CFWObject *obj2 = ptr2;
-	DNAGame *str1, *str2;
+	struct DNAGame *str1, *str2;
 
-	if (obj2->cls != dna_game)
+	if (obj2->cls != DNAGame)
 		return false;
 
 	str1 = ptr1;
@@ -128,7 +138,7 @@ static bool equal(void *ptr1, void *ptr2)
 
 static uint32_t hash(void *self)
 {
-	DNAGame *this = self;
+	struct DNAGame *this = self;
 	size_t i;
 	uint32_t hash;
 
@@ -147,17 +157,6 @@ static void* copy(void *self)
 	return cfw_ref(self);
 }
 
-static CFWClass class = {
-	.name = "DNAGame",
-	.size = sizeof(DNAGame),
-	.ctor = ctor,
-	.dtor = dtor,
-	.equal = equal,
-	.hash = hash,
-	.copy = copy
-};
-const CFWClass *dna_game = &class;
-
 static uint64_t GetTicks() { 
     struct timeval t;     
     gettimeofday(&t, NULL);
@@ -173,12 +172,12 @@ static void LogSDLError(const char* msg)
     printf("%s error: %s", msg, SDL_GetError());
 }
 
-void* DNA_Game(char* cstr, int width, int height, void* super, struct DNAGameVtbl *vptr)
+void* DNAGame_New(char* cstr, int width, int height, void* subclass, struct DNAGameVtbl *vptr)
 {
-    DNAGame* this = cfw_new(dna_game);
+    struct DNAGame* this = cfw_new(DNAGame);
 
-    this->super = super;
-    this->virtual = vptr;
+    this->subclass = subclass;
+    this->override = vptr;
     srand(time(NULL));
     this->title = strdup(cstr);
     this->len = strlen(cstr);
@@ -215,7 +214,7 @@ void* DNA_Game(char* cstr, int width, int height, void* super, struct DNAGameVtb
         return -1;
     }
     glfwMakeContextCurrent(this->window);
-    glfwSetFramebufferSizeCallback(this->window, DNA_Game_framebuffer_size_callback);
+    glfwSetFramebufferSizeCallback(this->window, DNAGame_framebuffer_size_callback);
 
     // glad: load all OpenGL function pointers
     // ---------------------------------------
@@ -239,7 +238,7 @@ void* DNA_Game(char* cstr, int width, int height, void* super, struct DNAGameVtb
 /**
  * DNAGame::Start
  */
-void DNA_GameStart(DNAGame* const this) 
+void DNAGame_Start(struct DNAGame* const this) 
 {
     this->isRunning = true;
 }
@@ -248,7 +247,7 @@ void DNA_GameStart(DNAGame* const this)
 /**
  * DNAGame::HandleEvents
  */
-void DNA_GameHandleEvents(DNAGame* const this) 
+void DNAGame_HandleEvents(struct DNAGame* const this) 
 {
     if (glfwGetKey(this->window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
     {
@@ -291,7 +290,7 @@ void DNA_GameHandleEvents(DNAGame* const this)
 /**
  * DNAGame::Tick
  */
-void DNA_GameTick(DNAGame* const this) 
+void DNAGame_Tick(struct DNAGame* const this) 
 {
     while (true) {
         // Advance the accumulated elapsed time.
@@ -335,8 +334,8 @@ void DNA_GameTick(DNAGame* const this)
             this->accumulatedElapsedTime -= this->targetElapsedTime;
             ++stepCount;
             this->delta = (double)this->elapsedGameTime * SecondsPerTick;
-            DNA_GameUpdate(this);
-            // this->virtual->Update(self);
+            DNAGame_Update(this);
+            // this->override->Update(self);
         }
         //Every update after the first accumulates lag
         this->updateFrameLag += Max(0, stepCount - 1);
@@ -368,16 +367,16 @@ void DNA_GameTick(DNAGame* const this)
         this->accumulatedElapsedTime = 0;
         
         this->delta = (double)this->elapsedGameTime * SecondsPerTick;
-        DNA_GameUpdate(this);
-        // this->virtual->Update(self);
+        DNAGame_Update(this);
+        // this->override->Update(self);
     }
     // Draw unless the update suppressed it.
     if (this->suppressDraw)
         this->suppressDraw = false;
     else
     {
-        DNA_GameDraw(this);
-        // this->virtual->Draw(self);
+        DNAGame_Draw(this);
+        // this->override->Draw(self);
     }
 
     if (this->shouldExit) 
@@ -389,64 +388,64 @@ void DNA_GameTick(DNAGame* const this)
 /**
  * DNAGame::RunLoop
  */
-void DNA_GameRunLoop(DNAGame* const this)
+void DNAGame_RunLoop(struct DNAGame* const this)
 {
-    DNA_GameHandleEvents(this);
+    DNAGame_HandleEvents(this);
     // if (this->keys[SDLK_ESCAPE]) {
     //     this->shouldExit = true;
     // }
-    DNA_GameTick(this);
+    DNAGame_Tick(this);
 }
 
 /**
  * DNAGame::Run
  */
-void DNA_GameRun(DNAGame* const this) 
+void DNAGame_Run(struct DNAGame* const this) 
 {
-    DNA_GameInitialize(this);
-    DNA_GameLoadContent(this);
-    DNA_GameStart(this);
+    DNAGame_Initialize(this);
+    DNAGame_LoadContent(this);
+    DNAGame_Start(this);
     while (this->isRunning) {
-        DNA_GameRunLoop(this);
+        DNAGame_RunLoop(this);
     }
 }
 
 ////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////
-///// virtual methods
+///// override methods
 ////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////
 
 /**
  * DNAGame::Draw
  */
-void DNA_GameDraw(DNAGame* const this) 
+void DNAGame_Draw(struct DNAGame* const this) 
 {
-    this->virtual->Draw(this->super);
+    this->override->Draw(this->subclass);
 }
 
 /**
  * DNAGame::LoadContent
  */
-void DNA_GameLoadContent(DNAGame* const this)
+void DNAGame_LoadContent(struct DNAGame* const this)
 { 
-    this->virtual->LoadContent(this->super);
+    this->override->LoadContent(this->subclass);
 }
 
 /**
  * DNAGame::Initialize
  */
-void DNA_GameInitialize(DNAGame* const this)
+void DNAGame_Initialize(struct DNAGame* const this)
 { 
-    this->virtual->Initialize(this->super);
+    this->override->Initialize(this->subclass);
 }
 
 /**
  * DNAGame::Update
  */
-void DNA_GameUpdate(DNAGame* const this)
+void DNAGame_Update(struct DNAGame* const this)
 { 
-    this->virtual->Update(this->super);
+    this->override->Update(this->subclass);
 }
 
 
@@ -456,18 +455,27 @@ void DNA_GameUpdate(DNAGame* const this)
 ////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////
 
-void DNA_GameSetResourceManager(DNAGame* const this, DNAResourceManager* rm)
+void DNAGame_SetResourceManager(struct DNAGame* const this, struct DNAResourceManager* rm)
 {
     this->resource = rm;
     assert(this->resource != NULL);
 }
 
-void* DNA_GameGetWindow(DNAGame* const this)
+void* DNAGame_GetWindow(struct DNAGame* const this)
 {
     return this->window;
 }
 
-void* DNA_GameGetResource(DNAGame* const this)
+void* DNAGame_GetResource(struct DNAGame* const this)
 {
     return this->resource;
+}
+
+int DNAGame_GetWidth(struct DNAGame* const this)
+{
+    return this->width;
+}
+int DNAGame_GetHeight(struct DNAGame* const this)
+{
+    return this->height;
 }

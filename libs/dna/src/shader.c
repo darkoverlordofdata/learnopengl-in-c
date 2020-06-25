@@ -1,41 +1,48 @@
-#include "shader.h"
 #include <stdio.h>
 #include <string.h>
-// #include <glad/glad.h>
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_image.h>
-#include <SDL2/SDL_mixer.h>
-#include <SDL2/SDL_ttf.h>
-#include <corefw/object.h>
-#include <corefw/string.h>
-#include <corefw/hash.h>
-#include <corefw/class.h>
-#include "tglm.h"
-#include "filesystem.h"
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
+#include "object.h"
+#include "dna.h"
 
-
+/**
+ *  class DNAShader
+ */
 struct DNAShader {
 	CFWObject obj;
     GLuint Id; 
 };
 
+static CFWClass class = {
+	.name = "DNAShader",
+	.size = sizeof(struct DNAShader),
+	.ctor = ctor,
+	.dtor = dtor,
+	.equal = equal,
+	.hash = hash,
+	.copy = copy
+};
+const CFWClass *DNAShader = &class;
+
+
+
 static bool ctor(void *self, va_list args)
 {
-	DNAShader *this = self;
+	struct DNAShader *this = self;
 	return true;
 }
 
 static void dtor(void *self)
 {
-	DNAShader *this = self;
+	struct DNAShader *this = self;
 }
 
 static bool equal(void *ptr1, void *ptr2)
 {
 	CFWObject *obj2 = ptr2;
-	DNAShader *str1, *str2;
+	struct DNAShader *str1, *str2;
 
-	if (obj2->cls != dna_shader)
+	if (obj2->cls != DNAShader)
 		return false;
 
     return (ptr1 == ptr2);
@@ -43,7 +50,7 @@ static bool equal(void *ptr1, void *ptr2)
 
 static uint32_t hash(void *self)
 {
-	DNAShader *this = self;
+	struct DNAShader *this = self;
 	size_t i;
 	uint32_t hash;
 
@@ -58,17 +65,6 @@ static void* copy(void *self)
 {
 	return cfw_ref(self);
 }
-
-static CFWClass class = {
-	.name = "DNAShader",
-	.size = sizeof(DNAShader),
-	.ctor = ctor,
-	.dtor = dtor,
-	.equal = equal,
-	.hash = hash,
-	.copy = copy
-};
-const CFWClass *dna_shader = &class;
 
 static char* ReadTextFile(FILE* f)
 {
@@ -86,18 +82,18 @@ static char* ReadTextFile(FILE* f)
     return buf;
 }
 
-void* DNA_Shader(const GLchar* vShaderFile, const GLchar* fShaderFile)
+void* DNAShader_New(const GLchar* vShaderSrc, const GLchar* fShaderSrc)
 {
-    DNAShader* this =  cfw_new(dna_shader);
+    struct DNAShader* this =  cfw_new(DNAShader);
 
-    DNA_ShaderCompile(this, vShaderFile, fShaderFile);
+    DNAShader_Compile(this, vShaderSrc, fShaderSrc);
     return this;
 }
 
 /**
  * Use shader
  */
-DNAShader* DNA_ShaderUse(DNAShader* this)
+struct DNAShader* DNAShader_Use(struct DNAShader* this)
 {
     glUseProgram(this->Id);
     return this;
@@ -109,7 +105,7 @@ DNAShader* DNA_ShaderUse(DNAShader* this)
  * Checks if compilation or linking failed and if so, print the error logs
  */
 void CheckCompileErrors(
-    DNAShader* this, 
+    struct DNAShader* this, 
     GLuint object, 
     char* type)
 {
@@ -144,39 +140,43 @@ void CheckCompileErrors(
  * @param fragmentSource fragment shader source code
  * 
  */
-void DNA_ShaderCompile(
-    DNAShader* this, 
-    const GLchar* vShaderFile, 
-    const GLchar* fShaderFile)
+void DNAShader_Compile(
+    struct DNAShader* this, 
+    const GLchar* vShaderSrc, 
+    const GLchar* fShaderSrc)
 {
-    CFWString* vShaderPath = DNA_FileSystem.getPath("data/shaders/");
-    cfw_string_append_c(vShaderPath, vShaderFile);
-    FILE* vertexShaderFile = fopen(cfw_string_c(vShaderPath), "r");
+    // printf("=============================\n");
+    // CFWString* vShaderPath = DNAFileSystem.getPath("data/shaders/");
+    // cfw_string_append_c(vShaderPath, vShaderFile);
+    // printf("v shader %s\n", cfw_string_c(vShaderPath));
+    // FILE* vertexShaderFile = fopen(cfw_string_c(vShaderPath), "r");
 
-    CFWString* fShaderPath = DNA_FileSystem.getPath("data/shaders/");
-    cfw_string_append_c(fShaderPath, fShaderFile);
-    FILE* fragmentShaderFile = fopen(cfw_string_c(fShaderPath), "r");
+    // CFWString* fShaderPath = DNAFileSystem.getPath("data/shaders/");
+    // cfw_string_append_c(fShaderPath, fShaderFile);
+    // printf("f shader %s\n", cfw_string_c(fShaderPath));
+    // FILE* fragmentShaderFile = fopen(cfw_string_c(fShaderPath), "r");
+    // printf("=============================\n");
 
-    if (!vertexShaderFile) printf("Unable to open %s", vShaderFile);
-    if (!fragmentShaderFile) printf("Unable to open %s", fShaderFile);
+    // if (!vertexShaderFile) printf("Unable to open %s", vShaderFile);
+    // if (!fragmentShaderFile) printf("Unable to open %s", fShaderFile);
 
-    // Read file's buffer contents into streams
-    const GLchar *vShaderCode = ReadTextFile(vertexShaderFile);
-    const GLchar *fShaderCode = ReadTextFile(fragmentShaderFile);
-    // close file handlers
-    fclose(vertexShaderFile);
-    fclose(fragmentShaderFile);
+    // // Read file's buffer contents into streams
+    // const GLchar *vShaderSrc = ReadTextFile(vertexShaderFile);
+    // const GLchar *fShaderSrc = ReadTextFile(fragmentShaderFile);
+    // // close file handlers
+    // fclose(vertexShaderFile);
+    // fclose(fragmentShaderFile);
 
 
     GLuint sVertex, sFragment;
     // Vertex DNAShader
     sVertex = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(sVertex, 1, &vShaderCode, NULL);
+    glShaderSource(sVertex, 1, &vShaderSrc, NULL);
     glCompileShader(sVertex);
     CheckCompileErrors(this, sVertex, "VERTEX");
     // Fragment DNAShader
     sFragment = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(sFragment, 1, &fShaderCode, NULL);
+    glShaderSource(sFragment, 1, &fShaderSrc, NULL);
     glCompileShader(sFragment);
     CheckCompileErrors(this, sFragment, "FRAGMENT");
 
@@ -191,53 +191,53 @@ void DNA_ShaderCompile(
 
 } 
 
-void DNA_ShaderSetFloat(
-    DNAShader* this, 
+void DNAShader_SetFloat(
+    struct DNAShader* this, 
     const GLchar *name, 
     const GLfloat value, 
     const GLboolean useShader)
 {
     if (useShader)
-        DNA_ShaderUse(this);
+        DNAShader_Use(this);
     glUniform1f(glGetUniformLocation(this->Id, name), value);
 }
 
-void DNA_ShaderSetInteger(
-    DNAShader* this, 
+void DNAShader_SetInteger(
+    struct DNAShader* this, 
     const GLchar *name, 
     GLint value, 
     GLboolean useShader)
 {
     if (useShader)
-        DNA_ShaderUse(this);
+        DNAShader_Use(this);
     glUniform1i(glGetUniformLocation(this->Id, name), value);
 }
 
-void DNA_ShaderSetVector2(
-    DNAShader* this, 
+void DNAShader_SetVector2(
+    struct DNAShader* this, 
     const GLchar *name, 
     GLfloat x, 
     GLfloat y, 
     GLboolean useShader)
 {
     if (useShader)
-        DNA_ShaderUse(this);
+        DNAShader_Use(this);
     glUniform2f(glGetUniformLocation(this->Id, name), x, y);
 }
 
-void DNA_ShaderSetVector2v(
-    DNAShader* this, 
+void DNAShader_SetVector2v(
+    struct DNAShader* this, 
     const GLchar *name, 
     const Vec2* vector,
     GLboolean useShader)
 {
     if (useShader)
-        DNA_ShaderUse(this);
+        DNAShader_Use(this);
     glUniform2fv(glGetUniformLocation(this->Id, name), 1, (GLfloat*)vector);
 }
 
-void DNA_ShaderSetVector3(
-    DNAShader* this, 
+void DNAShader_SetVector3(
+    struct DNAShader* this, 
     const GLchar *name, 
     GLfloat x, 
     GLfloat y, 
@@ -245,23 +245,23 @@ void DNA_ShaderSetVector3(
     GLboolean useShader)
 {
     if (useShader)
-        DNA_ShaderUse(this);
+        DNAShader_Use(this);
     glUniform3f(glGetUniformLocation(this->Id, name), x, y, z);
 }
 
-void DNA_ShaderSetVector3v(
-    DNAShader* this, 
+void DNAShader_SetVector3v(
+    struct DNAShader* this, 
     const GLchar *name, 
     const Vec3* vector,
     GLboolean useShader)
 {
     if (useShader)
-        DNA_ShaderUse(this);
+        DNAShader_Use(this);
     glUniform3fv(glGetUniformLocation(this->Id, name), 1, (GLfloat*)vector);
 }
 
-void DNA_ShaderSetVector4(
-    DNAShader* this, 
+void DNAShader_SetVector4(
+    struct DNAShader* this, 
     const GLchar *name,
     GLfloat x, 
     GLfloat y, 
@@ -270,33 +270,33 @@ void DNA_ShaderSetVector4(
     GLboolean useShader)
 {
     if (useShader)
-        DNA_ShaderUse(this);
+        DNAShader_Use(this);
     glUniform4f(glGetUniformLocation(this->Id, name), x, y, z, w);
 }
 
-void DNA_ShaderSetVector4v(
-    DNAShader* this, 
+void DNAShader_SetVector4v(
+    struct DNAShader* this, 
     const GLchar *name,
     const Vec4* vector,
     GLboolean useShader)
 {
     if (useShader)
-        DNA_ShaderUse(this);
+        DNAShader_Use(this);
     glUniform4fv(glGetUniformLocation(this->Id, name), 1, (GLfloat*)vector);
 }
 
-void DNA_ShaderSetMatrix(
-    DNAShader* this, 
+void DNAShader_SetMatrix(
+    struct DNAShader* this, 
     const GLchar *name, 
     const Mat* matrix, 
     GLboolean useShader)
 {
     if (useShader)
-        DNA_ShaderUse(this);
+        DNAShader_Use(this);
     glUniformMatrix4fv(glGetUniformLocation(this->Id, name), 1, GL_FALSE, (GLfloat*)matrix);
 }
 
-GLuint DNA_ShaderGetId(DNAShader* this)
+GLuint DNAShaderGetId(struct DNAShader* this)
 {
     return this->Id;
 }

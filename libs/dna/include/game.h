@@ -3,11 +3,11 @@
 #include <GLFW/glfw3.h>
 #include "corefw/class.h"
 #include "resourcemanager.h"
-typedef struct DNAGame DNAGame;
-struct DNAGameVtbl;
-extern const CFWClass *dna_game;
 
-// 
+struct DNAGame;
+struct DNAGameVtbl;
+extern const CFWClass *DNAGame;
+
 struct DNAGameVtbl {
     void (*Initialize)  (void* const self);
     void (*LoadContent) (void* const self);
@@ -15,60 +15,61 @@ struct DNAGameVtbl {
     void (*Draw)        (void* const self);
 };
 
-extern void* DNA_Game(char* cstr, int width, int height, void* super, struct DNAGameVtbl *vptr);
+extern void* DNAGame_New(char* cstr, int width, int height, void* subclass, struct DNAGameVtbl *vptr);
 
 
 /**
  * DNAGame::HandleEvents
  */
-extern void DNA_GameHandleEvents(DNAGame* const this);
+extern void DNAGame_HandleEvents(struct DNAGame* const this);
 
 /**
  * DNAGame::Start
  */
-extern void DNA_GameStart(DNAGame* const this);
+extern void DNAGame_Start(struct DNAGame* const this);
 
 /**
  * DNAGame::Tick
  */
-extern void DNA_GameTick(DNAGame* const this);
+extern void DNAGame_Tick(struct DNAGame* const this);
 
 /**
  * DNAGame::RunLoop
  */
-extern void DNA_GameRunLoop(DNAGame* const this);
+extern void DNAGame_RunLoop(struct DNAGame* const this);
 
 /**
  * DNAGame::Run
  */
-extern void DNA_GameRun(DNAGame* const this); 
+extern void DNAGame_Run(struct DNAGame* const this); 
 
 /**
  * DNAGame::Initialize
  */
-extern void DNA_GameInitialize(DNAGame* const this);
+extern void DNAGame_Initialize(struct DNAGame* const this);
 
 /**
  * DNAGame::LoadContent
  */
-extern void DNA_GameLoadContent(DNAGame* const this);
+extern void DNAGame_LoadContent(struct DNAGame* const this);
 
 /**
  * DNAGame::Update
  */
-extern void DNA_GameUpdate(DNAGame* const this);
+extern void DNAGame_Update(struct DNAGame* const this);
 
 /**
  * DNAGame::Draw
  */
-extern void DNA_GameDraw(DNAGame* const this);
+extern void DNAGame_Draw(struct DNAGame* const this);
 
 
 /*
  * properties
  */
-extern void DNA_GameSetResourceManager(DNAGame* const this, DNAResourceManager* rm);
+extern void DNAGame_SetResourceManager(struct DNAGame* const this, struct DNAResourceManager* rm);
 
-// extern SDL_Window* DNA_GameGetWindow(DNAGame* const this);
-extern void* DNA_GameGetWindow(DNAGame* const this);
-extern void* DNA_GameGetResource(DNAGame* const this);
+extern void* DNAGame_GetWindow(struct DNAGame* const this);
+extern void* DNAGame_GetResource(struct DNAGame* const this);
+extern int DNAGame_GetWidth(struct DNAGame* const this);
+extern int DNAGame_GetHeight(struct DNAGame* const this);

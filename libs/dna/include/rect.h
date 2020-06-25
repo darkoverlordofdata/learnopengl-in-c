@@ -1,9 +1,9 @@
 #pragma once
 
-typedef struct DNARect {
+struct DNARect {
     int x;
     int y;
     int w;
     int h;
-} DNARect;
+};
 

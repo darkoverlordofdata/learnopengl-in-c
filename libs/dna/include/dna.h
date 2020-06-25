@@ -2,6 +2,7 @@
 
 #include "rect.h"
 #include "filesystem.h"
+#include "game.h"
 #include "resourcemanager.h"
 #include "arrayrenderer.h"
 #include "elementrenderer.h"

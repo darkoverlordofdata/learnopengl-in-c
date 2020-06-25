@@ -71,9 +71,9 @@ static CFWString* getPathRelativeBinary(const char* path)
 }
 
 /**
- * DNA_FileSystem object
+ * DNAFileSystem object
  */
-struct DNAFileSystem DNA_FileSystem =
+struct DNAFileSystem DNAFileSystem =
 {
   .getPath = getPath,
   .getRoot = getRoot,

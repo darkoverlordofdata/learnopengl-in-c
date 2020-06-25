@@ -4,55 +4,55 @@
 #include <corefw/class.h>
 #include "tglm.h"
 
-typedef struct DNAShader DNAShader;
-extern const CFWClass *dna_shader;
+struct DNAShader;
+extern const CFWClass *DNAShader;
 
-extern DNAShader* DNA_ShaderUse(DNAShader* this);
+extern struct DNAShader* DNAShaderUse(struct DNAShader* this);
 
-extern void* DNA_Shader();
-extern GLuint DNA_ShaderGetId(DNAShader* this);
-extern void DNA_ShaderCompile(DNAShader* this, const GLchar* vertexSource, const GLchar* fragmentSource);
-extern void DNA_ShaderSetFloat(
-    DNAShader* this, 
+extern void* DNAShader_New();
+extern GLuint DNAShader_GetId(struct DNAShader* this);
+extern void DNAShader_Compile(struct DNAShader* this, const GLchar* vertexSource, const GLchar* fragmentSource);
+extern void DNAShader_SetFloat(
+    struct DNAShader* this, 
     const GLchar *name, 
     const GLfloat value, 
     const GLboolean useShader);
 
-extern void DNA_ShaderSetInteger(
-    DNAShader* this, 
+extern void DNAShader_SetInteger(
+    struct DNAShader* this, 
     const GLchar *name, 
     GLint value, 
     GLboolean useShader);
 
-extern void DNA_ShaderSetVector2(
-    DNAShader* this, 
+extern void DNAShader_SetVector2(
+    struct DNAShader* this, 
     const GLchar *name, 
     GLfloat x, 
     GLfloat y, 
     GLboolean useShader);
 
-extern void DNA_ShaderSetVector2v(
-    DNAShader* this, 
+extern void DNAShader_SetVector2v(
+    struct DNAShader* this, 
     const GLchar *name, 
     const Vec2* vector,
     GLboolean useShader);
 
-extern void DNA_ShaderSetVector3(
-    DNAShader* this, 
+extern void DNAShader_SetVector3(
+    struct DNAShader* this, 
     const GLchar *name, 
     GLfloat x, 
     GLfloat y, 
     GLfloat z, 
     GLboolean useShader);
 
-extern void DNA_ShaderSetVector3v(
-    DNAShader* this, 
+extern void DNAShader_SetVector3v(
+    struct DNAShader* this, 
     const GLchar *name, 
     const Vec3* vector,
     GLboolean useShader);
 
-extern void DNA_ShaderSetVector4(
-    DNAShader* this, 
+extern void DNAShader_SetVector4(
+    struct DNAShader* this, 
     const GLchar *name,
     GLfloat x, 
     GLfloat y, 
@@ -60,14 +60,14 @@ extern void DNA_ShaderSetVector4(
     GLfloat w, 
     GLboolean useShader);
 
-extern void DNA_ShaderSetVector4v(
-    DNAShader* this, 
+extern void DNAShader_SetVector4v(
+    struct DNAShader* this, 
     const GLchar *name,
     const Vec4* vector,
     GLboolean useShader);
 
-extern void DNA_ShaderSetMatrix(
-    DNAShader* this, 
+extern void DNAShader_SetMatrix(
+    struct DNAShader* this, 
     const GLchar *name, 
     const Mat* matrix, 
     GLboolean useShader);

@@ -13,4 +13,4 @@ struct DNAFileSystem
   
 } DNAFileSystem;
 
-extern struct DNAFileSystem DNA_FileSystem;
+extern struct DNAFileSystem DNAFileSystem;
