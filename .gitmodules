@@ -1,3 +1,6 @@
 [submodule "external/corefw"]
 	path = external/corefw
 	url = https://github.com/midar/corefw.git
+[submodule "external/stb"]
+	path = external/stb
+	url = https://github.com/nothings/stb.git
