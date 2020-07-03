@@ -11,29 +11,11 @@
 #include <GLFW/glfw3.h>
 #include "object.h"
 #include "dna.h"
-
+#include "game-private.h"
 /**
- *  MACRO Min
- *      cache results of calculation in pocket scope 
+ *  class DNAGame
  */
-#define Min(a, b)                                                       \
-({                                                                      \
-    auto _a = a;                                                        \
-    auto _b = b;                                                        \
-    (_a < _b) ? _a : _b;                                                \
-})
-
-/**
- *  MACRO Max
- *      cache results of calculation in pocket scope 
- */
-#define Max(a, b)                                                       \
-({                                                                      \
-    auto _a = a;                                                        \
-    auto _b = b;                                                        \
-    (_a > _b) ? _a : _b;                                                \
-})
-
+corefw(DNAGame);
 
 #define TicksPerMillisecond  10000.0
 #define MillisecondsPerTick 1.0 / (TicksPerMillisecond)
@@ -46,61 +28,6 @@ void DNAGame_framebuffer_size_callback(GLFWwindow* window, int width, int height
     // height will be significantly larger than specified on retina displays.
     glViewport(0, 0, width, height);
 }
-
-/**
- *  class DNAGame
- */
-struct DNAGame {
-	CFWObject obj;
-    void* subclass;
-    struct DNAGameVtbl const *override;
-    GLFWwindow *window;
-    // SDL_GLContext context;
-    struct DNAResourceManager* resource;
-    char* title;
-    int len;
-    bool *keys;
-    double delta;
-    double factor;
-    uint64_t targetElapsedTime;
-    uint64_t accumulatedElapsedTime;
-    uint64_t maxElapsedTime;
-    uint64_t totalGameTime;
-    uint64_t elapsedGameTime;
-    uint64_t currentTime;
-    long previousTicks;
-    int x;
-    int y;
-    int width;
-    int height;
-    uint32_t flags;
-    int mouseX;
-    int mouseY;
-    bool mouseDown;
-    int sdlVersion;
-    int frameSkip;
-    int gl_major_version;
-    int gl_minor_version;
-    bool isRunning;
-    int ticks;
-    int fps;
-    bool isFixedTimeStep;
-    bool isRunningSlowly;
-    int updateFrameLag;
-    bool shouldExit;
-    bool suppressDraw;
-};
-
-static CFWClass class = {
-	.name = "DNAGame",
-	.size = sizeof(struct DNAGame),
-	.ctor = ctor,
-	.dtor = dtor,
-	.equal = equal,
-	.hash = hash,
-	.copy = copy
-};
-const CFWClass *DNAGame = &class;
 
 
 static bool ctor(void *self, va_list args)
@@ -115,46 +42,22 @@ static void dtor(void *self)
 
     free(this->title);
     free(this->keys);
-    cfw_unref(this->resource);
     glfwTerminate();
 }
 
 static bool equal(void *ptr1, void *ptr2)
 {
-	CFWObject *obj2 = ptr2;
-	struct DNAGame *str1, *str2;
-
-	if (obj2->cls != DNAGame)
-		return false;
-
-	str1 = ptr1;
-	str2 = ptr2;
-
-	if (str1->len != str2->len)
-		return false;
-
-	return !memcmp(str1->title, str2->title, str1->len);
+    return ptr1 == ptr2;
 }
 
 static uint32_t hash(void *self)
 {
-	struct DNAGame *this = self;
-	size_t i;
-	uint32_t hash;
-
-	CFW_HASH_INIT(hash);
-
-	for (i = 0; i < this->len; i++)
-		CFW_HASH_ADD(hash, this->title[i]);
-
-	CFW_HASH_FINALIZE(hash);
-
-	return hash;
+    return self;
 }
 
 static void* copy(void *self)
 {
-	return cfw_ref(self);
+    return NULL;
 }
 
 static uint64_t GetTicks() { 
@@ -164,12 +67,6 @@ static uint64_t GetTicks() {
     uint64_t ts = t.tv_sec;
     uint64_t us = t.tv_usec;
     return ((ts * 1000000L) + us) * 10;
-}
-
-
-static void LogSDLError(const char* msg)
-{
-    printf("%s error: %s", msg, SDL_GetError());
 }
 
 void* DNAGame_New(char* cstr, int width, int height, void* subclass, struct DNAGameVtbl *vptr)
@@ -449,33 +346,3 @@ void DNAGame_Update(struct DNAGame* const this)
 }
 
 
-////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////
-///// properties
-////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////
-
-void DNAGame_SetResourceManager(struct DNAGame* const this, struct DNAResourceManager* rm)
-{
-    this->resource = rm;
-    assert(this->resource != NULL);
-}
-
-void* DNAGame_GetWindow(struct DNAGame* const this)
-{
-    return this->window;
-}
-
-void* DNAGame_GetResource(struct DNAGame* const this)
-{
-    return this->resource;
-}
-
-int DNAGame_GetWidth(struct DNAGame* const this)
-{
-    return this->width;
-}
-int DNAGame_GetHeight(struct DNAGame* const this)
-{
-    return this->height;
-}

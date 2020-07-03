@@ -13,16 +13,7 @@ struct DNAShader {
     GLuint Id; 
 };
 
-static CFWClass class = {
-	.name = "DNAShader",
-	.size = sizeof(struct DNAShader),
-	.ctor = ctor,
-	.dtor = dtor,
-	.equal = equal,
-	.hash = hash,
-	.copy = copy
-};
-const CFWClass *DNAShader = &class;
+corefw(DNAShader);
 
 
 
@@ -39,31 +30,17 @@ static void dtor(void *self)
 
 static bool equal(void *ptr1, void *ptr2)
 {
-	CFWObject *obj2 = ptr2;
-	struct DNAShader *str1, *str2;
-
-	if (obj2->cls != DNAShader)
-		return false;
-
-    return (ptr1 == ptr2);
+    return ptr1 == ptr2;
 }
 
 static uint32_t hash(void *self)
 {
-	struct DNAShader *this = self;
-	size_t i;
-	uint32_t hash;
-
-	CFW_HASH_INIT(hash);
-    CFW_HASH_ADD(hash, this);
-	CFW_HASH_FINALIZE(hash);
-
-	return hash;
+    return self;
 }
 
 static void* copy(void *self)
 {
-	return cfw_ref(self);
+    return NULL;
 }
 
 static char* ReadTextFile(FILE* f)

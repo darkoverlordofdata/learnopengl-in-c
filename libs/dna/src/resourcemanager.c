@@ -16,18 +16,7 @@ struct DNAResourceManager {
     CFWMap* Textures;
 };
 
-static CFWClass class = {
-	.name = "DNAResourceManager",
-	.size = sizeof(struct DNAResourceManager),
-	.ctor = ctor,
-	.dtor = dtor,
-	.equal = equal,
-	.hash = hash,
-	.copy = copy
-};
-const CFWClass *DNAResourceManager = &class;
-
-
+corefw(DNAResourceManager);
 
 void Init(struct DNAResourceManager* this);
 
@@ -70,32 +59,19 @@ static void dtor(void *self)
 
 static bool equal(void *ptr1, void *ptr2)
 {
-	CFWObject *obj2 = ptr2;
-	struct DNAResourceManager *str1, *str2;
-
-	if (obj2->cls != DNATexture2D)
-		return false;
-
-    return (ptr1 == ptr2);
+    return ptr1 == ptr2;
 }
 
 static uint32_t hash(void *self)
 {
-	struct DNAResourceManager *this = self;
-	size_t i;
-	uint32_t hash;
-
-	CFW_HASH_INIT(hash);
-    CFW_HASH_ADD(hash, this);
-	CFW_HASH_FINALIZE(hash);
-
-	return hash;
+    return self;
 }
 
 static void* copy(void *self)
 {
-	return cfw_ref(self);
+    return NULL;
 }
+
 
 void Init(struct DNAResourceManager* this)
 {
@@ -264,6 +240,7 @@ struct DNATexture2D* LoadTextureFromFile(
     // if (SDL_MUSTLOCK(surface)) 
     //     SDL_LockSurface(surface);
     // // Now generate texture
+    printf("Generate %d %d %x\n", width, height, stbiFlag);
     DNATexture2D_Generate(texture, width, height, (unsigned char*)data);
     // if (SDL_MUSTLOCK(surface)) 
     //     SDL_UnlockSurface(surface);

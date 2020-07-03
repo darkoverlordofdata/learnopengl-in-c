@@ -2,7 +2,6 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include "corefw/class.h"
-#include "resourcemanager.h"
 
 struct DNAGame;
 struct DNAGameVtbl;
@@ -64,12 +63,3 @@ extern void DNAGame_Update(struct DNAGame* const this);
 extern void DNAGame_Draw(struct DNAGame* const this);
 
 
-/*
- * properties
- */
-extern void DNAGame_SetResourceManager(struct DNAGame* const this, struct DNAResourceManager* rm);
-
-extern void* DNAGame_GetWindow(struct DNAGame* const this);
-extern void* DNAGame_GetResource(struct DNAGame* const this);
-extern int DNAGame_GetWidth(struct DNAGame* const this);
-extern int DNAGame_GetHeight(struct DNAGame* const this);

@@ -1,9 +1,10 @@
+#include <game-private.h>
 #include "shmupwarz.h"
 #include "object.h"
 
 struct Shmupwarz {
 	CFWObject obj;
-    CFWObject *game;
+    struct DNAGame *game;
     struct DNATexture2D* bg;
     struct DNAElementRenderer* renderer;
     struct DNAShader* shader;
@@ -13,33 +14,12 @@ struct Shmupwarz {
     // ArtemisWorld* mWorld;
 };
 
-static CFWClass class = {
-	.name = "Shmupwarz",
-	.size = sizeof(struct Shmupwarz),
-	.ctor = ctor,
-	.dtor = dtor,
-	.equal = equal,
-	.hash = hash,
-	.copy = copy
-};
-const CFWClass *Shmupwarz = &class;
-
-
+corefw(Shmupwarz);
 /**
  * Create new game
  */
 static bool ctor(void *self, va_list args)
 {
-    static struct DNAGameVtbl vptr = 
-    {
-        .Initialize     = Shmupwarz_Initialize, 
-        .LoadContent    = Shmupwarz_LoadContent, 
-        .Update         = Shmupwarz_Update, 
-        .Draw           = Shmupwarz_Draw 
-    };
-    struct Shmupwarz *this = self;
-    this->game = DNAGame_New("Shmupwarz", 700, 640, this, &vptr);
-
 	return true; 
 }
 
@@ -55,32 +35,18 @@ static void dtor(void *self)
 
 static bool equal(void *ptr1, void *ptr2)
 {
-	struct Shmupwarz *this = ptr1;
-    return this->game->cls->equal(this->game, ptr2);
+    return ptr1 == ptr2;
 }
 
 static uint32_t hash(void *self)
 {
-	struct Shmupwarz *this = self;
-    return this->game->cls->hash(this->game);
+    return self;
 }
 
 static void* copy(void *self)
 {
-	struct Shmupwarz *this = self;
-    return this->game->cls->copy(this->game);
+    return NULL;
 }
-
-// static CFWClass class = {
-// 	.name = "Shmupwarz",
-// 	.size = sizeof(struct Shmupwarz),
-// 	.ctor = ctor,
-// 	.dtor = dtor,
-// 	.equal = equal,
-// 	.hash = hash,
-// 	.copy = copy
-// };
-// const CFWClass *Shmupwarz = &class;
 
 ////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////
@@ -89,15 +55,16 @@ static void* copy(void *self)
 ////////////////////////////////////////////////////////////////////////
 void* Shmupwarz_New(char* title, int width, int height)
 {
-    static struct DNAGameVtbl vptr = 
+    static struct DNAGameVtbl overrides = 
     {
         .Initialize     = Shmupwarz_Initialize, 
         .LoadContent    = Shmupwarz_LoadContent, 
         .Update         = Shmupwarz_Update, 
         .Draw           = Shmupwarz_Draw 
     };
+
     struct Shmupwarz* this = cfw_new(Shmupwarz);
-    this->game = DNAGame_New(title, width, height, this, &vptr);
+    this->game = DNAGame_New(title, width, height, this, &overrides);
     return this;
 }
 
@@ -108,12 +75,9 @@ void Shmupwarz_Initialize(struct Shmupwarz* this)
 
 void Shmupwarz_LoadContent(struct Shmupwarz* this)
 {
-    // Mat projection = glm_ortho(0.0f, 700.0f, 640.0f, 0.0f, -1.0f, 1.0f);
-    Mat projection = glm_ortho(0.0f, DNAGame_GetWidth(this->game), DNAGame_GetHeight(this->game), 0.0f, -1.0f, 1.0f);
+    Mat projection = glm_ortho(0.0f, this->game->width, this->game->height, 0.0f, -1.0f, 1.0f);
 
     this->resource = DNAResourceManager_New();
-    DNAGame_SetResourceManager(this->game, this->resource);
-
     this->shader = DNAResourceManager_LoadShader(this->resource, "data/shaders/elementrender.vs", "data/shaders/elementrender.fs", "shader");
     DNAShader_Use(this->shader);
     DNAShader_SetInteger(this->shader, "image", 0, true);
@@ -137,13 +101,14 @@ void Shmupwarz_Draw(struct Shmupwarz* this)
     glClear(GL_COLOR_BUFFER_BIT);
 
     Vec3 color = { 0, 0, 0 };
-    // DNARect bounds = { 0, 0, 700, 640}; 
-    struct DNARect bounds = { DNAGame_GetWidth(this->game)/2, DNAGame_GetHeight(this->game)/2, 
-                        DNAGame_GetWidth(this->game), DNAGame_GetHeight(this->game)}; 
+
+    struct DNARect bounds = { this->game->width/2, this->game->height/2,
+                                this->game->width, this->game->height };
+
     DNAElementRenderer_Draw(this->renderer, this->bg, bounds, 0.0f, color);
 
 
-    glfwSwapBuffers(DNAGame_GetWindow(this->game));
+    glfwSwapBuffers(this->game->window);
     glfwPollEvents();
 
 }

@@ -17,6 +17,9 @@ int main(int argc, char *argv[])
 	CFWRefPool *pool = cfw_new(cfw_refpool);
 	// struct Shmupwarz *game = cfw_new(shmupwarz, "Shmupwarz", 720, 480);
 	struct Shmupwarz *game = Shmupwarz_New("Shmupwarz", 720, 480);
+
+	printf("hash = %x\n", cfw_hash(game));
+
 	Shmupwarz_Run(game);
 
 

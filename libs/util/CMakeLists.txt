@@ -1,0 +1,7 @@
+set(SOURCE
+   ${SOURCE}
+   ${CMAKE_CURRENT_SOURCE_DIR}/src/bitset.c
+   ${CMAKE_CURRENT_SOURCE_DIR}/src/mt19937ar.c
+   ${CMAKE_CURRENT_SOURCE_DIR}/src/uuid.c
+   PARENT_SCOPE
+)

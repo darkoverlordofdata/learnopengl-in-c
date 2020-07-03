@@ -10,13 +10,17 @@ set ( SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/src/main.c )
 
 set (SOURCE ${SOURCE} ${CMAKE_CURRENT_SOURCE_DIR}/src/shmupwarz.c )
 
+# add_subdirectory ( libs/util )
 add_subdirectory ( libs/dna )
+# add_subdirectory ( libs/artemis )
 
 add_executable( ${PROJECT_NAME} ${SOURCE})
 
-include_directories(./include)
-include_directories(./libs/dna/include)
-include_directories(./external/stb)
+include_directories( ./include )
+# include_directories( ./libs/util/include )
+include_directories( ./libs/dna/include )
+# include_directories( ./libs/artemis/include )
+include_directories( ./external/stb )
  
 target_link_libraries ( ${PROJECT_NAME} dl m corefw glfw GL )
 

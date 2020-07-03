@@ -7,76 +7,22 @@
 #include "object.h"
 
 /**
- *  class DNATexture2D
+ *  object DNATexture2D
  */
 struct DNATexture2D {
-	CFWObject obj;
-    // Holds the ID of the texture object, used for all texture operations to reference to self particlar texture
-    GLuint Id;
-    // Texture image dimensions
-    GLuint Width, Height; // Width and height of loaded image in pixels
-    // Texture Format
-    GLuint InternalFormat; // Format of texture object
-    GLuint ImageFormat; // Format of loaded image
-    // Texture configuration
-    GLuint wrapS; // Wrapping mode on S axis
-    GLuint wrapT; // Wrapping mode on T axis
-    GLuint filterMin; // Filtering mode if texture pixels < screen pixels
-    GLuint filterMag; // Filtering mode if texture pixels > screen pixels
+	CFWObject obj;          // CoreFW interface
+    GLuint Id;              // Holds the ID of the texture object, used for all texture operations to reference to self particlar texture
+    GLuint Width, Height;   // Width and height of loaded image in pixels
+    GLuint InternalFormat;  // Format of texture object
+    GLuint ImageFormat;     // Format of loaded image
+    GLuint wrapS;           // Wrapping mode on S axis
+    GLuint wrapT;           // Wrapping mode on T axis
+    GLuint filterMin;       // Filtering mode if texture pixels < screen pixels
+    GLuint filterMag;       // Filtering mode if texture pixels > screen pixels
     char* path;
 };
 
-static CFWClass class = {
-	.name = "DNATexture2D",
-	.size = sizeof(struct DNATexture2D),
-	.ctor = ctor,
-	.dtor = dtor,
-	.equal = equal,
-	.hash = hash,
-	.copy = copy
-};
-const CFWClass *DNATexture2D = &class;
-
-
-static bool ctor(void *self, va_list args)
-{
-	return true;
-}
-
-static void dtor(void *self)
-{
-	struct DNATexture2D *this = self;
-}
-
-static bool equal(void *ptr1, void *ptr2)
-{
-	CFWObject *obj2 = ptr2;
-	struct DNATexture2D *str1, *str2;
-
-	if (obj2->cls != DNATexture2D)
-		return false;
-
-    return (ptr1 == ptr2);
-}
-
-static uint32_t hash(void *self)
-{
-	struct DNATexture2D *this = self;
-	size_t i;
-	uint32_t hash;
-
-	CFW_HASH_INIT(hash);
-    CFW_HASH_ADD(hash, this);
-	CFW_HASH_FINALIZE(hash);
-
-	return hash;
-}
-
-static void* copy(void *self)
-{
-	return cfw_ref(self);
-}
-
+corefw(DNATexture2D);
 
 /**
  *  DNATexture2D Constructor
@@ -145,3 +91,34 @@ char* DNATexture2D_ToString(struct DNATexture2D* this)
     return s;    
 
 }
+
+/**
+ * CFWObject interface 
+ */
+static bool ctor(void *self, va_list args)
+{
+	return true;
+}
+
+static void dtor(void *self)
+{
+	struct DNATexture2D *this = self;
+}
+
+static bool equal(void *ptr1, void *ptr2)
+{
+    return ptr1 == ptr2;
+}
+
+static uint32_t hash(void *self)
+{
+    return self;
+}
+
+static void* copy(void *self)
+{
+    return NULL;
+}
+
+
+
