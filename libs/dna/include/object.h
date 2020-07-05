@@ -14,6 +14,7 @@
  *      generate typeinfo boilerplate for corefw
  */ 
 #define corefw(CLASSNAME)                                               \
+typedef struct CLASSNAME CLASSNAME;										\
 static bool ctor(void *, va_list);										\
 static void dtor(void *);												\
 static bool equal(void *, void *);										\
@@ -21,14 +22,14 @@ static uint32_t hash(void *);											\
 static void* copy(void *);												\
 const static CFWClass class = {                                         \
 	.name = #CLASSNAME,                                                 \
-	.size = sizeof(struct CLASSNAME),                                   \
+	.size = sizeof(CLASSNAME),                                   \
 	.ctor = ctor,                                                       \
 	.dtor = dtor,                                                       \
 	.equal = equal,                                                     \
 	.hash = hash,                                                       \
 	.copy = copy                                                        \
 };                                                                      \
-const CFWClass *CLASSNAME = &class
+const CFWClass *CLASSNAME##Class = &class
 
 
 /**
@@ -37,8 +38,8 @@ const CFWClass *CLASSNAME = &class
  */
 #define Min(a, b)                                                       \
 ({                                                                      \
-    auto _a = a;                                                        \
-    auto _b = b;                                                        \
+    __auto_type _a = a;                                                        \
+    __auto_type _b = b;                                                        \
     (_a < _b) ? _a : _b;                                                \
 })
 
@@ -48,8 +49,8 @@ const CFWClass *CLASSNAME = &class
  */
 #define Max(a, b)                                                       \
 ({                                                                      \
-    auto _a = a;                                                        \
-    auto _b = b;                                                        \
+    __auto_type _a = a;                                                        \
+    __auto_type _b = b;                                                        \
     (_a > _b) ? _a : _b;                                                \
 })
 

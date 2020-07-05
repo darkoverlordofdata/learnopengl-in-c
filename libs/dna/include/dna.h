@@ -1,5 +1,11 @@
 #pragma once
 
+/**
+ * enable multi-methods
+ */
+#define method __attribute__((overloadable)) 
+
+
 #include "rect.h"
 #include "filesystem.h"
 #include "game.h"

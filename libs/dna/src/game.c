@@ -1,4 +1,6 @@
 #include <stdint.h>
+#include <stdlib.h>
+#include <stdio.h>
 #include <string.h>
 #include <errno.h>
 #include <time.h>
@@ -12,10 +14,19 @@
 #include "object.h"
 #include "dna.h"
 #include "game-private.h"
+#if __EMSCRIPTEN__
+#include <emscripten/emscripten.h>
+#endif
+
 /**
  *  class DNAGame
  */
 corefw(DNAGame);
+
+static bool ctor(void *self, va_list args) { return true; }
+static bool equal(void *ptr1, void *ptr2) { return ptr1 == ptr2; }
+static uint32_t hash(void *self) { return self; }
+static void* copy(void *self) { return NULL; }
 
 #define TicksPerMillisecond  10000.0
 #define MillisecondsPerTick 1.0 / (TicksPerMillisecond)
@@ -30,34 +41,13 @@ void DNAGame_framebuffer_size_callback(GLFWwindow* window, int width, int height
 }
 
 
-static bool ctor(void *self, va_list args)
-{
-	// struct DNAGame *this = self;
-	return true;
-}
-
 static void dtor(void *self)
 {
-	struct DNAGame *this = self;
+	DNAGame *this = self;
 
     free(this->title);
     free(this->keys);
     glfwTerminate();
-}
-
-static bool equal(void *ptr1, void *ptr2)
-{
-    return ptr1 == ptr2;
-}
-
-static uint32_t hash(void *self)
-{
-    return self;
-}
-
-static void* copy(void *self)
-{
-    return NULL;
 }
 
 static uint64_t GetTicks() { 
@@ -71,12 +61,15 @@ static uint64_t GetTicks() {
 
 void* DNAGame_New(char* cstr, int width, int height, void* subclass, struct DNAGameVtbl *vptr)
 {
-    struct DNAGame* this = cfw_new(DNAGame);
+    DNAGame* this = cfw_new(DNAGameClass);
 
     this->subclass = subclass;
     this->override = vptr;
     srand(time(NULL));
+#ifdef __EMSCRIPTEN__
+#else
     this->title = strdup(cstr);
+#endif
     this->len = strlen(cstr);
     this->keys = calloc(1024, 1);
     this->width = width;
@@ -135,7 +128,7 @@ void* DNAGame_New(char* cstr, int width, int height, void* subclass, struct DNAG
 /**
  * DNAGame::Start
  */
-void DNAGame_Start(struct DNAGame* const this) 
+void DNAGame_Start(DNAGame* const this) 
 {
     this->isRunning = true;
 }
@@ -144,7 +137,7 @@ void DNAGame_Start(struct DNAGame* const this)
 /**
  * DNAGame::HandleEvents
  */
-void DNAGame_HandleEvents(struct DNAGame* const this) 
+void DNAGame_HandleEvents(DNAGame* const this) 
 {
     if (glfwGetKey(this->window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
     {
@@ -187,7 +180,7 @@ void DNAGame_HandleEvents(struct DNAGame* const this)
 /**
  * DNAGame::Tick
  */
-void DNAGame_Tick(struct DNAGame* const this) 
+void DNAGame_Tick(DNAGame* const this) 
 {
     while (true) {
         // Advance the accumulated elapsed time.
@@ -209,7 +202,10 @@ void DNAGame_Tick(struct DNAGame* const this)
             // #ifndef usleep
             // SDL_Delay(sleepTime);
             // #else
+#ifdef __EMSCRIPTEN__
+#else
             usleep(sleepTime*1000);
+#endif
             // #endif
             // goto RetryTick;
         }
@@ -285,8 +281,9 @@ void DNAGame_Tick(struct DNAGame* const this)
 /**
  * DNAGame::RunLoop
  */
-void DNAGame_RunLoop(struct DNAGame* const this)
+void DNAGame_RunLoop(DNAGame* const this)
 {
+    printf("In RunLoop\n");
     DNAGame_HandleEvents(this);
     // if (this->keys[SDLK_ESCAPE]) {
     //     this->shouldExit = true;
@@ -297,14 +294,22 @@ void DNAGame_RunLoop(struct DNAGame* const this)
 /**
  * DNAGame::Run
  */
-void DNAGame_Run(struct DNAGame* const this) 
+void DNAGame_Run(DNAGame* const this) 
 {
     DNAGame_Initialize(this);
     DNAGame_LoadContent(this);
     DNAGame_Start(this);
-    while (this->isRunning) {
+#if __EMSCRIPTEN__
+    emscripten_set_main_loop_arg((em_arg_callback_func)DNAGame_RunLoop, (void*)this, -1, 1);
+#else
+    while (this->isRunning) 
+    {
         DNAGame_RunLoop(this);
     }
+#endif
+    // while (this->isRunning) {
+    //     DNAGame_RunLoop(this);
+    // }
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -316,7 +321,7 @@ void DNAGame_Run(struct DNAGame* const this)
 /**
  * DNAGame::Draw
  */
-void DNAGame_Draw(struct DNAGame* const this) 
+void DNAGame_Draw(DNAGame* const this) 
 {
     this->override->Draw(this->subclass);
 }
@@ -324,7 +329,7 @@ void DNAGame_Draw(struct DNAGame* const this)
 /**
  * DNAGame::LoadContent
  */
-void DNAGame_LoadContent(struct DNAGame* const this)
+void DNAGame_LoadContent(DNAGame* const this)
 { 
     this->override->LoadContent(this->subclass);
 }
@@ -332,7 +337,7 @@ void DNAGame_LoadContent(struct DNAGame* const this)
 /**
  * DNAGame::Initialize
  */
-void DNAGame_Initialize(struct DNAGame* const this)
+void DNAGame_Initialize(DNAGame* const this)
 { 
     this->override->Initialize(this->subclass);
 }
@@ -340,7 +345,7 @@ void DNAGame_Initialize(struct DNAGame* const this)
 /**
  * DNAGame::Update
  */
-void DNAGame_Update(struct DNAGame* const this)
+void DNAGame_Update(DNAGame* const this)
 { 
     this->override->Update(this->subclass);
 }

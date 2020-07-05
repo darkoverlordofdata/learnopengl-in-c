@@ -5,24 +5,16 @@
 #include "stb_image.h"
 #include "dna.h"
 #include "object.h"
+#include "texture2d-private.h"
 
-/**
- *  object DNATexture2D
- */
-struct DNATexture2D {
-	CFWObject obj;          // CoreFW interface
-    GLuint Id;              // Holds the ID of the texture object, used for all texture operations to reference to self particlar texture
-    GLuint Width, Height;   // Width and height of loaded image in pixels
-    GLuint InternalFormat;  // Format of texture object
-    GLuint ImageFormat;     // Format of loaded image
-    GLuint wrapS;           // Wrapping mode on S axis
-    GLuint wrapT;           // Wrapping mode on T axis
-    GLuint filterMin;       // Filtering mode if texture pixels < screen pixels
-    GLuint filterMag;       // Filtering mode if texture pixels > screen pixels
-    char* path;
-};
 
 corefw(DNATexture2D);
+
+static bool ctor(void *self, va_list args) { return true; }
+static bool equal(void *ptr1, void *ptr2) { return ptr1 == ptr2; }
+static uint32_t hash(void *self) { return self; }
+static void* copy(void *self) { return NULL; }
+static void dtor(void *self) { }
 
 /**
  *  DNATexture2D Constructor
@@ -33,8 +25,11 @@ corefw(DNATexture2D);
  */
 void* DNATexture2D_New(GLuint internalFormat, GLuint imageFormat, char* path)
 {
-    struct DNATexture2D* this = cfw_new(DNATexture2D);
+    DNATexture2D* this = cfw_new(DNATexture2DClass);
+#ifdef __EMSCRIPTEN__
+#else
     this->path = strdup(path);
+#endif
     this->Width = 0;
     this->Height = 0;
     this->wrapS = GL_REPEAT;
@@ -46,6 +41,7 @@ void* DNATexture2D_New(GLuint internalFormat, GLuint imageFormat, char* path)
     glGenTextures(1, &this->Id);
     return this;
 }
+
 /**
  * Generate
  * 
@@ -55,7 +51,7 @@ void* DNATexture2D_New(GLuint internalFormat, GLuint imageFormat, char* path)
  * 
  */
 void DNATexture2D_Generate(
-    struct DNATexture2D* this, 
+    DNATexture2D* this, 
     GLuint width, 
     GLuint height, 
     unsigned char* data)
@@ -79,46 +75,25 @@ void DNATexture2D_Generate(
  * 
  * binds the texture to GL
  */
-void DNATexture2D_Bind(struct DNATexture2D* this)
+// void DNATexture2D_Bind(const DNATexture2D* this)
+void method Bind(const DNATexture2D* this)
 {
     glBindTexture(GL_TEXTURE_2D, this->Id);    
 }
 
-char* DNATexture2D_ToString(struct DNATexture2D* this)
+//__attribute__((overloadable)) 
+// char* DNATexture2D_ToString(const DNATexture2D* this)
+// {
+//     char* s = calloc(1024, 1);
+//     sprintf(s, "%s: (%d,%d)", this->path, this->Width, this->Height);
+//     return s;    
+
+// }
+
+char* method ToString(const DNATexture2D* this)
 {
     char* s = calloc(1024, 1);
     sprintf(s, "%s: (%d,%d)", this->path, this->Width, this->Height);
     return s;    
 
 }
-
-/**
- * CFWObject interface 
- */
-static bool ctor(void *self, va_list args)
-{
-	return true;
-}
-
-static void dtor(void *self)
-{
-	struct DNATexture2D *this = self;
-}
-
-static bool equal(void *ptr1, void *ptr2)
-{
-    return ptr1 == ptr2;
-}
-
-static uint32_t hash(void *self)
-{
-    return self;
-}
-
-static void* copy(void *self)
-{
-    return NULL;
-}
-
-
-

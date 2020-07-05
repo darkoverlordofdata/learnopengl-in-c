@@ -3,27 +3,27 @@
 #include "shader.h"
 #include "texture2d.h"
 
-struct DNAResourceManager;
-extern const CFWClass *DNAResourceManager;
+typedef struct DNAResourceManager DNAResourceManager;
+extern const CFWClass *DNAResourceManagerClass;
  
 extern void* DNAResourceManager_New();
 
-extern struct DNAShader* DNAResourceManager_LoadShader(
-    struct DNAResourceManager* this, 
+extern DNAShader* DNAResourceManager_LoadShader(
+    const DNAResourceManager* this, 
     const GLchar *vShaderFile, 
     const GLchar *fShaderFile, 
     const char* name);
 
-extern struct DNAShader* DNAResourceManager_GetShader(
-    struct DNAResourceManager* this, 
+extern DNAShader* DNAResourceManager_GetShader(
+    const DNAResourceManager* this, 
     const char* name);
 
-extern struct DNATexture2D*  DNAResourceManager_LoadTexture(
-    struct DNAResourceManager* this, 
+extern DNATexture2D*  DNAResourceManager_LoadTexture(
+    const DNAResourceManager* this, 
     const GLchar *file, 
     GLboolean alpha,
     const char* name);
 
-extern struct DNATexture2D* DNAResourceManager_GetTexture(
-    struct DNAResourceManager* this, 
+extern DNATexture2D* DNAResourceManager_GetTexture(
+    const DNAResourceManager* this, 
     const char* name);

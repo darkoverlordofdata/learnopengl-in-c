@@ -5,60 +5,32 @@
 
 #include "object.h"
 #include "dna.h"
-
-/**
- *  class DNAElementRenderer
- */
-struct DNAElementRenderer 
-{
-	CFWObject obj;
-    struct DNAShader* shader; 
-    GLuint VBO;
-    GLuint VAO;
-    GLuint EBO;
-};
+#include "elementrenderer-private.h"
 
 corefw(DNAElementRenderer);
+static bool ctor(void *self, va_list args) { return true; }
+static bool equal(void *ptr1, void *ptr2) { return ptr1 == ptr2; }
+static uint32_t hash(void *self) { return self; }
+static void* copy(void *self) { return NULL; }
 
-void InitElementRenderData(struct DNAElementRenderer* this);
+void InitElementRenderData(DNAElementRenderer* this);
 /**
  * ElementRenderer
  * 
  * @param shader to use for rendering
  * 
  */
-static bool ctor(void *self, va_list args)
-{
-	struct DNAElementRenderer* this = self;
-	return true;
-}
-
 static void dtor(void *self)
 {
-	struct DNAElementRenderer *this = self;
+	DNAElementRenderer *this = self;
     glDeleteVertexArrays(1, &this->VAO);
     glDeleteBuffers(1, &this->VBO);
     glDeleteBuffers(1, &this->EBO);
 }
 
-static bool equal(void *ptr1, void *ptr2)
+void* DNAElementRenderer_New(DNAShader* shader)
 {
-    return ptr1 == ptr2;
-}
-
-static uint32_t hash(void *self)
-{
-    return self;
-}
-
-static void* copy(void *self)
-{
-    return NULL;
-}
-
-void* DNAElementRenderer_New(struct DNAShader* shader)
-{
-    struct DNAElementRenderer* this = cfw_new(DNAElementRenderer);
+    DNAElementRenderer* this = cfw_new(DNAElementRendererClass);
     this->shader = shader;
     printf("%x %x \n", this, this->shader);
     InitElementRenderData(this);
@@ -77,9 +49,9 @@ void* DNAElementRenderer_New(struct DNAShader* shader)
  * 
  */
 void DNAElementRenderer_Draw(
-    struct DNAElementRenderer* this, 
-    struct DNATexture2D* texture, 
-    struct DNARect bounds,
+    const DNAElementRenderer* this, 
+    DNATexture2D* texture, 
+    DNARect bounds,
     GLfloat rotate, 
     Vec3 color)
 {
@@ -104,12 +76,13 @@ void DNAElementRenderer_Draw(
     DNAShader_SetMatrix(this->shader, "model", &model, true);
     DNAShader_SetVector3v(this->shader, "spriteColor", &color, true);
     glActiveTexture(GL_TEXTURE0);
-    DNATexture2D_Bind(texture);
+    Bind(texture);
+    // DNATexture2D_Bind(texture);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 }
 
 
-void InitElementRenderData(struct DNAElementRenderer* this)
+void InitElementRenderData(DNAElementRenderer* this)
 {
     // set up vertex data (and buffer(s)) and configure vertex attributes
     // ------------------------------------------------------------------

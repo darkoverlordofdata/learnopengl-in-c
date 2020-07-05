@@ -6,43 +6,35 @@
 #include <stb_image.h>
 #include "object.h"
 #include "dna.h"
-
-/**
- *  class DNAResourceManager
- */
-struct DNAResourceManager {
-	CFWObject obj;
-    CFWMap* Shaders;
-    CFWMap* Textures;
-};
+#include "resourcemanager-private.h"
+#include "shader-private.h"
+#include "texture2d-private.h"
 
 corefw(DNAResourceManager);
+static bool ctor(void *self, va_list args) { return true; }
+static bool equal(void *ptr1, void *ptr2) { return ptr1 == ptr2; }
+static uint32_t hash(void *self) { return self; }
+static void* copy(void *self) { return NULL; }
 
-void Init(struct DNAResourceManager* this);
+void Init(DNAResourceManager* this);
 
-struct DNAShader* LoadShaderFromFile(
-    struct DNAResourceManager* this, 
+DNAShader* LoadShaderFromFile(
+    const DNAResourceManager* this, 
     const GLchar *vShaderFile, 
     const GLchar *fShaderFile);
-struct DNATexture2D* LoadTextureFromFile(
-    struct DNAResourceManager* this, 
+DNATexture2D* LoadTextureFromFile(
+    const DNAResourceManager* this, 
     const GLchar *file, 
     GLboolean alpha);
 
-static bool ctor(void *self, va_list args)
-{
-	struct DNAResourceManager *this = self;
-	return true;
-}
-
 static void dtor(void *self)
 {
-	struct DNAResourceManager *this = self;
+	DNAResourceManager *this = self;
 	cfw_map_iter_t iter;
 
 	cfw_map_iter(this->Shaders, &iter);
 	while (iter.key != NULL) {
-		if (cfw_is(iter.obj, DNAShader)) 
+		if (cfw_is(iter.obj, DNAShaderClass)) 
             cfw_unref(iter.obj);
 		cfw_map_iter_next(&iter);
     }
@@ -50,30 +42,15 @@ static void dtor(void *self)
 
 	cfw_map_iter(this->Textures, &iter);
 	while (iter.key != NULL) {
-		if (cfw_is(iter.obj, DNATexture2D)) 
+		if (cfw_is(iter.obj, DNATexture2DClass)) 
             cfw_unref(iter.obj);
 		cfw_map_iter_next(&iter);
     }
     cfw_unref(this->Textures);
 }
 
-static bool equal(void *ptr1, void *ptr2)
-{
-    return ptr1 == ptr2;
-}
 
-static uint32_t hash(void *self)
-{
-    return self;
-}
-
-static void* copy(void *self)
-{
-    return NULL;
-}
-
-
-void Init(struct DNAResourceManager* this)
+void Init(DNAResourceManager* this)
 {
     this->Shaders = cfw_new(cfw_map, NULL);
     this->Textures = cfw_new(cfw_map, NULL);
@@ -104,7 +81,7 @@ static char* ReadTextFile(FILE* f)
 
 void* DNAResourceManager_New()
 {
-    struct DNAResourceManager* this = cfw_new(DNAResourceManager);
+    DNAResourceManager* this = cfw_new(DNAResourceManagerClass);
     Init(this);
     return this;
 }
@@ -116,8 +93,8 @@ void* DNAResourceManager_New()
  * @param name to cache as
  * @returns loaded, compiled and linked shader program
  */
-struct DNAShader* DNAResourceManager_LoadShader(
-    struct DNAResourceManager* this, 
+DNAShader* DNAResourceManager_LoadShader(
+    const DNAResourceManager* this, 
     const GLchar *vShaderFile, 
     const GLchar *fShaderFile, 
     const char* name)
@@ -133,8 +110,8 @@ struct DNAShader* DNAResourceManager_LoadShader(
  * @returns loaded, compiled and linked shader program
  * 
  */
-struct DNAShader* DNAResourceManager_GetShader(
-    struct DNAResourceManager* this, 
+DNAShader* DNAResourceManager_GetShader(
+    const DNAResourceManager* this, 
     const char* name)
 {
     return cfw_map_get_c(this->Shaders, name);    
@@ -149,8 +126,8 @@ struct DNAShader* DNAResourceManager_GetShader(
  * @returns Texture
  * 
  */
-struct DNATexture2D*  DNAResourceManager_LoadTexture(
-    struct DNAResourceManager* this, 
+DNATexture2D*  DNAResourceManager_LoadTexture(
+    const DNAResourceManager* this, 
     const GLchar *file, 
     GLboolean alpha,
     const char* name)
@@ -166,14 +143,14 @@ struct DNATexture2D*  DNAResourceManager_LoadTexture(
  * @returns Texture
  * 
  */
-struct DNATexture2D* DNAResourceManager_GetTexture(
-    struct DNAResourceManager* this, 
+DNATexture2D* DNAResourceManager_GetTexture(
+    const DNAResourceManager* this, 
     const char* name)
 {
     return cfw_map_get_c(this->Textures, name);    
 }
 
-void Clear(struct DNAResourceManager* this)
+void Clear(DNAResourceManager* this)
 {
     dtor(this);
     Init(this);
@@ -188,8 +165,8 @@ void Clear(struct DNAResourceManager* this)
  * @returns loaded, compiled and linked shader program
  * 
  */
-struct DNAShader* LoadShaderFromFile(
-    struct DNAResourceManager* this, 
+DNAShader* LoadShaderFromFile(
+    const DNAResourceManager* this, 
     const GLchar *vShaderFile, 
     const GLchar *fShaderFile)
 {
@@ -208,7 +185,7 @@ struct DNAShader* LoadShaderFromFile(
     fclose(fragmentShaderFile);
 
     // 2. Now create shader object from source code
-    struct DNAShader* shader = DNAShader_New(vShaderCode, fShaderCode);
+    DNAShader* shader = DNAShader_New(vShaderCode, fShaderCode);
     // DNAShaderCompile(shader, vShaderCode, fShaderCode);
     return shader;
 
@@ -222,15 +199,15 @@ struct DNAShader* LoadShaderFromFile(
  * @returns Texture
  * 
  */
-struct DNATexture2D* LoadTextureFromFile(
-    struct DNAResourceManager* this, 
+DNATexture2D* LoadTextureFromFile(
+    const DNAResourceManager* this, 
     const GLchar *file,                                                                 
     GLboolean alpha)
 {
     int format = alpha ? GL_RGBA : GL_RGB;
     int stbiFlag = alpha ? STBI_rgb_alpha : STBI_rgb;
 
-    struct DNATexture2D* texture = DNATexture2D_New(format, format, file);
+    DNATexture2D* texture = DNATexture2D_New(format, format, file);
 
     stbi_set_flip_vertically_on_load(true); // tell stb_image.h to flip loaded texture's on the y-axis.
     int width, height, nrChannels;
@@ -240,7 +217,6 @@ struct DNATexture2D* LoadTextureFromFile(
     // if (SDL_MUSTLOCK(surface)) 
     //     SDL_LockSurface(surface);
     // // Now generate texture
-    printf("Generate %d %d %x\n", width, height, stbiFlag);
     DNATexture2D_Generate(texture, width, height, (unsigned char*)data);
     // if (SDL_MUSTLOCK(surface)) 
     //     SDL_UnlockSurface(surface);

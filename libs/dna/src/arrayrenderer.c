@@ -4,59 +4,33 @@
 #include <GLFW/glfw3.h>
 #include "object.h"
 #include "dna.h"
-
-
-/**
- *  class DNAArrayRenderer
- */
-struct DNAArrayRenderer 
-{
-	CFWObject obj;
-    struct DNAShader* shader; 
-    GLuint VBO;
-    GLuint VAO;
-};
+#include "arrayrenderer-private.h"
 
 corefw(DNAArrayRenderer);
 
-void InitArrayRenderData(struct DNAArrayRenderer* this);
+static bool ctor(void *self, va_list args) { return true; }
+static bool equal(void *ptr1, void *ptr2) { return ptr1 == ptr2; }
+static uint32_t hash(void *self) { return self; }
+static void* copy(void *self) { return NULL; }
+
+
+void InitArrayRenderData(DNAArrayRenderer* this);
 /**
  * ArrayRenderer
  * 
  * @param shader to use for rendering
  * 
  */
-static bool ctor(void *self, va_list args)
-{
-	struct DNAArrayRenderer *this = self;
-	return true;
-}
-
 static void dtor(void *self)
 {
-	struct DNAArrayRenderer *this = self;
+	DNAArrayRenderer *this = self;
     glDeleteVertexArrays(1, &this->VAO);
     glDeleteBuffers(1, &this->VBO);
 }
 
-static bool equal(void *ptr1, void *ptr2)
+void* DNAArrayRenderer_New(DNAShader* shader)
 {
-    return ptr1 == ptr2;
-}
-
-static uint32_t hash(void *self)
-{
-    return self;
-}
-
-static void* copy(void *self)
-{
-    return NULL;
-}
-
-void* DNAArrayRenderer_New(struct DNAShader* shader)
-{
-    struct DNAArrayRenderer* this = cfw_new(DNAArrayRenderer);
+    DNAArrayRenderer* this = cfw_new(DNAArrayRendererClass);
     this->shader = shader;
     printf("%x %x \n", this, this->shader);
     InitArrayRenderData(this);
@@ -78,9 +52,9 @@ void* DNAArrayRenderer_New(struct DNAShader* shader)
  * 
  */
 void DNAArrayRenderer_Draw(
-    struct DNAArrayRenderer* this, 
-    struct DNATexture2D* texture, 
-    struct DNARect* bounds,
+    const DNAArrayRenderer* this, 
+    DNATexture2D* texture, 
+    DNARect* bounds,
     GLfloat rotate, 
     Vec3 color)
 {
@@ -110,7 +84,8 @@ void DNAArrayRenderer_Draw(
     DNAShader_SetVector3v(this->shader, "spriteColor", &color, true);
 
     glActiveTexture(GL_TEXTURE0);
-    DNATexture2D_Bind(texture);
+    // DNATexture2D_Bind(texture);
+    Bind(texture);
 
     glBindVertexArray(this->VAO);
     glDrawArrays(GL_TRIANGLES, 0, 6);
@@ -118,7 +93,7 @@ void DNAArrayRenderer_Draw(
 }
 
 
-void InitArrayRenderData(struct DNAArrayRenderer* this)
+void InitArrayRenderData(DNAArrayRenderer* this)
 {
     GLfloat vertices[] = { 
         // Pos      // Tex

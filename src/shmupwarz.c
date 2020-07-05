@@ -4,13 +4,13 @@
 
 struct Shmupwarz {
 	CFWObject obj;
-    struct DNAGame *game;
-    struct DNATexture2D* bg;
-    struct DNAElementRenderer* renderer;
-    struct DNAShader* shader;
-    struct DNAResourceManager* resource;
-    // Entity* mPlayer;
-    // id mSystems;l
+    DNAGame *game;
+    DNATexture2D* bg;
+    DNAElementRenderer* renderer;
+    DNAShader* shader;
+    DNAResourceManager* resource;
+    // ArtemisEntity* mPlayer;
+    // id mSystems;
     // ArtemisWorld* mWorld;
 };
 
@@ -18,14 +18,14 @@ corefw(Shmupwarz);
 /**
  * Create new game
  */
-static bool ctor(void *self, va_list args)
-{
-	return true; 
-}
+static bool ctor(void *self, va_list args) { return true; }
+static bool equal(void *ptr1, void *ptr2) { return ptr1 == ptr2; }
+static uint32_t hash(void *self) { return self; }
+static void* copy(void *self) { return NULL; }
 
 static void dtor(void *self)
 {
-	struct Shmupwarz *this = self;
+	Shmupwarz *this = self;
     cfw_unref(this->game);
     cfw_unref(this->bg);
     cfw_unref(this->renderer);
@@ -33,20 +33,6 @@ static void dtor(void *self)
     cfw_unref(this->resource);
 }
 
-static bool equal(void *ptr1, void *ptr2)
-{
-    return ptr1 == ptr2;
-}
-
-static uint32_t hash(void *self)
-{
-    return self;
-}
-
-static void* copy(void *self)
-{
-    return NULL;
-}
 
 ////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////
@@ -63,22 +49,23 @@ void* Shmupwarz_New(char* title, int width, int height)
         .Draw           = Shmupwarz_Draw 
     };
 
-    struct Shmupwarz* this = cfw_new(Shmupwarz);
+    Shmupwarz* this = cfw_new(ShmupwarzClass);
     this->game = DNAGame_New(title, width, height, this, &overrides);
     return this;
 }
 
-void Shmupwarz_Initialize(struct Shmupwarz* this)
+void Shmupwarz_Initialize(Shmupwarz* this)
 {
 
 }
 
-void Shmupwarz_LoadContent(struct Shmupwarz* this)
+void Shmupwarz_LoadContent(Shmupwarz* this)
 {
     Mat projection = glm_ortho(0.0f, this->game->width, this->game->height, 0.0f, -1.0f, 1.0f);
 
     this->resource = DNAResourceManager_New();
     this->shader = DNAResourceManager_LoadShader(this->resource, "data/shaders/elementrender.vs", "data/shaders/elementrender.fs", "shader");
+    // this->shader = DNAResourceManager_LoadShader(this->resource, "data/shaders/transform.vs", "data/shaders/transform.fs", "shader");
     DNAShader_Use(this->shader);
     DNAShader_SetInteger(this->shader, "image", 0, true);
     DNAShader_SetMatrix(this->shader, "projection", &projection, true);
@@ -87,11 +74,11 @@ void Shmupwarz_LoadContent(struct Shmupwarz* this)
     this->renderer = DNAElementRenderer_New(this->shader);
 }
 
-void Shmupwarz_Update(struct Shmupwarz* this)
+void Shmupwarz_Update(Shmupwarz* this)
 {
 }
 
-void Shmupwarz_Draw(struct Shmupwarz* this)
+void Shmupwarz_Draw(Shmupwarz* this)
 {
     float bgd_r = 0.392156f;
     float bgd_g = 0.584313f;
@@ -102,7 +89,7 @@ void Shmupwarz_Draw(struct Shmupwarz* this)
 
     Vec3 color = { 0, 0, 0 };
 
-    struct DNARect bounds = { this->game->width/2, this->game->height/2,
+    DNARect bounds = { this->game->width/2, this->game->height/2,
                                 this->game->width, this->game->height };
 
     DNAElementRenderer_Draw(this->renderer, this->bg, bounds, 0.0f, color);
@@ -113,7 +100,7 @@ void Shmupwarz_Draw(struct Shmupwarz* this)
 
 }
 
-void Shmupwarz_Run(struct Shmupwarz* this)
+void Shmupwarz_Run(Shmupwarz* this)
 {
 	DNAGame_Run(this->game);
 }

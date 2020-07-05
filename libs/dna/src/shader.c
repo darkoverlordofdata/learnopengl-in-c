@@ -1,46 +1,21 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include "object.h"
 #include "dna.h"
-
-/**
- *  class DNAShader
- */
-struct DNAShader {
-	CFWObject obj;
-    GLuint Id; 
-};
+#include "shader-private.h"
 
 corefw(DNAShader);
-
-
-
-static bool ctor(void *self, va_list args)
-{
-	struct DNAShader *this = self;
-	return true;
-}
+static bool ctor(void *self, va_list args) { return true; }
+static bool equal(void *ptr1, void *ptr2) { return ptr1 == ptr2; }
+static uint32_t hash(void *self) { return self; }
+static void* copy(void *self) { return NULL; }
 
 static void dtor(void *self)
 {
-	struct DNAShader *this = self;
-}
-
-static bool equal(void *ptr1, void *ptr2)
-{
-    return ptr1 == ptr2;
-}
-
-static uint32_t hash(void *self)
-{
-    return self;
-}
-
-static void* copy(void *self)
-{
-    return NULL;
+	DNAShader *this = self;
 }
 
 static char* ReadTextFile(FILE* f)
@@ -61,7 +36,7 @@ static char* ReadTextFile(FILE* f)
 
 void* DNAShader_New(const GLchar* vShaderSrc, const GLchar* fShaderSrc)
 {
-    struct DNAShader* this =  cfw_new(DNAShader);
+    DNAShader* this =  cfw_new(DNAShaderClass);
 
     DNAShader_Compile(this, vShaderSrc, fShaderSrc);
     return this;
@@ -70,7 +45,7 @@ void* DNAShader_New(const GLchar* vShaderSrc, const GLchar* fShaderSrc)
 /**
  * Use shader
  */
-struct DNAShader* DNAShader_Use(struct DNAShader* this)
+DNAShader* DNAShader_Use(const DNAShader* this)
 {
     glUseProgram(this->Id);
     return this;
@@ -82,7 +57,7 @@ struct DNAShader* DNAShader_Use(struct DNAShader* this)
  * Checks if compilation or linking failed and if so, print the error logs
  */
 void CheckCompileErrors(
-    struct DNAShader* this, 
+    const DNAShader* this, 
     GLuint object, 
     char* type)
 {
@@ -118,7 +93,7 @@ void CheckCompileErrors(
  * 
  */
 void DNAShader_Compile(
-    struct DNAShader* this, 
+    DNAShader* this, 
     const GLchar* vShaderSrc, 
     const GLchar* fShaderSrc)
 {
@@ -169,7 +144,7 @@ void DNAShader_Compile(
 } 
 
 void DNAShader_SetFloat(
-    struct DNAShader* this, 
+    const DNAShader* this, 
     const GLchar *name, 
     const GLfloat value, 
     const GLboolean useShader)
@@ -180,7 +155,7 @@ void DNAShader_SetFloat(
 }
 
 void DNAShader_SetInteger(
-    struct DNAShader* this, 
+    const DNAShader* this, 
     const GLchar *name, 
     GLint value, 
     GLboolean useShader)
@@ -191,7 +166,7 @@ void DNAShader_SetInteger(
 }
 
 void DNAShader_SetVector2(
-    struct DNAShader* this, 
+    const DNAShader* this, 
     const GLchar *name, 
     GLfloat x, 
     GLfloat y, 
@@ -203,7 +178,7 @@ void DNAShader_SetVector2(
 }
 
 void DNAShader_SetVector2v(
-    struct DNAShader* this, 
+    const DNAShader* this, 
     const GLchar *name, 
     const Vec2* vector,
     GLboolean useShader)
@@ -214,7 +189,7 @@ void DNAShader_SetVector2v(
 }
 
 void DNAShader_SetVector3(
-    struct DNAShader* this, 
+    const DNAShader* this, 
     const GLchar *name, 
     GLfloat x, 
     GLfloat y, 
@@ -227,7 +202,7 @@ void DNAShader_SetVector3(
 }
 
 void DNAShader_SetVector3v(
-    struct DNAShader* this, 
+    const DNAShader* this, 
     const GLchar *name, 
     const Vec3* vector,
     GLboolean useShader)
@@ -238,7 +213,7 @@ void DNAShader_SetVector3v(
 }
 
 void DNAShader_SetVector4(
-    struct DNAShader* this, 
+    const DNAShader* this, 
     const GLchar *name,
     GLfloat x, 
     GLfloat y, 
@@ -252,7 +227,7 @@ void DNAShader_SetVector4(
 }
 
 void DNAShader_SetVector4v(
-    struct DNAShader* this, 
+    const DNAShader* this, 
     const GLchar *name,
     const Vec4* vector,
     GLboolean useShader)
@@ -263,7 +238,7 @@ void DNAShader_SetVector4v(
 }
 
 void DNAShader_SetMatrix(
-    struct DNAShader* this, 
+    const DNAShader* this, 
     const GLchar *name, 
     const Mat* matrix, 
     GLboolean useShader)
@@ -273,7 +248,3 @@ void DNAShader_SetMatrix(
     glUniformMatrix4fv(glGetUniformLocation(this->Id, name), 1, GL_FALSE, (GLfloat*)matrix);
 }
 
-GLuint DNAShaderGetId(struct DNAShader* this)
-{
-    return this->Id;
-}
