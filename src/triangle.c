@@ -1,46 +1,69 @@
-//========================================================================
-// OpenGL triangle example
-// Copyright (c) Camilla Löwy <elmindreda@glfw.org>
-//
-// This software is provided 'as-is', without any express or implied
-// warranty. In no event will the authors be held liable for any damages
-// arising from the use of this software.
-//
-// Permission is granted to anyone to use this software for any purpose,
-// including commercial applications, and to alter it and redistribute it
-// freely, subject to the following restrictions:
-//
-// 1. The origin of this software must not be misrepresented; you must not
-//    claim that you wrote the original software. If you use this software
-//    in a product, an acknowledgment in the product documentation would
-//    be appreciated but is not required.
-//
-// 2. Altered source versions must be plainly marked as such, and must not
-//    be misrepresented as being the original software.
-//
-// 3. This notice may not be removed or altered from any source
-//    distribution.
-//
-//========================================================================
-//! [code]
+#include <game-private.h>
+#include "triangle.h"
+#include "object.h"
+// #include "linmath.h"
 
-// clang src/triangle.c libs/dna/src/glad.c -o triangle -s -std=c18 -Iinclude -ldl -lm -lcorefw -lglfw -lGL
+struct Triangle {
+	CFWObject obj;
+    DNAGame *game;
+    DNATexture2D* bg;
+    DNAElementRenderer* renderer;
+    DNAShader* shader;
+    DNAResourceManager* resource;
+    // ArtemisEntity* mPlayer;
+    // id mSystems;
+    // ArtemisWorld* mWorld;
+    GLuint program;
+    GLint mvp_location;
+    GLuint vertex_array;
+    
+};
+
+corefw(Triangle);
+/**
+ * Create new game
+ */
+static bool ctor(void *self, va_list args) { return true; }
+static bool equal(void *ptr1, void *ptr2) { return ptr1 == ptr2; }
+static uint32_t hash(void *self) { return self; }
+static void* copy(void *self) { return NULL; }
+
+static void dtor(void *self)
+{
+	Triangle *this = self;
+    cfw_unref(this->game);
+    cfw_unref(this->bg);
+    cfw_unref(this->renderer);
+    cfw_unref(this->shader);
+    cfw_unref(this->resource);
+}
 
 
-#include <glad/glad.h>
-#define GLFW_INCLUDE_NONE
-#include <GLFW/glfw3.h>
+////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////
+///// methods
+////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////
+void* Triangle_New(char* title, int width, int height)
+{
+    static struct DNAGameVtbl overrides = 
+    {
+        .Initialize     = Triangle_Initialize, 
+        .LoadContent    = Triangle_LoadContent, 
+        .Update         = Triangle_Update, 
+        .Draw           = Triangle_Draw 
+    };
 
-#include "linmath.h"
+    Triangle* this = cfw_new(TriangleClass);
+    this->game = DNAGame_New(title, width, height, this, &overrides);
+    return this;
+}
 
-#include <stdlib.h>
-#include <stddef.h>
-#include <stdio.h>
-
+///////////////////////////////////////////////////////
 typedef struct Vertex
 {
-    vec2 pos;
-    vec3 col;
+    Vec2 pos;
+    Vec3 col;
 } Vertex;
 
 static const Vertex vertices[3] =
@@ -50,6 +73,20 @@ static const Vertex vertices[3] =
     { {   0.f,  0.6f }, { 0.f, 0.f, 1.f } }
 };
 
+#ifdef __EMSCRIPTEN__
+static const char *vertex_shader_text =
+    "#version 100\n"
+    "uniform mat4 MVP;\n"
+    "attribute vec3 vCol;\n"
+    "attribute vec2 vPos;\n"
+    "varying vec3 color;\n"
+    "void main()\n"
+    "{\n"
+    "    gl_Position = MVP * vec4(vPos, 0.0, 1.0);\n"
+    "    color = vCol;\n"
+    "}\n";
+
+#else
 static const char* vertex_shader_text =
 "#version 330\n"
 "uniform mat4 MVP;\n"
@@ -61,52 +98,38 @@ static const char* vertex_shader_text =
 "    gl_Position = MVP * vec4(vPos, 0.0, 1.0);\n"
 "    color = vCol;\n"
 "}\n";
+#endif
 
+#ifdef __EMSCRIPTEN__
+static const char *fragment_shader_text =
+    "#version 100\n"
+    "precision mediump float;\n"
+    "varying vec3 color;\n"
+    "void main()\n"
+    "{\n"
+    "    gl_FragColor = vec4(color, 1.0);\n"
+    "}\n";
+
+#else
 static const char* fragment_shader_text =
 "#version 330\n"
 "in vec3 color;\n"
 "out vec4 fragment;\n"
 "void main()\n"
 "{\n"
-"    fragment = vec4(color, 1.0);\n"
+"    gl_FragColor = vec4(color, 1.0);\n"
 "}\n";
+#endif
 
-static void error_callback(int error, const char* description)
+///////////////////////////////////////////////
+
+void Triangle_Initialize(Triangle* this)
 {
-    fprintf(stderr, "Error: %s\n", description);
+
 }
 
-static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+void Triangle_LoadContent(Triangle* this)
 {
-    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-        glfwSetWindowShouldClose(window, GLFW_TRUE);
-}
-
-int main(void)
-{
-    glfwSetErrorCallback(error_callback);
-
-    if (!glfwInit())
-        exit(EXIT_FAILURE);
-
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-    GLFWwindow* window = glfwCreateWindow(640, 480, "OpenGL Triangle", NULL, NULL);
-    if (!window)
-    {
-        glfwTerminate();
-        exit(EXIT_FAILURE);
-    }
-
-    glfwSetKeyCallback(window, key_callback);
-
-    glfwMakeContextCurrent(window);
-    // gladLoadGL(glfwGetProcAddress);
-    gladLoadGL();
-    glfwSwapInterval(1);
-
     // NOTE: OpenGL error checks have been omitted for brevity
 
     GLuint vertex_buffer;
@@ -122,53 +145,67 @@ int main(void)
     glShaderSource(fragment_shader, 1, &fragment_shader_text, NULL);
     glCompileShader(fragment_shader);
 
-    const GLuint program = glCreateProgram();
-    glAttachShader(program, vertex_shader);
-    glAttachShader(program, fragment_shader);
-    glLinkProgram(program);
+    this->program = glCreateProgram();
+    glAttachShader(this->program, vertex_shader);
+    glAttachShader(this->program, fragment_shader);
+    glLinkProgram(this->program);
 
-    const GLint mvp_location = glGetUniformLocation(program, "MVP");
-    const GLint vpos_location = glGetAttribLocation(program, "vPos");
-    const GLint vcol_location = glGetAttribLocation(program, "vCol");
+    this->mvp_location = glGetUniformLocation(this->program, "MVP");
+    const GLint vpos_location = glGetAttribLocation(this->program, "vPos");
+    const GLint vcol_location = glGetAttribLocation(this->program, "vCol");
 
-    GLuint vertex_array;
-    glGenVertexArrays(1, &vertex_array);
-    glBindVertexArray(vertex_array);
+    glGenVertexArrays(1, &this->vertex_array);
+    glBindVertexArray(this->vertex_array);
     glEnableVertexAttribArray(vpos_location);
     glVertexAttribPointer(vpos_location, 2, GL_FLOAT, GL_FALSE,
                           sizeof(Vertex), (void*) offsetof(Vertex, pos));
     glEnableVertexAttribArray(vcol_location);
     glVertexAttribPointer(vcol_location, 3, GL_FLOAT, GL_FALSE,
                           sizeof(Vertex), (void*) offsetof(Vertex, col));
-
-    while (!glfwWindowShouldClose(window))
-    {
-        int width, height;
-        glfwGetFramebufferSize(window, &width, &height);
-        const float ratio = width / (float) height;
-
-        glViewport(0, 0, width, height);
-        glClear(GL_COLOR_BUFFER_BIT);
-
-        mat4x4 m, p, mvp;
-        mat4x4_identity(m);
-        mat4x4_rotate_Z(m, m, (float) glfwGetTime());
-        mat4x4_ortho(p, -ratio, ratio, -1.f, 1.f, 1.f, -1.f);
-        mat4x4_mul(mvp, p, m);
-
-        glUseProgram(program);
-        glUniformMatrix4fv(mvp_location, 1, GL_FALSE, (const GLfloat*) &mvp);
-        glBindVertexArray(vertex_array);
-        glDrawArrays(GL_TRIANGLES, 0, 3);
-
-        glfwSwapBuffers(window);
-        glfwPollEvents();
-    }
-
-    glfwDestroyWindow(window);
-
-    glfwTerminate();
-    exit(EXIT_SUCCESS);
 }
 
-//! [code]
+void Triangle_Update(Triangle* this)
+{
+}
+
+void Triangle_Draw(Triangle* this)
+{
+    float bgd_r = 0.392156f;
+    float bgd_g = 0.584313f;
+    float bgd_b = 0.929411f;
+
+    glClearColor(bgd_r, bgd_g, bgd_b, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    const float ratio = this->game->width / (float) this->game->height;
+
+
+    Mat model= {
+        1.0f, 0.0f, 0.0f, 0.0f,
+        0.0f, 1.0f, 0.0f, 0.0f,
+        0.0f, 0.0f, 1.0f, 0.0f,
+        0.0f, 0.0f, 0.0f, 1.0f
+    };
+
+    float angle = glfwGetTime();
+	float s = sinf(angle);
+	float c = cosf(angle);
+
+    model = glm_rotateZ(model, (float) glfwGetTime());
+    Mat perspective = glm_ortho(-ratio, ratio, -1.f, 1.f, 1.f, -1.f);
+    model = glm_mat_mul(model, perspective);
+
+    glUseProgram(this->program);
+    glUniformMatrix4fv(this->mvp_location, 1, GL_FALSE, (const GLfloat*) &model);
+    glBindVertexArray(this->vertex_array);
+    glDrawArrays(GL_TRIANGLES, 0, 3);
+
+    glfwSwapBuffers(this->game->window);
+    glfwPollEvents();
+
+}
+
+void Triangle_Run(Triangle* this)
+{
+	DNAGame_Run(this->game);
+}

@@ -9,7 +9,13 @@
 #include <assert.h>
 #include <sys/types.h>
 #include <sys/time.h>
+#ifdef __EMSCRIPTEN__
+#include <emscripten.h>
+#define GL_GLEXT_PROTOTYPES
+#define EGL_EGLEXT_PROTOTYPES
+#else
 #include <glad/glad.h>
+#endif
 #include <GLFW/glfw3.h>
 #include "object.h"
 #include "dna.h"
@@ -59,9 +65,8 @@ static uint64_t GetTicks() {
     return ((ts * 1000000L) + us) * 10;
 }
 
-void* DNAGame_New(char* cstr, int width, int height, void* subclass, struct DNAGameVtbl *vptr)
+static void* DNAGame_ctor(DNAGame* this, char* cstr, int width, int height, void* subclass, struct DNAGameVtbl *vptr)
 {
-    DNAGame* this = cfw_new(DNAGameClass);
 
     this->subclass = subclass;
     this->override = vptr;
@@ -86,14 +91,19 @@ void* DNAGame_New(char* cstr, int width, int height, void* subclass, struct DNAG
     this->currentTime = GetTicks();
 
 
-    printf("Hello, world!\n");
+    printf("Hello, game!\n");
     // glfw: initialize and configure
     // ------------------------------
     glfwInit();
+#ifdef __EMSCRIPTEN__
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 1);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_ANY_PROFILE );
+#else
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
+#endif
     // glfw window creation
     // --------------------
     this->window = glfwCreateWindow(this->width, this->height, "LearnOpenGL", NULL, NULL);
@@ -108,20 +118,40 @@ void* DNAGame_New(char* cstr, int width, int height, void* subclass, struct DNAG
 
     // glad: load all OpenGL function pointers
     // ---------------------------------------
+#ifdef __EMSCRIPTEN__
+#else
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
     {
         printf("Failed to initialize GLAD");
         return -1;
     }
+#endif
+    printf("Game loaded: (%d,%d) \n", this->width, this->height);
+    glfwSwapInterval(1);
 
-
+    printf("set viewport 0\n");
     glViewport(0, 0, this->width, this->height);
+    printf("set viewport 1\n");
     glEnable(GL_CULL_FACE);
+    printf("set viewport 2\n");
     glEnable(GL_BLEND);
+    printf("set viewport 3\n");
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
+    printf("done\n");
     return this;
 
+}
+
+void* DNAGame_New(char* cstr, int width, int height, void* subclass, struct DNAGameVtbl *vptr)
+{
+    DNAGame* this = cfw_new(DNAGameClass);
+    return DNAGame_ctor(this, cstr, width, height, subclass, vptr);
+}
+
+void* DNAGame_Create(char* cstr, int width, int height, void* subclass, struct DNAGameVtbl *vptr)
+{
+    DNAGame* this = cfw_create(DNAGameClass);
+    return DNAGame_ctor(this, cstr, width, height, subclass, vptr);
 }
 
 
@@ -283,7 +313,6 @@ void DNAGame_Tick(DNAGame* const this)
  */
 void DNAGame_RunLoop(DNAGame* const this)
 {
-    printf("In RunLoop\n");
     DNAGame_HandleEvents(this);
     // if (this->keys[SDLK_ESCAPE]) {
     //     this->shouldExit = true;

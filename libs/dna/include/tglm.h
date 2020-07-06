@@ -44,6 +44,7 @@ typedef float Vec3  __attribute__((ext_vector_type(3)));
 typedef float Vec4  __attribute__((ext_vector_type(4)));
 typedef float Mat   __attribute__((ext_vector_type(16)));
 
+
 /**
  * clamp number/vector between MIN and MAX values
  *
@@ -153,7 +154,12 @@ Mat glm_scale(Mat m, Vec3 v);
  */
 Mat glm_ortho(float left, float right, float bottom, float top, float nearVal, float farVal);
 
-
+/**
+ * Mulitiply a * b
+ * The matrix is defined as 16 rather than 4*4, so the naive operator 
+ * yield multiplies 2 vec16, not 2 mat4x4
+ */
+Mat glm_mat_mul(Mat a, Mat b);
 /**
  * rotate existing transform matrix around given axis by angle
  *
@@ -162,5 +168,8 @@ Mat glm_ortho(float left, float right, float bottom, float top, float nearVal, f
  * @param  axis   axis
  */
 Mat glm_rotate(Mat m, float angle, Vec3 v);
+
+Mat glm_rotateZ(Mat m, float angle);
+Mat glm_rotateY(Mat m, float angle);
 
 #endif // _TGLM_H

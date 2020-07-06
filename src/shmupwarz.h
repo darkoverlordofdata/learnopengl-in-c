@@ -9,12 +9,8 @@
 #include <assert.h>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <corefw/corefw.h>
 #include <dna.h>
-
-#include "corefw/object.h"
-#include "corefw/string.h"
-#include "corefw/hash.h"
-#include "corefw/class.h"
 
 #ifdef __EMSCRIPTEN__
 #include <emscripten.h>

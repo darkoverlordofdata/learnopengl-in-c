@@ -2,13 +2,14 @@
 /**
  * shims for corefw
  */
+#include <corefw/corefw.h>
+static inline struct CFWObject* asObject(void* obj) { return obj; }
 
-#include <corefw/object.h>
-#include <corefw/string.h>
-#include <corefw/hash.h>
-#include <corefw/class.h>
-#include <corefw/map.h>
-
+#define var __auto_type
+/**
+ * enable multi-methods
+ */
+#define method __attribute__((overloadable)) 
 /**
  * MACRO corefw
  *      generate typeinfo boilerplate for corefw
@@ -22,7 +23,7 @@ static uint32_t hash(void *);											\
 static void* copy(void *);												\
 const static CFWClass class = {                                         \
 	.name = #CLASSNAME,                                                 \
-	.size = sizeof(CLASSNAME),                                   \
+	.size = sizeof(CLASSNAME),                                   		\
 	.ctor = ctor,                                                       \
 	.dtor = dtor,                                                       \
 	.equal = equal,                                                     \
@@ -38,8 +39,8 @@ const CFWClass *CLASSNAME##Class = &class
  */
 #define Min(a, b)                                                       \
 ({                                                                      \
-    __auto_type _a = a;                                                        \
-    __auto_type _b = b;                                                        \
+    __auto_type _a = a;                                                 \
+    __auto_type _b = b;                                                 \
     (_a < _b) ? _a : _b;                                                \
 })
 
@@ -49,9 +50,8 @@ const CFWClass *CLASSNAME##Class = &class
  */
 #define Max(a, b)                                                       \
 ({                                                                      \
-    __auto_type _a = a;                                                        \
-    __auto_type _b = b;                                                        \
+    __auto_type _a = a;                                                 \
+    __auto_type _b = b;                                                 \
     (_a > _b) ? _a : _b;                                                \
 })
 
-static inline struct CFWObject* asObject(void* obj) { return obj; }

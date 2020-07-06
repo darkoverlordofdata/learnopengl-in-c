@@ -21,6 +21,9 @@
 #include "linmath.h"
 #include <stdlib.h>
 #include <stdio.h>
+
+#define val __auto_type
+
 static const struct
 {
     float x, y;
@@ -94,7 +97,7 @@ int main(void)
 
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    __auto_type window = glfwCreateWindow(640, 480, "Simple example", NULL, NULL);
+    val window = glfwCreateWindow(640, 480, "Simple example", NULL, NULL);
     if (!window)
     {
         glfwTerminate();
@@ -113,17 +116,17 @@ int main(void)
     glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-    __auto_type vertex_shader = glCreateShader(GL_VERTEX_SHADER);
+    val vertex_shader = glCreateShader(GL_VERTEX_SHADER);
     glShaderSource(vertex_shader, 1, &vertex_shader_text, NULL);
     glCompileShader(vertex_shader);
     check_error(vertex_shader);
 
-    __auto_type fragment_shader = glCreateShader(GL_FRAGMENT_SHADER);
+    val fragment_shader = glCreateShader(GL_FRAGMENT_SHADER);
     glShaderSource(fragment_shader, 1, &fragment_shader_text, NULL);
     glCompileShader(fragment_shader);
     check_error(fragment_shader);
 
-    __auto_type program = glCreateProgram();
+    val program = glCreateProgram();
     glAttachShader(program, vertex_shader);
     glAttachShader(program, fragment_shader);
     glLinkProgram(program);

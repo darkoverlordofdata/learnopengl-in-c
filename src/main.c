@@ -1,27 +1,22 @@
 #include <stdio.h>
-#include <corefw/object.h>
-#include <corefw/refpool.h>
-#include <corefw/string.h>
-#include <corefw/int.h>
-#include <corefw/array.h>
-#include <corefw/map.h>
 #include <dna.h>
-#include "shmupwarz.h"
+#include "triangle.h"
 
-#define var __auto_type
-
+Mat4x4 mm;
 
 
 int main(int argc, char *argv[])
 {
+
+	printf("main:1\n");
 	CFWRefPool *pool = cfw_new(cfw_refpool);
-	// struct Shmupwarz *game = cfw_new(shmupwarz, "Shmupwarz", 720, 480);
-	struct Shmupwarz *game = Shmupwarz_New("Shmupwarz", 720, 480);
+	printf("main:2\n");
+	Triangle *game = Triangle_New("Triangle", 720, 480);
+	printf("main:3\n");
 
 	printf("hash = %x\n", cfw_hash(game));
 
-	Shmupwarz_Run(game);
-
+	Triangle_Run(game);
 
 	cfw_unref(game);
 	cfw_unref(pool);

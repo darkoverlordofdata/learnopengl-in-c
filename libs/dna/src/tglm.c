@@ -282,3 +282,45 @@ Mat glm_rotate(Mat m, float angle, Vec3 v)
 
     return result;
 }
+
+
+Mat glm_mat_mul(Mat a, Mat b)
+{
+	Mat temp;
+	int k, r, c;
+	for(c=0; c<4; ++c) for(r=0; r<4; ++r) {
+		temp[c+r*4] = 0.f;
+		for(k=0; k<4; ++k)
+			temp[c+r*4] += a[k+r*4] * b[c+k*4];
+	}
+    return temp;
+}
+
+Mat glm_rotateZ(Mat m, float angle) 
+{
+	float s = sinf(angle);
+	float c = cosf(angle);
+	Mat r = {
+		   c,   s, 0.f, 0.f,
+		  -s,   c, 0.f, 0.f,
+		 0.f, 0.f, 1.f, 0.f,
+		 0.f, 0.f, 0.f, 1.f
+	};
+
+    return glm_mat_mul(m, r);
+}
+
+
+Mat glm_rotateY(Mat m, float angle) 
+{
+	float s = sinf(angle);
+	float c = cosf(angle);
+	Mat r = {
+		   c, 0.f,  -s, 0.f,
+		 0.f, 1.f, 0.f, 0.f,
+		   s, 0.f,   c, 0.f,
+		 0.f, 0.f, 0.f, 1.f
+	};
+	glm_mat_mul(m, r);
+
+}
