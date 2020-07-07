@@ -3,6 +3,12 @@
 #include "object.h"
 // #include "linmath.h"
 
+#ifdef __EMSCRIPTEN__
+const bool IsEmscripten = true;
+#else
+const bool IsEmscripten = false;
+#endif
+
 struct Triangle {
 	CFWObject obj;
     DNAGame *game;
@@ -15,7 +21,7 @@ struct Triangle {
     // ArtemisWorld* mWorld;
     GLuint program;
     GLint mvp_location;
-    GLuint vertex_array;
+    GLuint VAO;
     
 };
 
@@ -73,56 +79,6 @@ static const Vertex vertices[3] =
     { {   0.f,  0.6f }, { 0.f, 0.f, 1.f } }
 };
 
-#ifdef __EMSCRIPTEN__
-static const char *vertex_shader_text =
-    "#version 100\n"
-    "uniform mat4 MVP;\n"
-    "attribute vec3 vCol;\n"
-    "attribute vec2 vPos;\n"
-    "varying vec3 color;\n"
-    "void main()\n"
-    "{\n"
-    "    gl_Position = MVP * vec4(vPos, 0.0, 1.0);\n"
-    "    color = vCol;\n"
-    "}\n";
-
-#else
-static const char* vertex_shader_text =
-"#version 330\n"
-"uniform mat4 MVP;\n"
-"in vec3 vCol;\n"
-"in vec2 vPos;\n"
-"out vec3 color;\n"
-"void main()\n"
-"{\n"
-"    gl_Position = MVP * vec4(vPos, 0.0, 1.0);\n"
-"    color = vCol;\n"
-"}\n";
-#endif
-
-#ifdef __EMSCRIPTEN__
-static const char *fragment_shader_text =
-    "#version 100\n"
-    "precision mediump float;\n"
-    "varying vec3 color;\n"
-    "void main()\n"
-    "{\n"
-    "    gl_FragColor = vec4(color, 1.0);\n"
-    "}\n";
-
-#else
-static const char* fragment_shader_text =
-"#version 330\n"
-"in vec3 color;\n"
-"out vec4 fragment;\n"
-"void main()\n"
-"{\n"
-"    gl_FragColor = vec4(color, 1.0);\n"
-"}\n";
-#endif
-
-///////////////////////////////////////////////
-
 void Triangle_Initialize(Triangle* this)
 {
 
@@ -130,11 +86,27 @@ void Triangle_Initialize(Triangle* this)
 
 void Triangle_LoadContent(Triangle* this)
 {
-    // NOTE: OpenGL error checks have been omitted for brevity
 
-    GLuint vertex_buffer;
-    glGenBuffers(1, &vertex_buffer);
-    glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer);
+    CFWString* fs = IsEmscripten?
+        DNAFileSystem.readTextFile("data/shaders/es/triangle.fs") :
+        DNAFileSystem.readTextFile("data/shaders/core/triangle.fs");
+
+    CFWString* vs = IsEmscripten?
+        DNAFileSystem.readTextFile("data/shaders/es/triangle.vs") :
+        DNAFileSystem.readTextFile("data/shaders/core/triangle.vs");
+
+    char* vertex_shader_text = cfw_string_c(vs);
+    char* fragment_shader_text = cfw_string_c(fs);
+    // NOTE: Emscripten adds an extra byte of garbage at the end of the shader file.
+    //  convert to linefeed;
+    if (IsEmscripten) {
+        vertex_shader_text[strlen(vertex_shader_text)-1] = 0x0a;
+        fragment_shader_text[strlen(fragment_shader_text)-1] = 0x0a;
+    }
+
+    GLuint VBO;
+    glGenBuffers(1, &VBO);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
     const GLuint vertex_shader = glCreateShader(GL_VERTEX_SHADER);
@@ -154,8 +126,8 @@ void Triangle_LoadContent(Triangle* this)
     const GLint vpos_location = glGetAttribLocation(this->program, "vPos");
     const GLint vcol_location = glGetAttribLocation(this->program, "vCol");
 
-    glGenVertexArrays(1, &this->vertex_array);
-    glBindVertexArray(this->vertex_array);
+    glGenVertexArrays(1, &this->VAO);
+    glBindVertexArray(this->VAO);
     glEnableVertexAttribArray(vpos_location);
     glVertexAttribPointer(vpos_location, 2, GL_FLOAT, GL_FALSE,
                           sizeof(Vertex), (void*) offsetof(Vertex, pos));
@@ -197,7 +169,7 @@ void Triangle_Draw(Triangle* this)
 
     glUseProgram(this->program);
     glUniformMatrix4fv(this->mvp_location, 1, GL_FALSE, (const GLfloat*) &model);
-    glBindVertexArray(this->vertex_array);
+    glBindVertexArray(this->VAO);
     glDrawArrays(GL_TRIANGLES, 0, 3);
 
     glfwSwapBuffers(this->game->window);

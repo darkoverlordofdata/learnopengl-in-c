@@ -184,8 +184,15 @@ DNAShader* LoadShaderFromFile(
     if (!fragmentShaderFile) printf("Unable to open %s", fShaderFile);
 
     // Read file's buffer contents into streams
-    const GLchar *vShaderCode = ReadTextFile(vertexShaderFile);
-    const GLchar *fShaderCode = ReadTextFile(fragmentShaderFile);
+    GLchar *vShaderCode = ReadTextFile(vertexShaderFile);
+    GLchar *fShaderCode = ReadTextFile(fragmentShaderFile);
+
+    // NOTE: Emscripten adds an extra byte of garbage at the end
+    // of the shader file, so convert it to a linefeed.
+#ifdef __EMSCRIPTEN__
+    vShaderCode[strlen(vShaderCode)-1] = 0x0a;
+    fShaderCode[strlen(fShaderCode)-1] = 0x0a;
+#endif
     // close file handlers
     fclose(vertexShaderFile);
     fclose(fragmentShaderFile);

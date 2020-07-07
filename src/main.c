@@ -2,9 +2,6 @@
 #include <dna.h>
 #include "triangle.h"
 
-Mat4x4 mm;
-
-
 int main(int argc, char *argv[])
 {
 

@@ -64,8 +64,11 @@ void Shmupwarz_LoadContent(Shmupwarz* this)
     Mat projection = glm_ortho(0.0f, this->game->width, this->game->height, 0.0f, -1.0f, 1.0f);
 
     this->resource = DNAResourceManager_New();
-    this->shader = DNAResourceManager_LoadShader(this->resource, "data/shaders/elementrender.vs", "data/shaders/elementrender.fs", "shader");
-    // this->shader = DNAResourceManager_LoadShader(this->resource, "data/shaders/transform.vs", "data/shaders/transform.fs", "shader");
+#ifdef __EMSCRIPTEN__
+    this->shader = DNAResourceManager_LoadShader(this->resource, "data/shaders/es/elementrender.vs", "data/shaders/es/elementrender.fs", "shader");
+#else
+    this->shader = DNAResourceManager_LoadShader(this->resource, "data/shaders/core/elementrender.vs", "data/shaders/core/elementrender.fs", "shader");
+#endif
     DNAShader_Use(this->shader);
     DNAShader_SetInteger(this->shader, "image", 0, true);
     DNAShader_SetMatrix(this->shader, "projection", &projection, true);
