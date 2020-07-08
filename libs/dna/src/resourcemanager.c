@@ -19,7 +19,7 @@
 corefw(DNAResourceManager);
 static bool ctor(void *self, va_list args) { return true; }
 static bool equal(void *ptr1, void *ptr2) { return ptr1 == ptr2; }
-static uint32_t hash(void *self) { return self; }
+static uint32_t hash(void *self) { return (uint32_t)self; }
 static void* copy(void *self) { return NULL; }
 
 void Init(DNAResourceManager* this);
@@ -40,7 +40,7 @@ static void dtor(void *self)
 
 	cfw_map_iter(this->Shaders, &iter);
 	while (iter.key != NULL) {
-		if (cfw_is(iter.obj, DNAShaderClass)) 
+		if (cfw_is(iter.obj, (CFWClass*)DNAShaderClass)) 
             cfw_unref(iter.obj);
 		cfw_map_iter_next(&iter);
     }
@@ -48,7 +48,7 @@ static void dtor(void *self)
 
 	cfw_map_iter(this->Textures, &iter);
 	while (iter.key != NULL) {
-		if (cfw_is(iter.obj, DNATexture2DClass)) 
+		if (cfw_is(iter.obj, (CFWClass*)DNATexture2DClass)) 
             cfw_unref(iter.obj);
 		cfw_map_iter_next(&iter);
     }
@@ -87,7 +87,7 @@ static char* ReadTextFile(FILE* f)
 
 void* DNAResourceManager_New()
 {
-    DNAResourceManager* this = cfw_new(DNAResourceManagerClass);
+    DNAResourceManager* this = cfw_new((CFWClass*)DNAResourceManagerClass);
     Init(this);
     return this;
 }
@@ -216,7 +216,7 @@ DNATexture2D* LoadTextureFromFile(
     int format = alpha ? GL_RGBA : GL_RGB;
     int stbiFlag = alpha ? STBI_rgb_alpha : STBI_rgb;
 
-    DNATexture2D* texture = DNATexture2D_New(format, format, file);
+    DNATexture2D* texture = DNATexture2D_New(format, format, (char*)file);
 
     stbi_set_flip_vertically_on_load(true); // tell stb_image.h to flip loaded texture's on the y-axis.
     int width, height, nrChannels;

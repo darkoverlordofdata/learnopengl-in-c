@@ -18,7 +18,7 @@ corefw(DNATexture2D);
 
 static bool ctor(void *self, va_list args) { return true; }
 static bool equal(void *ptr1, void *ptr2) { return ptr1 == ptr2; }
-static uint32_t hash(void *self) { return self; }
+static uint32_t hash(void *self) { return (uint32_t)self; }
 static void* copy(void *self) { return NULL; }
 static void dtor(void *self) { }
 
@@ -31,7 +31,7 @@ static void dtor(void *self) { }
  */
 void* DNATexture2D_New(GLuint internalFormat, GLuint imageFormat, char* path)
 {
-    DNATexture2D* this = cfw_new(DNATexture2DClass);
+    DNATexture2D* this = cfw_new((CFWClass*)DNATexture2DClass);
 #ifdef __EMSCRIPTEN__
 #else
     this->path = strdup(path);

@@ -31,7 +31,7 @@ corefw(DNAGame);
 
 static bool ctor(void *self, va_list args) { return true; }
 static bool equal(void *ptr1, void *ptr2) { return ptr1 == ptr2; }
-static uint32_t hash(void *self) { return self; }
+static uint32_t hash(void *self) { return (uint32_t)self; }
 static void* copy(void *self) { return NULL; }
 
 #define TicksPerMillisecond  10000.0
@@ -109,7 +109,7 @@ static void* DNAGame_ctor(DNAGame* this, char* cstr, int width, int height, void
     {
         printf("Failed to create GLFW window");
         glfwTerminate();
-        return -1;
+        exit(-1);
     }
     glfwMakeContextCurrent(this->window);
     glfwSetFramebufferSizeCallback(this->window, DNAGame_framebuffer_size_callback);
@@ -121,7 +121,7 @@ static void* DNAGame_ctor(DNAGame* this, char* cstr, int width, int height, void
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
     {
         printf("Failed to initialize GLAD");
-        return -1;
+        exit(-1);
     }
 #endif
     glfwSwapInterval(1);
@@ -136,13 +136,13 @@ static void* DNAGame_ctor(DNAGame* this, char* cstr, int width, int height, void
 
 void* DNAGame_New(char* cstr, int width, int height, void* subclass, struct DNAGameVtbl *vptr)
 {
-    DNAGame* this = cfw_new(DNAGameClass);
+    DNAGame* this = cfw_new((CFWClass*)DNAGameClass);
     return DNAGame_ctor(this, cstr, width, height, subclass, vptr);
 }
 
 void* DNAGame_Create(char* cstr, int width, int height, void* subclass, struct DNAGameVtbl *vptr)
 {
-    DNAGame* this = cfw_create(DNAGameClass);
+    DNAGame* this = cfw_create((CFWClass*)DNAGameClass);
     return DNAGame_ctor(this, cstr, width, height, subclass, vptr);
 }
 

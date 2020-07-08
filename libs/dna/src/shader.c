@@ -16,7 +16,7 @@
 corefw(DNAShader);
 static bool ctor(void *self, va_list args) { return true; }
 static bool equal(void *ptr1, void *ptr2) { return ptr1 == ptr2; }
-static uint32_t hash(void *self) { return self; }
+static uint32_t hash(void *self) { return (uint32_t)self; }
 static void* copy(void *self) { return NULL; }
 
 static void dtor(void *self)
@@ -42,7 +42,7 @@ static char* ReadTextFile(FILE* f)
 
 void* DNAShader_New(const GLchar* vShaderSrc, const GLchar* fShaderSrc)
 {
-    DNAShader* this =  cfw_new(DNAShaderClass);
+    DNAShader* this =  cfw_new((CFWClass*)DNAShaderClass);
 
     DNAShader_Compile(this, vShaderSrc, fShaderSrc);
     return this;
@@ -51,7 +51,7 @@ void* DNAShader_New(const GLchar* vShaderSrc, const GLchar* fShaderSrc)
 /**
  * Use shader
  */
-DNAShader* DNAShader_Use(const DNAShader* this)
+DNAShader* DNAShader_Use(DNAShader* this)
 {
     glUseProgram(this->Id);
     return this;
@@ -63,7 +63,7 @@ DNAShader* DNAShader_Use(const DNAShader* this)
  * Checks if compilation or linking failed and if so, print the error logs
  */
 void CheckCompileErrors(
-    const DNAShader* this, 
+    DNAShader* this, 
     GLuint object, 
     char* type)
 {
@@ -129,7 +129,7 @@ void DNAShader_Compile(
 } 
 
 void DNAShader_SetFloat(
-    const DNAShader* this, 
+    DNAShader* this, 
     const GLchar *name, 
     const GLfloat value, 
     const GLboolean useShader)
@@ -140,7 +140,7 @@ void DNAShader_SetFloat(
 }
 
 void DNAShader_SetInteger(
-    const DNAShader* this, 
+    DNAShader* this, 
     const GLchar *name, 
     GLint value, 
     GLboolean useShader)
@@ -151,7 +151,7 @@ void DNAShader_SetInteger(
 }
 
 void DNAShader_SetVector2(
-    const DNAShader* this, 
+    DNAShader* this, 
     const GLchar *name, 
     GLfloat x, 
     GLfloat y, 
@@ -163,7 +163,7 @@ void DNAShader_SetVector2(
 }
 
 void DNAShader_SetVector2v(
-    const DNAShader* this, 
+    DNAShader* this, 
     const GLchar *name, 
     const Vec2* vector,
     GLboolean useShader)
@@ -174,7 +174,7 @@ void DNAShader_SetVector2v(
 }
 
 void DNAShader_SetVector3(
-    const DNAShader* this, 
+    DNAShader* this, 
     const GLchar *name, 
     GLfloat x, 
     GLfloat y, 
@@ -187,7 +187,7 @@ void DNAShader_SetVector3(
 }
 
 void DNAShader_SetVector3v(
-    const DNAShader* this, 
+    DNAShader* this, 
     const GLchar *name, 
     const Vec3* vector,
     GLboolean useShader)
@@ -198,7 +198,7 @@ void DNAShader_SetVector3v(
 }
 
 void DNAShader_SetVector4(
-    const DNAShader* this, 
+    DNAShader* this, 
     const GLchar *name,
     GLfloat x, 
     GLfloat y, 
@@ -212,7 +212,7 @@ void DNAShader_SetVector4(
 }
 
 void DNAShader_SetVector4v(
-    const DNAShader* this, 
+    DNAShader* this, 
     const GLchar *name,
     const Vec4* vector,
     GLboolean useShader)
@@ -223,7 +223,7 @@ void DNAShader_SetVector4v(
 }
 
 void method DNAShader_SetMatrix(
-    const DNAShader* this, 
+    DNAShader* this, 
     const GLchar *name, 
     const Mat* matrix, 
     GLboolean useShader)
@@ -234,7 +234,7 @@ void method DNAShader_SetMatrix(
 }
 
 void method DNAShader_SetMatrix(
-    const DNAShader* this, 
+    DNAShader* this, 
     const GLchar *name, 
     const Mat* matrix)
 {

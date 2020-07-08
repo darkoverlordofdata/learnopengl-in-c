@@ -321,6 +321,6 @@ Mat glm_rotateY(Mat m, float angle)
 		   s, 0.f,   c, 0.f,
 		 0.f, 0.f, 0.f, 1.f
 	};
-	glm_mat_mul(m, r);
+	return glm_mat_mul(m, r);
 
 }

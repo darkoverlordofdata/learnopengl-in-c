@@ -13,11 +13,13 @@ typedef struct DNAGame DNAGame;
 struct DNAGameVtbl;
 extern const CFWClass *DNAGameClass;
 
+
+typedef void (*DNAGameFunc) (void* self);
 struct DNAGameVtbl {
-    void (*Initialize)  (void* const self);
-    void (*LoadContent) (void* const self);
-    void (*Update)      (void* const self);
-    void (*Draw)        (void* const self);
+    void (*Initialize)  (void* self);
+    void (*LoadContent) (void* self);
+    void (*Update)      (void* self);
+    void (*Draw)        (void* self);
 };
 
 extern void* DNAGame_New(char* cstr, int width, int height, void* subclass, struct DNAGameVtbl *vptr);

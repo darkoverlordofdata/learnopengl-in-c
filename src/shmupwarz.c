@@ -20,7 +20,7 @@ corefw(Shmupwarz);
  */
 static bool ctor(void *self, va_list args) { return true; }
 static bool equal(void *ptr1, void *ptr2) { return ptr1 == ptr2; }
-static uint32_t hash(void *self) { return self; }
+static uint32_t hash(void *self) { return (uint32_t)self; }
 static void* copy(void *self) { return NULL; }
 
 static void dtor(void *self)
@@ -43,13 +43,14 @@ void* Shmupwarz_New(char* title, int width, int height)
 {
     static struct DNAGameVtbl overrides = 
     {
-        .Initialize     = Shmupwarz_Initialize, 
-        .LoadContent    = Shmupwarz_LoadContent, 
-        .Update         = Shmupwarz_Update, 
-        .Draw           = Shmupwarz_Draw 
+        .Initialize     = (DNAGameFunc)Shmupwarz_Initialize, 
+        .LoadContent    = (DNAGameFunc)Shmupwarz_LoadContent, 
+        .Update         = (DNAGameFunc)Shmupwarz_Update, 
+        .Draw           = (DNAGameFunc)Shmupwarz_Draw 
     };
 
-    Shmupwarz* this = cfw_new(ShmupwarzClass);
+    // Shmupwarz* this = cfw_new((CFWClass*)ShmupwarzClass);
+    Shmupwarz* this = cfw_new((CFWClass*)ShmupwarzClass);
     this->game = DNAGame_New(title, width, height, this, &overrides);
     return this;
 }

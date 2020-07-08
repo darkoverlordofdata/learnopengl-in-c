@@ -13,38 +13,38 @@
 typedef struct DNAShader DNAShader;
 extern const CFWClass *DNAShaderClass;
 
-extern DNAShader* DNAShader_Use(const DNAShader* this);
+extern DNAShader* DNAShader_Use(DNAShader* this);
 
 extern void* DNAShader_New();
-extern GLuint DNAShader_GetId(const DNAShader* this);
+extern GLuint DNAShader_GetId(DNAShader* this);
 extern void DNAShader_Compile(DNAShader* this, const GLchar* vertexSource, const GLchar* fragmentSource);
 extern void DNAShader_SetFloat(
-    const DNAShader* this, 
+    DNAShader* this, 
     const GLchar *name, 
     const GLfloat value, 
     const GLboolean useShader);
 
 extern void DNAShader_SetInteger(
-    const DNAShader* this, 
+    DNAShader* this, 
     const GLchar *name, 
     GLint value, 
     GLboolean useShader);
 
 extern void DNAShader_SetVector2(
-    const DNAShader* this, 
+    DNAShader* this, 
     const GLchar *name, 
     GLfloat x, 
     GLfloat y, 
     GLboolean useShader);
 
 extern void DNAShader_SetVector2v(
-    const DNAShader* this, 
+    DNAShader* this, 
     const GLchar *name, 
     const Vec2* vector,
     GLboolean useShader);
 
 extern void DNAShader_SetVector3(
-    const DNAShader* this, 
+    DNAShader* this, 
     const GLchar *name, 
     GLfloat x, 
     GLfloat y, 
@@ -52,13 +52,13 @@ extern void DNAShader_SetVector3(
     GLboolean useShader);
 
 extern void DNAShader_SetVector3v(
-    const DNAShader* this, 
+    DNAShader* this, 
     const GLchar *name, 
     const Vec3* vector,
     GLboolean useShader);
 
 extern void DNAShader_SetVector4(
-    const DNAShader* this, 
+    DNAShader* this, 
     const GLchar *name,
     GLfloat x, 
     GLfloat y, 
@@ -67,18 +67,18 @@ extern void DNAShader_SetVector4(
     GLboolean useShader);
 
 extern void DNAShader_SetVector4v(
-    const DNAShader* this, 
+    DNAShader* this, 
     const GLchar *name,
     const Vec4* vector,
     GLboolean useShader);
 
 extern method void DNAShader_SetMatrix(
-    const DNAShader* this, 
+    DNAShader* this, 
     const GLchar *name, 
     const Mat* matrix, 
     GLboolean useShader);
 
 extern method void DNAShader_SetMatrix(
-    const DNAShader* this, 
+    DNAShader* this, 
     const GLchar *name, 
     const Mat* matrix);
