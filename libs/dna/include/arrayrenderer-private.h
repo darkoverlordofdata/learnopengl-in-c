@@ -7,19 +7,16 @@
 #else
 #include <glad/glad.h>
 #endif
-#include <GLFW/glfw3.h>
-#include "object.h"
 #include "dna.h"
-
+#include "object.h"
+#include <GLFW/glfw3.h>
 
 /**
  *  class DNAArrayRenderer
  */
-struct DNAArrayRenderer 
-{
-	CFWObject obj;
-    struct DNAShader* shader; 
+struct DNAArrayRenderer {
+    CFWObject obj;
+    struct DNAShader* shader;
     GLuint VBO;
     GLuint VAO;
 };
-

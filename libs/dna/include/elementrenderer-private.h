@@ -9,18 +9,16 @@
 #endif
 #include <GLFW/glfw3.h>
 
-#include "object.h"
 #include "dna.h"
+#include "object.h"
 
 /**
  *  class DNAElementRenderer
  */
-struct DNAElementRenderer 
-{
-	CFWObject obj;
-    struct DNAShader* shader; 
+struct DNAElementRenderer {
+    CFWObject obj;
+    struct DNAShader* shader;
     GLuint VBO;
     GLuint VAO;
     GLuint EBO;
 };
-

@@ -8,20 +8,20 @@
 #else
 #include <glad/glad.h>
 #endif
-#include <GLFW/glfw3.h>
-#include "object.h"
 #include "dna.h"
+#include "object.h"
 #include "shader-private.h"
+#include <GLFW/glfw3.h>
 
 corefw(DNAShader);
-static bool ctor(void *self, va_list args) { return true; }
-static bool equal(void *ptr1, void *ptr2) { return ptr1 == ptr2; }
-static uint32_t hash(void *self) { return (uint32_t)self; }
-static void* copy(void *self) { return NULL; }
+static bool ctor(void* self, va_list args) { return true; }
+static bool equal(void* ptr1, void* ptr2) { return ptr1 == ptr2; }
+static uint32_t hash(void* self) { return (uint32_t)self; }
+static void* copy(void* self) { return NULL; }
 
-static void dtor(void *self)
+static void dtor(void* self)
 {
-	DNAShader *this = self;
+    DNAShader* this = self;
 }
 
 static char* ReadTextFile(FILE* f)
@@ -29,11 +29,10 @@ static char* ReadTextFile(FILE* f)
     fseek(f, 0L, SEEK_END);
     long s = ftell(f);
     rewind(f);
-    char* buf = (char*)calloc(1, s+1);
+    char* buf = (char*)calloc(1, s + 1);
     buf[s] = '\0';
 
-    if (buf != NULL)
-    {
+    if (buf != NULL) {
         fread(buf, s, 1, f);
         return buf;
     }
@@ -42,7 +41,7 @@ static char* ReadTextFile(FILE* f)
 
 void* DNAShader_New(const GLchar* vShaderSrc, const GLchar* fShaderSrc)
 {
-    DNAShader* this =  cfw_new((CFWClass*)DNAShaderClass);
+    DNAShader* this = cfw_new((CFWClass*)DNAShaderClass);
 
     DNAShader_Compile(this, vShaderSrc, fShaderSrc);
     return this;
@@ -63,33 +62,28 @@ DNAShader* DNAShader_Use(DNAShader* this)
  * Checks if compilation or linking failed and if so, print the error logs
  */
 void CheckCompileErrors(
-    DNAShader* this, 
-    GLuint object, 
+    DNAShader* this,
+    GLuint object,
     char* type)
 {
     GLint success;
     GLchar infoLog[1024];
-    if (strncmp(type, "PROGRAM", 7) != 0)
-    {
+    if (strncmp(type, "PROGRAM", 7) != 0) {
         glGetShaderiv(object, GL_COMPILE_STATUS, &success);
-        if (!success)
-        {
+        if (!success) {
             glGetShaderInfoLog(object, 1024, NULL, infoLog);
             printf("| ERROR::SHADER: Compile-time error: type: %s\n%s\n", type, infoLog);
             printf(" -- --------------------------------------------------- --\n");
         }
-    }
-    else
-    {
+    } else {
         glGetProgramiv(object, GL_LINK_STATUS, &success);
-        if (!success)
-        {
+        if (!success) {
             glGetProgramInfoLog(object, 1024, NULL, infoLog);
             printf("| ERROR::SHADER: Link-time error: type: %s\n%s\n", type, infoLog);
             printf(" -- --------------------------------------------------- --\n");
         }
     }
-}        
+}
 
 /**
  * Compile
@@ -99,11 +93,10 @@ void CheckCompileErrors(
  * 
  */
 void DNAShader_Compile(
-    DNAShader* this, 
-    const GLchar* vShaderSrc, 
+    DNAShader* this,
+    const GLchar* vShaderSrc,
     const GLchar* fShaderSrc)
 {
-
 
     GLuint sVertex, sFragment;
     // Vertex DNAShader
@@ -125,13 +118,12 @@ void DNAShader_Compile(
     // Delete the shaders as they're linked into our program now and no longer necessery
     glDeleteShader(sVertex);
     glDeleteShader(sFragment);
-
-} 
+}
 
 void DNAShader_SetFloat(
-    DNAShader* this, 
-    const GLchar *name, 
-    const GLfloat value, 
+    DNAShader* this,
+    const GLchar* name,
+    const GLfloat value,
     const GLboolean useShader)
 {
     if (useShader)
@@ -140,9 +132,9 @@ void DNAShader_SetFloat(
 }
 
 void DNAShader_SetInteger(
-    DNAShader* this, 
-    const GLchar *name, 
-    GLint value, 
+    DNAShader* this,
+    const GLchar* name,
+    GLint value,
     GLboolean useShader)
 {
     if (useShader)
@@ -151,10 +143,10 @@ void DNAShader_SetInteger(
 }
 
 void DNAShader_SetVector2(
-    DNAShader* this, 
-    const GLchar *name, 
-    GLfloat x, 
-    GLfloat y, 
+    DNAShader* this,
+    const GLchar* name,
+    GLfloat x,
+    GLfloat y,
     GLboolean useShader)
 {
     if (useShader)
@@ -163,8 +155,8 @@ void DNAShader_SetVector2(
 }
 
 void DNAShader_SetVector2v(
-    DNAShader* this, 
-    const GLchar *name, 
+    DNAShader* this,
+    const GLchar* name,
     const Vec2* vector,
     GLboolean useShader)
 {
@@ -174,11 +166,11 @@ void DNAShader_SetVector2v(
 }
 
 void DNAShader_SetVector3(
-    DNAShader* this, 
-    const GLchar *name, 
-    GLfloat x, 
-    GLfloat y, 
-    GLfloat z, 
+    DNAShader* this,
+    const GLchar* name,
+    GLfloat x,
+    GLfloat y,
+    GLfloat z,
     GLboolean useShader)
 {
     if (useShader)
@@ -187,8 +179,8 @@ void DNAShader_SetVector3(
 }
 
 void DNAShader_SetVector3v(
-    DNAShader* this, 
-    const GLchar *name, 
+    DNAShader* this,
+    const GLchar* name,
     const Vec3* vector,
     GLboolean useShader)
 {
@@ -198,12 +190,12 @@ void DNAShader_SetVector3v(
 }
 
 void DNAShader_SetVector4(
-    DNAShader* this, 
-    const GLchar *name,
-    GLfloat x, 
-    GLfloat y, 
-    GLfloat z, 
-    GLfloat w, 
+    DNAShader* this,
+    const GLchar* name,
+    GLfloat x,
+    GLfloat y,
+    GLfloat z,
+    GLfloat w,
     GLboolean useShader)
 {
     if (useShader)
@@ -212,8 +204,8 @@ void DNAShader_SetVector4(
 }
 
 void DNAShader_SetVector4v(
-    DNAShader* this, 
-    const GLchar *name,
+    DNAShader* this,
+    const GLchar* name,
     const Vec4* vector,
     GLboolean useShader)
 {
@@ -223,9 +215,9 @@ void DNAShader_SetVector4v(
 }
 
 void method DNAShader_SetMatrix(
-    DNAShader* this, 
-    const GLchar *name, 
-    const Mat* matrix, 
+    DNAShader* this,
+    const GLchar* name,
+    const Mat* matrix,
     GLboolean useShader)
 {
     if (useShader)
@@ -234,8 +226,8 @@ void method DNAShader_SetMatrix(
 }
 
 void method DNAShader_SetMatrix(
-    DNAShader* this, 
-    const GLchar *name, 
+    DNAShader* this,
+    const GLchar* name,
     const Mat* matrix)
 {
     DNAShader_SetMatrix(this, name, matrix, true);

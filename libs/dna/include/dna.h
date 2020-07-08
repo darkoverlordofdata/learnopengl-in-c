@@ -1,6 +1,6 @@
 #pragma once
 
-
+// clang-format off
 #include "object.h"
 #include "rect.h"
 #include "filesystem.h"
@@ -11,3 +11,4 @@
 #include "shader.h"
 #include "texture2d.h"
 #include "tglm.h"
+// clang-format on

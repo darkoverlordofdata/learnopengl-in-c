@@ -7,17 +7,16 @@
 #else
 #include <glad/glad.h>
 #endif
-#include <GLFW/glfw3.h>
-#include "object.h"
 #include "dna.h"
+#include "object.h"
+#include <GLFW/glfw3.h>
 
 /**
  *  class DNAResourceManager
  */
 struct DNAResourceManager {
-	CFWObject obj;
+    CFWObject obj;
     CFWMap* Shaders;
     CFWMap* Textures;
     CFWMap* Fonts;
 };
-

@@ -9,15 +9,15 @@
 #endif
 #include <GLFW/glfw3.h>
 
-#include "object.h"
 #include "dna.h"
 #include "elementrenderer-private.h"
+#include "object.h"
 
 corefw(DNAElementRenderer);
-static bool ctor(void *self, va_list args) { return true; }
-static bool equal(void *ptr1, void *ptr2) { return ptr1 == ptr2; }
-static uint32_t hash(void *self) { return (uint32_t)self; }
-static void* copy(void *self) { return NULL; }
+static bool ctor(void* self, va_list args) { return true; }
+static bool equal(void* ptr1, void* ptr2) { return ptr1 == ptr2; }
+static uint32_t hash(void* self) { return (uint32_t)self; }
+static void* copy(void* self) { return NULL; }
 
 void InitElementRenderData(DNAElementRenderer* this);
 /**
@@ -26,9 +26,9 @@ void InitElementRenderData(DNAElementRenderer* this);
  * @param shader to use for rendering
  * 
  */
-static void dtor(void *self)
+static void dtor(void* self)
 {
-	DNAElementRenderer *this = self;
+    DNAElementRenderer* this = self;
     glDeleteVertexArrays(1, &this->VAO);
     glDeleteBuffers(1, &this->VBO);
     glDeleteBuffers(1, &this->EBO);
@@ -42,7 +42,6 @@ void* DNAElementRenderer_New(DNAShader* shader)
     return this;
 }
 
-
 /**
  * Draw
  * 
@@ -54,31 +53,31 @@ void* DNAElementRenderer_New(DNAShader* shader)
  * 
  */
 void DNAElementRenderer_Draw(
-    const DNAElementRenderer* this, 
-    DNATexture2D* texture, 
+    const DNAElementRenderer* this,
+    DNATexture2D* texture,
     DNARect bounds,
-    GLfloat rotate, 
+    GLfloat rotate,
     Vec3 color)
 {
     // Prepare transformations
 
     Vec3 size = { bounds.w, bounds.h, 1 };
     Vec3 position = { bounds.x, bounds.y, 0 };
-    Mat model= {
+    Mat model = {
         1.0f, 0.0f, 0.0f, 0.0f,
         0.0f, 1.0f, 0.0f, 0.0f,
         0.0f, 0.0f, 1.0f, 0.0f,
         0.0f, 0.0f, 0.0f, 1.0f
     };
 
-    model = glm_translate(model, (Vec3){ position.x, position.y, 0.0f });  // First translate (transformations are: scale happens first, then rotation and then finall translation happens; reversed order)
-    model = glm_translate(model, (Vec3){ 0.5f * size.x, 0.5f * size.y, 0.0f }); // Move origin of rotation to center of quad
-    model = glm_rotate(model, rotate, (Vec3){ 0.0f, 0.0f, 1.0f }); // Then rotate
-    model = glm_translate(model, (Vec3){ -0.5f * size.x, -0.5f * size.y, 0.0f }); // Move origin back
-    model = glm_scale(model, (Vec3){ size.x, size.y, 1.0f }); // Last scale
+    model = glm_translate(model, (Vec3) { position.x, position.y, 0.0f }); // First translate (transformations are: scale happens first, then rotation and then finall translation happens; reversed order)
+    model = glm_translate(model, (Vec3) { 0.5f * size.x, 0.5f * size.y, 0.0f }); // Move origin of rotation to center of quad
+    model = glm_rotate(model, rotate, (Vec3) { 0.0f, 0.0f, 1.0f }); // Then rotate
+    model = glm_translate(model, (Vec3) { -0.5f * size.x, -0.5f * size.y, 0.0f }); // Move origin back
+    model = glm_scale(model, (Vec3) { size.x, size.y, 1.0f }); // Last scale
 
     DNAShader_Use(this->shader);
-    DNAShader_SetMatrix(this->shader, "model", &model);//, true);
+    DNAShader_SetMatrix(this->shader, "model", &model); //, true);
     DNAShader_SetVector3v(this->shader, "spriteColor", &color, true);
     glActiveTexture(GL_TEXTURE0);
     Bind(texture);
@@ -86,21 +85,20 @@ void DNAElementRenderer_Draw(
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 }
 
-
 void InitElementRenderData(DNAElementRenderer* this)
 {
     // set up vertex data (and buffer(s)) and configure vertex attributes
     // ------------------------------------------------------------------
     float vertices[] = {
         // positions           // texture coords
-         0.5f,  0.5f, 0.0f,    1.0f, 1.0f, // top right
-         0.5f, -0.5f, 0.0f,    1.0f, 0.0f, // bottom right
-        -0.5f, -0.5f, 0.0f,    0.0f, 0.0f, // bottom left
-        -0.5f,  0.5f, 0.0f,    0.0f, 1.0f  // top left 
+        0.5f, 0.5f, 0.0f, 1.0f, 1.0f, // top right
+        0.5f, -0.5f, 0.0f, 1.0f, 0.0f, // bottom right
+        -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, // bottom left
+        -0.5f, 0.5f, 0.0f, 0.0f, 1.0f // top left
     };
     unsigned int indices[] = {
         0, 1, 3, // first triangle
-        1, 2, 3  // second triangle
+        1, 2, 3 // second triangle
     };
 
     glGenVertexArrays(1, &this->VAO);
@@ -121,4 +119,4 @@ void InitElementRenderData(DNAElementRenderer* this)
     // texture coord attribute
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
-}          
+}

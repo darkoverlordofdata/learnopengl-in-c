@@ -7,20 +7,19 @@
 #else
 #include <glad/glad.h>
 #endif
-#include <GLFW/glfw3.h>
-#include "stb_image.h"
 #include "dna.h"
 #include "object.h"
+#include "stb_image.h"
 #include "texture2d-private.h"
-
+#include <GLFW/glfw3.h>
 
 corefw(DNATexture2D);
 
-static bool ctor(void *self, va_list args) { return true; }
-static bool equal(void *ptr1, void *ptr2) { return ptr1 == ptr2; }
-static uint32_t hash(void *self) { return (uint32_t)self; }
-static void* copy(void *self) { return NULL; }
-static void dtor(void *self) { }
+static bool ctor(void* self, va_list args) { return true; }
+static bool equal(void* ptr1, void* ptr2) { return ptr1 == ptr2; }
+static uint32_t hash(void* self) { return (uint32_t)self; }
+static void* copy(void* self) { return NULL; }
+static void dtor(void* self) {}
 
 /**
  *  DNATexture2D Constructor
@@ -57,9 +56,9 @@ void* DNATexture2D_New(GLuint internalFormat, GLuint imageFormat, char* path)
  * 
  */
 void DNATexture2D_Generate(
-    DNATexture2D* this, 
-    GLuint width, 
-    GLuint height, 
+    DNATexture2D* this,
+    GLuint width,
+    GLuint height,
     unsigned char* data)
 {
     this->Width = width;
@@ -67,7 +66,7 @@ void DNATexture2D_Generate(
     // Create Texture
     glBindTexture(GL_TEXTURE_2D, this->Id);
     glTexImage2D(GL_TEXTURE_2D, 0, this->InternalFormat, width, height, 0, this->ImageFormat, GL_UNSIGNED_BYTE, data);
-                                              // Set Texture wrap and filter modes
+    // Set Texture wrap and filter modes
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, this->wrapS);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, this->wrapT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, this->filterMin);
@@ -84,13 +83,11 @@ void DNATexture2D_Generate(
 // void DNATexture2D_Bind(const DNATexture2D* this)
 void method Bind(const DNATexture2D* this)
 {
-    glBindTexture(GL_TEXTURE_2D, this->Id);    
+    glBindTexture(GL_TEXTURE_2D, this->Id);
 }
-
 
 char* method ToString(const DNATexture2D* this)
 {
     char* s = calloc(1024, 1);
-    return s;    
-
+    return s;
 }

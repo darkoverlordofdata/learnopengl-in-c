@@ -7,4 +7,3 @@ struct DNARect {
     int w;
     int h;
 };
-

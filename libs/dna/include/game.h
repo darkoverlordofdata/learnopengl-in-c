@@ -11,19 +11,17 @@
 
 typedef struct DNAGame DNAGame;
 struct DNAGameVtbl;
-extern const CFWClass *DNAGameClass;
+extern const CFWClass* DNAGameClass;
 
-
-typedef void (*DNAGameFunc) (void* self);
+typedef void (*DNAGameFunc)(void* self);
 struct DNAGameVtbl {
-    void (*Initialize)  (void* self);
-    void (*LoadContent) (void* self);
-    void (*Update)      (void* self);
-    void (*Draw)        (void* self);
+    void (*Initialize)(void* self);
+    void (*LoadContent)(void* self);
+    void (*Update)(void* self);
+    void (*Draw)(void* self);
 };
 
-extern void* DNAGame_New(char* cstr, int width, int height, void* subclass, struct DNAGameVtbl *vptr);
-
+extern void* DNAGame_New(char* cstr, int width, int height, void* subclass, struct DNAGameVtbl* vptr);
 
 /**
  * DNAGame::HandleEvents
@@ -48,7 +46,7 @@ extern void DNAGame_RunLoop(DNAGame* const this);
 /**
  * DNAGame::Run
  */
-extern void DNAGame_Run(DNAGame* const this); 
+extern void DNAGame_Run(DNAGame* const this);
 
 /**
  * DNAGame::Initialize
@@ -69,5 +67,3 @@ extern void DNAGame_Update(DNAGame* const this);
  * DNAGame::Draw
  */
 extern void DNAGame_Draw(DNAGame* const this);
-
-

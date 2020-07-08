@@ -1,12 +1,11 @@
+#include <assert.h>
+#include <errno.h>
 #include <stdint.h>
 #include <string.h>
-#include <errno.h>
+#include <sys/time.h>
+#include <sys/types.h>
 #include <time.h>
 #include <unistd.h>
-#include <time.h>
-#include <assert.h>
-#include <sys/types.h>
-#include <sys/time.h>
 #ifdef __EMSCRIPTEN__
 #include <emscripten.h>
 #define GL_GLEXT_PROTOTYPES
@@ -14,18 +13,18 @@
 #else
 #include <glad/glad.h>
 #endif
-#include <GLFW/glfw3.h>
-#include "object.h"
 #include "dna.h"
+#include "object.h"
+#include <GLFW/glfw3.h>
 
 struct DNAGame {
-	CFWObject obj;
+    CFWObject obj;
     void* subclass;
-    struct DNAGameVtbl const *override;
-    GLFWwindow *window;
+    struct DNAGameVtbl const* override;
+    GLFWwindow* window;
     char* title;
     int len;
-    bool *keys;
+    bool* keys;
     double delta;
     double factor;
     uint64_t targetElapsedTime;
@@ -56,4 +55,3 @@ struct DNAGame {
     bool shouldExit;
     bool suppressDraw;
 };
-

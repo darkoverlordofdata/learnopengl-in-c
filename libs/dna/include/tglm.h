@@ -37,13 +37,12 @@ SOFTWARE.
 /**
  *  OpenCL Vector definitions 
  */
-typedef int IVec2   __attribute__((ext_vector_type(2)));
-typedef int IVec3   __attribute__((ext_vector_type(3)));
-typedef float Vec2  __attribute__((ext_vector_type(2)));
-typedef float Vec3  __attribute__((ext_vector_type(3)));
-typedef float Vec4  __attribute__((ext_vector_type(4)));
-typedef float Mat   __attribute__((ext_vector_type(16)));
-
+typedef int IVec2 __attribute__((ext_vector_type(2)));
+typedef int IVec3 __attribute__((ext_vector_type(3)));
+typedef float Vec2 __attribute__((ext_vector_type(2)));
+typedef float Vec3 __attribute__((ext_vector_type(3)));
+typedef float Vec4 __attribute__((ext_vector_type(4)));
+typedef float Mat __attribute__((ext_vector_type(16)));
 
 /**
  * clamp number/vector between MIN and MAX values
@@ -54,11 +53,11 @@ typedef float Mat   __attribute__((ext_vector_type(16)));
  * @returns clamped value
  * 
  */
-float  __attribute__((overloadable)) glm_clamp(float val, float minVal, float maxVal);
-Vec2  __attribute__((overloadable)) glm_clamp(Vec2 v, float minVal, float maxVal);
-Vec2  __attribute__((overloadable)) glm_clamp(Vec2 v, Vec2 minVal, Vec2 maxVal);
-Vec3  __attribute__((overloadable)) glm_clamp(Vec3 v, float minVal, float maxVal);
-Vec4  __attribute__((overloadable)) glm_clamp(Vec4 v, float minVal, float maxVal);
+float __attribute__((overloadable)) glm_clamp(float val, float minVal, float maxVal);
+Vec2 __attribute__((overloadable)) glm_clamp(Vec2 v, float minVal, float maxVal);
+Vec2 __attribute__((overloadable)) glm_clamp(Vec2 v, Vec2 minVal, Vec2 maxVal);
+Vec3 __attribute__((overloadable)) glm_clamp(Vec3 v, float minVal, float maxVal);
+Vec4 __attribute__((overloadable)) glm_clamp(Vec4 v, float minVal, float maxVal);
 
 /** 
  * translate transform matrix by v vector
@@ -80,7 +79,6 @@ Mat glm_translate(Mat m, Vec3 v);
 float __attribute__((overloadable)) glm_length(Vec2 v);
 float __attribute__((overloadable)) glm_length(Vec3 v);
 float __attribute__((overloadable)) glm_length(Vec4 v);
-
 
 /**
  * vector dot product
@@ -114,7 +112,6 @@ float __attribute__((overloadable)) glm_norm2(Vec4 v);
 float __attribute__((overloadable)) glm_norm(Vec2 vec);
 float __attribute__((overloadable)) glm_norm(Vec3 vec);
 float __attribute__((overloadable)) glm_norm(Vec4 vec);
-
 
 /**
  * return an identity matrix

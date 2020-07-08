@@ -41,30 +41,35 @@ SOFTWARE.
  * @returns clamped value
  * 
  */
-float  __attribute__((overloadable)) glm_clamp(float val, float minVal, float maxVal) {
+float __attribute__((overloadable)) glm_clamp(float val, float minVal, float maxVal)
+{
     float min = (val > minVal) ? val : minVal;
     return (min < maxVal) ? min : maxVal;
 }
-Vec2  __attribute__((overloadable)) glm_clamp(Vec2 v, float minVal, float maxVal) {
-    return (Vec2) { 
+Vec2 __attribute__((overloadable)) glm_clamp(Vec2 v, float minVal, float maxVal)
+{
+    return (Vec2) {
         glm_clamp(v.x, minVal, maxVal),
-        glm_clamp(v.y, minVal, maxVal) 
+        glm_clamp(v.y, minVal, maxVal)
     };
 }
-Vec2  __attribute__((overloadable)) glm_clamp(Vec2 v, Vec2 minVal, Vec2 maxVal) {
-    return (Vec2) { 
+Vec2 __attribute__((overloadable)) glm_clamp(Vec2 v, Vec2 minVal, Vec2 maxVal)
+{
+    return (Vec2) {
         glm_clamp(v.x, minVal.x, maxVal.x),
-        glm_clamp(v.y, minVal.y, maxVal.y) 
+        glm_clamp(v.y, minVal.y, maxVal.y)
     };
 }
-Vec3  __attribute__((overloadable)) glm_clamp(Vec3 v, float minVal, float maxVal) {
+Vec3 __attribute__((overloadable)) glm_clamp(Vec3 v, float minVal, float maxVal)
+{
     return (Vec3) {
         glm_clamp(v.x, minVal, maxVal),
         glm_clamp(v.y, minVal, maxVal),
         glm_clamp(v.z, minVal, maxVal)
     };
 }
-Vec4  __attribute__((overloadable)) glm_clamp(Vec4 v, float minVal, float maxVal) {
+Vec4 __attribute__((overloadable)) glm_clamp(Vec4 v, float minVal, float maxVal)
+{
     return (Vec4) {
         glm_clamp(v.x, minVal, maxVal),
         glm_clamp(v.y, minVal, maxVal),
@@ -81,11 +86,11 @@ Vec4  __attribute__((overloadable)) glm_clamp(Vec4 v, float minVal, float maxVal
  * @returns translated matrix
  * 
  */
-Mat glm_translate(Mat m, Vec3 v) {
+Mat glm_translate(Mat m, Vec3 v)
+{
     m.scdef = m.scdef + m.s0123 * v.x + m.s4567 * v.y + m.s89ab * v.z;
     return m;
 }
-
 
 /**
  * length - return scalar Euclidean length of a vector
@@ -94,16 +99,18 @@ Mat glm_translate(Mat m, Vec3 v) {
  * @returns norm * norm
  * 
  */
-float __attribute__((overloadable)) glm_length(Vec2 v) {
+float __attribute__((overloadable)) glm_length(Vec2 v)
+{
     return sqrtf(v.x * v.x + v.y * v.y);
 }
-float __attribute__((overloadable)) glm_length(Vec3 v) {
+float __attribute__((overloadable)) glm_length(Vec3 v)
+{
     return sqrtf(v.x * v.x + v.y * v.y + v.z * v.z);
 }
-float __attribute__((overloadable)) glm_length(Vec4 v) {
+float __attribute__((overloadable)) glm_length(Vec4 v)
+{
     return sqrtf(v.x * v.x + v.y * v.y + v.z * v.z + v.w * v.w);
 }
-
 
 /**
  * vector dot product
@@ -113,13 +120,16 @@ float __attribute__((overloadable)) glm_length(Vec4 v) {
  * @returns dot product
  * 
  */
-float __attribute__((overloadable)) glm_dot(Vec2 a, Vec2 b) {
+float __attribute__((overloadable)) glm_dot(Vec2 a, Vec2 b)
+{
     return a.x * b.x + a.y * b.y;
 }
-float __attribute__((overloadable)) glm_dot(Vec3 a, Vec3 b) {
+float __attribute__((overloadable)) glm_dot(Vec3 a, Vec3 b)
+{
     return a.x * b.x + a.y * b.y + a.z * b.z;
 }
-float __attribute__((overloadable)) glm_dot(Vec4 a, Vec4 b) {
+float __attribute__((overloadable)) glm_dot(Vec4 a, Vec4 b)
+{
     return a.x * b.x + a.y * b.y + a.z * b.z + a.w * b.w;
 }
 
@@ -130,14 +140,17 @@ float __attribute__((overloadable)) glm_dot(Vec4 a, Vec4 b) {
  * @returns norm * norm
  * 
  */
-float __attribute__((overloadable)) glm_norm2(Vec2 v) {
-  return glm_dot(v, v);
+float __attribute__((overloadable)) glm_norm2(Vec2 v)
+{
+    return glm_dot(v, v);
 }
-float __attribute__((overloadable)) glm_norm2(Vec3 v) {
-  return glm_dot(v, v);
+float __attribute__((overloadable)) glm_norm2(Vec3 v)
+{
+    return glm_dot(v, v);
 }
-float __attribute__((overloadable)) glm_norm2(Vec4 v) {
-  return glm_dot(v, v);
+float __attribute__((overloadable)) glm_norm2(Vec4 v)
+{
+    return glm_dot(v, v);
 }
 
 /**
@@ -146,28 +159,29 @@ float __attribute__((overloadable)) glm_norm2(Vec4 v) {
  * @param vec vector
  * @returns norm
  */
-float __attribute__((overloadable)) glm_norm(Vec2 vec) {
-  return sqrtf(glm_norm2(vec));
+float __attribute__((overloadable)) glm_norm(Vec2 vec)
+{
+    return sqrtf(glm_norm2(vec));
 }
-float __attribute__((overloadable)) glm_norm(Vec3 vec) {
-  return sqrtf(glm_norm2(vec));
+float __attribute__((overloadable)) glm_norm(Vec3 vec)
+{
+    return sqrtf(glm_norm2(vec));
 }
-float __attribute__((overloadable)) glm_norm(Vec4 vec) {
-  return sqrtf(glm_norm2(vec));
+float __attribute__((overloadable)) glm_norm(Vec4 vec)
+{
+    return sqrtf(glm_norm2(vec));
 }
-
 
 /**
  * return an identity matrix
  */
 Mat mat_identity()
 {
-    return (Mat){   1.0f, 0.0f, 0.0f, 0.0f,
-                    0.0f, 1.0f, 0.0f, 0.0f,
-                    0.0f, 0.0f, 1.0f, 0.0f,
-                    0.0f, 0.0f, 0.0f, 1.0f };
+    return (Mat) { 1.0f, 0.0f, 0.0f, 0.0f,
+        0.0f, 1.0f, 0.0f, 0.0f,
+        0.0f, 0.0f, 1.0f, 0.0f,
+        0.0f, 0.0f, 0.0f, 1.0f };
 }
-
 
 /**
  * normalize vector and store result in same vec
@@ -197,7 +211,6 @@ Vec2 __attribute__((overloadable)) glm_normalize(Vec2 v)
     return v;
 }
 
-
 /**
  * scales existing transform matrix by v vector
  * and stores result in same matrix
@@ -206,7 +219,7 @@ Vec2 __attribute__((overloadable)) glm_normalize(Vec2 v)
  * @param  v  scale vector [x, y, z]
  * @returns scaled Vec3
  */
-Mat glm_scale(Mat m, Vec3 v) 
+Mat glm_scale(Mat m, Vec3 v)
 {
     m.s0123 = m.s0123 * v.x;
     m.s4567 = m.s4567 * v.y;
@@ -226,11 +239,11 @@ Mat glm_scale(Mat m, Vec3 v)
  * @returns projection matrix
  */
 Mat glm_ortho(float left,
-                    float right,
-                    float bottom,
-                    float top,
-                    float nearVal,
-                    float farVal)
+    float right,
+    float bottom,
+    float top,
+    float nearVal,
+    float farVal)
 
 {
     Mat proj = mat_identity();
@@ -238,9 +251,9 @@ Mat glm_ortho(float left,
     proj.s0 = 2 / (right - left);
     proj.s5 = 2 / (top - bottom);
     proj.sa = -1;
-    proj.sc = - (right + left) / (right - left);
-    proj.sd = - (top + bottom) / (top - bottom);
-    proj.se =  - nearVal / (farVal - nearVal);
+    proj.sc = -(right + left) / (right - left);
+    proj.sd = -(top + bottom) / (top - bottom);
+    proj.se = -nearVal / (farVal - nearVal);
 
     return proj;
 }
@@ -252,14 +265,14 @@ Mat glm_ortho(float left,
  * @param  angle  angle (radians)
  * @param  axis   axis
  */
-Mat glm_rotate(Mat m, float angle, Vec3 v) 
+Mat glm_rotate(Mat m, float angle, Vec3 v)
 {
     float a = angle;
     float c = cos(a);
     float s = sin(a);
-    
+
     Vec3 axis = glm_normalize(v);
-    Vec3 temp = (1-c) * axis;
+    Vec3 temp = (1 - c) * axis;
 
     Mat rotate;
     rotate.s0 = c + temp.x * axis.x;
@@ -283,44 +296,42 @@ Mat glm_rotate(Mat m, float angle, Vec3 v)
     return result;
 }
 
-
 Mat glm_mat_mul(Mat a, Mat b)
 {
-	Mat temp;
-	int k, r, c;
-	for(c=0; c<4; ++c) for(r=0; r<4; ++r) {
-		temp[c+r*4] = 0.f;
-		for(k=0; k<4; ++k)
-			temp[c+r*4] += a[k+r*4] * b[c+k*4];
-	}
+    Mat temp;
+    int k, r, c;
+    for (c = 0; c < 4; ++c)
+        for (r = 0; r < 4; ++r) {
+            temp[c + r * 4] = 0.f;
+            for (k = 0; k < 4; ++k)
+                temp[c + r * 4] += a[k + r * 4] * b[c + k * 4];
+        }
     return temp;
 }
 
-Mat glm_rotateZ(Mat m, float angle) 
+Mat glm_rotateZ(Mat m, float angle)
 {
-	float s = sinf(angle);
-	float c = cosf(angle);
-	Mat r = {
-		   c,   s, 0.f, 0.f,
-		  -s,   c, 0.f, 0.f,
-		 0.f, 0.f, 1.f, 0.f,
-		 0.f, 0.f, 0.f, 1.f
-	};
+    float s = sinf(angle);
+    float c = cosf(angle);
+    Mat r = {
+        c, s, 0.f, 0.f,
+        -s, c, 0.f, 0.f,
+        0.f, 0.f, 1.f, 0.f,
+        0.f, 0.f, 0.f, 1.f
+    };
 
     return glm_mat_mul(m, r);
 }
 
-
-Mat glm_rotateY(Mat m, float angle) 
+Mat glm_rotateY(Mat m, float angle)
 {
-	float s = sinf(angle);
-	float c = cosf(angle);
-	Mat r = {
-		   c, 0.f,  -s, 0.f,
-		 0.f, 1.f, 0.f, 0.f,
-		   s, 0.f,   c, 0.f,
-		 0.f, 0.f, 0.f, 1.f
-	};
-	return glm_mat_mul(m, r);
-
+    float s = sinf(angle);
+    float c = cosf(angle);
+    Mat r = {
+        c, 0.f, -s, 0.f,
+        0.f, 1.f, 0.f, 0.f,
+        s, 0.f, c, 0.f,
+        0.f, 0.f, 0.f, 1.f
+    };
+    return glm_mat_mul(m, r);
 }

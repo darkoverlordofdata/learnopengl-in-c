@@ -1,14 +1,13 @@
-#include <stdint.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
+#include <assert.h>
 #include <errno.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/time.h>
+#include <sys/types.h>
 #include <time.h>
 #include <unistd.h>
-#include <time.h>
-#include <assert.h>
-#include <sys/types.h>
-#include <sys/time.h>
 #ifdef __EMSCRIPTEN__
 #include <emscripten.h>
 #define GL_GLEXT_PROTOTYPES
@@ -16,10 +15,10 @@
 #else
 #include <glad/glad.h>
 #endif
-#include <GLFW/glfw3.h>
-#include "object.h"
 #include "dna.h"
 #include "game-private.h"
+#include "object.h"
+#include <GLFW/glfw3.h>
 #if __EMSCRIPTEN__
 #include <emscripten/emscripten.h>
 #endif
@@ -29,35 +28,35 @@
  */
 corefw(DNAGame);
 
-static bool ctor(void *self, va_list args) { return true; }
-static bool equal(void *ptr1, void *ptr2) { return ptr1 == ptr2; }
-static uint32_t hash(void *self) { return (uint32_t)self; }
-static void* copy(void *self) { return NULL; }
+static bool ctor(void* self, va_list args) { return true; }
+static bool equal(void* ptr1, void* ptr2) { return ptr1 == ptr2; }
+static uint32_t hash(void* self) { return (uint32_t)self; }
+static void* copy(void* self) { return NULL; }
 
-#define TicksPerMillisecond  10000.0
+#define TicksPerMillisecond 10000.0
 #define MillisecondsPerTick 1.0 / (TicksPerMillisecond)
-#define TicksPerSecond TicksPerMillisecond * 1000.0   // 10,000,000
-#define SecondsPerTick  1.0 / (TicksPerSecond)         // 0.0001
+#define TicksPerSecond TicksPerMillisecond * 1000.0 // 10,000,000
+#define SecondsPerTick 1.0 / (TicksPerSecond) // 0.0001
 
 void DNAGame_framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
-    // make sure the viewport matches the new window dimensions; note that width and 
+    // make sure the viewport matches the new window dimensions; note that width and
     // height will be significantly larger than specified on retina displays.
     glViewport(0, 0, width, height);
 }
 
-
-static void dtor(void *self)
+static void dtor(void* self)
 {
-	DNAGame *this = self;
+    DNAGame* this = self;
 
     free(this->title);
     free(this->keys);
     glfwTerminate();
 }
 
-static uint64_t GetTicks() { 
-    struct timeval t;     
+static uint64_t GetTicks()
+{
+    struct timeval t;
     gettimeofday(&t, NULL);
 
     uint64_t ts = t.tv_sec;
@@ -65,7 +64,7 @@ static uint64_t GetTicks() {
     return ((ts * 1000000L) + us) * 10;
 }
 
-static void* DNAGame_ctor(DNAGame* this, char* cstr, int width, int height, void* subclass, struct DNAGameVtbl *vptr)
+static void* DNAGame_ctor(DNAGame* this, char* cstr, int width, int height, void* subclass, struct DNAGameVtbl* vptr)
 {
 
     this->subclass = subclass;
@@ -85,7 +84,7 @@ static void* DNAGame_ctor(DNAGame* this, char* cstr, int width, int height, void
     this->isFixedTimeStep = true;
     this->shouldExit = false;
     this->suppressDraw = false;
-    this->maxElapsedTime = 500 * TicksPerMillisecond; 
+    this->maxElapsedTime = 500 * TicksPerMillisecond;
     this->targetElapsedTime = 166667;
     this->accumulatedElapsedTime = 0;
     this->currentTime = GetTicks();
@@ -96,7 +95,7 @@ static void* DNAGame_ctor(DNAGame* this, char* cstr, int width, int height, void
 #ifdef __EMSCRIPTEN__
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_ANY_PROFILE );
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_ANY_PROFILE);
 #else
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -105,8 +104,7 @@ static void* DNAGame_ctor(DNAGame* this, char* cstr, int width, int height, void
     // glfw window creation
     // --------------------
     this->window = glfwCreateWindow(this->width, this->height, "LearnOpenGL", NULL, NULL);
-    if (this->window == NULL)
-    {
+    if (this->window == NULL) {
         printf("Failed to create GLFW window");
         glfwTerminate();
         exit(-1);
@@ -118,8 +116,7 @@ static void* DNAGame_ctor(DNAGame* this, char* cstr, int width, int height, void
     // ---------------------------------------
 #ifdef __EMSCRIPTEN__
 #else
-    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-    {
+    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
         printf("Failed to initialize GLAD");
         exit(-1);
     }
@@ -131,57 +128,53 @@ static void* DNAGame_ctor(DNAGame* this, char* cstr, int width, int height, void
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     return this;
-
 }
 
-void* DNAGame_New(char* cstr, int width, int height, void* subclass, struct DNAGameVtbl *vptr)
+void* DNAGame_New(char* cstr, int width, int height, void* subclass, struct DNAGameVtbl* vptr)
 {
     DNAGame* this = cfw_new((CFWClass*)DNAGameClass);
     return DNAGame_ctor(this, cstr, width, height, subclass, vptr);
 }
 
-void* DNAGame_Create(char* cstr, int width, int height, void* subclass, struct DNAGameVtbl *vptr)
+void* DNAGame_Create(char* cstr, int width, int height, void* subclass, struct DNAGameVtbl* vptr)
 {
     DNAGame* this = cfw_create((CFWClass*)DNAGameClass);
     return DNAGame_ctor(this, cstr, width, height, subclass, vptr);
 }
 
-
 /**
  * DNAGame::Start
  */
-void DNAGame_Start(DNAGame* const this) 
+void DNAGame_Start(DNAGame* const this)
 {
     this->isRunning = true;
 }
 
-
 /**
  * DNAGame::HandleEvents
  */
-void DNAGame_HandleEvents(DNAGame* const this) 
+void DNAGame_HandleEvents(DNAGame* const this)
 {
-    if (glfwGetKey(this->window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-    {
+    if (glfwGetKey(this->window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
         glfwSetWindowShouldClose(this->window, true);
         this->shouldExit = true;
         return;
     }
 
     // SDL_Event event;
-    // // if (SDL_PollEvent(&event)) 
-    // while (SDL_PollEvent(&event) != 0) 
+    // // if (SDL_PollEvent(&event))
+    // while (SDL_PollEvent(&event) != 0)
     // {
-    //     switch (event.type) 
+    //     switch (event.type)
     //     {
     //         case SDL_QUIT:
     //             this->isRunning = false;
     //             return;
     //             break;
-    //         case SDL_KEYDOWN: 
+    //         case SDL_KEYDOWN:
     //             this->keys[ event.key.keysym.sym & 0xff ] = true;
     //             break;
-    //         case SDL_KEYUP:   
+    //         case SDL_KEYUP:
     //             this->keys[ event.key.keysym.sym & 0xff ] = false;
     //             break;
     //         case SDL_MOUSEBUTTONDOWN:
@@ -198,53 +191,51 @@ void DNAGame_HandleEvents(DNAGame* const this)
     // }
 }
 
-
 /**
  * DNAGame::Tick
  */
-void DNAGame_Tick(DNAGame* const this) 
+void DNAGame_Tick(DNAGame* const this)
 {
     while (true) {
         // Advance the accumulated elapsed time.
-        long currentTicks = (GetTicks() - this->currentTime);//*10;
+        long currentTicks = (GetTicks() - this->currentTime); //*10;
         this->accumulatedElapsedTime = this->accumulatedElapsedTime + currentTicks - this->previousTicks;
         this->previousTicks = (long)currentTicks;
 
         // If we're in the fixed timestep mode and not enough time has elapsed
         // to perform an update we sleep off the the remaining time to save battery
         // life and/or release CPU time to other threads and processes.
-        if (this->isFixedTimeStep && this->accumulatedElapsedTime < this->targetElapsedTime)
-        {
-            int sleepTime = (int)((this->targetElapsedTime - this->accumulatedElapsedTime) * MillisecondsPerTick ); //).TotalMilliseconds();
-            if (sleepTime < 1) { break; }
-            // NOTE: While sleep can be inaccurate in general it is 
+        if (this->isFixedTimeStep && this->accumulatedElapsedTime < this->targetElapsedTime) {
+            int sleepTime = (int)((this->targetElapsedTime - this->accumulatedElapsedTime) * MillisecondsPerTick); //).TotalMilliseconds();
+            if (sleepTime < 1) {
+                break;
+            }
+            // NOTE: While sleep can be inaccurate in general it is
             // accurate enough for frame limiting purposes if some
             // fluctuation is an acceptable result.
-            
+
             // #ifndef usleep
             // SDL_Delay(sleepTime);
             // #else
 #ifdef __EMSCRIPTEN__
 #else
-            usleep(sleepTime*1000);
+            usleep(sleepTime * 1000);
 #endif
             // #endif
             // goto RetryTick;
-        }
-        else break;
-    }    
+        } else
+            break;
+    }
     // Do not allow any update to take longer than our maximum.
     if (this->accumulatedElapsedTime > this->maxElapsedTime)
         this->accumulatedElapsedTime = this->maxElapsedTime;
 
-    if (this->isFixedTimeStep)
-    {
+    if (this->isFixedTimeStep) {
         this->elapsedGameTime = this->targetElapsedTime;
         int stepCount = 0;
 
         // Perform as many full fixed length time steps as we can.
-        while (this->accumulatedElapsedTime >= this->targetElapsedTime && !this->shouldExit)
-        {
+        while (this->accumulatedElapsedTime >= this->targetElapsedTime && !this->shouldExit) {
             this->totalGameTime += this->targetElapsedTime;
             this->accumulatedElapsedTime -= this->targetElapsedTime;
             ++stepCount;
@@ -255,14 +246,11 @@ void DNAGame_Tick(DNAGame* const this)
         //Every update after the first accumulates lag
         this->updateFrameLag += Max(0, stepCount - 1);
         //If we think we are isRunning slowly, wait until the lag clears before resetting it
-        if (this->isRunningSlowly)
-        {
+        if (this->isRunningSlowly) {
             if (this->updateFrameLag == 0)
-            
+
                 this->isRunningSlowly = false;
-        }
-        else if (this->updateFrameLag >= 5)
-        {
+        } else if (this->updateFrameLag >= 5) {
             //If we lag more than 5 frames, start thinking we are isRunning slowly
             this->isRunningSlowly = true;
         }
@@ -273,14 +261,12 @@ void DNAGame_Tick(DNAGame* const this)
         // Draw needs to know the total elapsed time
         // that occured for the fixed length updates.
         this->elapsedGameTime = this->targetElapsedTime * stepCount;
-    }
-    else
-    {
+    } else {
         // Perform a single variable length update.
         this->elapsedGameTime = this->accumulatedElapsedTime;
         this->totalGameTime += this->accumulatedElapsedTime;
         this->accumulatedElapsedTime = 0;
-        
+
         this->delta = (double)this->elapsedGameTime * SecondsPerTick;
         DNAGame_Update(this);
         // this->override->Update(self);
@@ -288,16 +274,14 @@ void DNAGame_Tick(DNAGame* const this)
     // Draw unless the update suppressed it.
     if (this->suppressDraw)
         this->suppressDraw = false;
-    else
-    {
+    else {
         DNAGame_Draw(this);
     }
 
-    if (this->shouldExit) 
+    if (this->shouldExit)
         this->isRunning = false;
-        // Platform.Exit();
+    // Platform.Exit();
 }
-
 
 /**
  * DNAGame::RunLoop
@@ -314,7 +298,7 @@ void DNAGame_RunLoop(DNAGame* const this)
 /**
  * DNAGame::Run
  */
-void DNAGame_Run(DNAGame* const this) 
+void DNAGame_Run(DNAGame* const this)
 {
     DNAGame_Initialize(this);
     DNAGame_LoadContent(this);
@@ -322,8 +306,7 @@ void DNAGame_Run(DNAGame* const this)
 #if __EMSCRIPTEN__
     emscripten_set_main_loop_arg((em_arg_callback_func)DNAGame_RunLoop, (void*)this, -1, 1);
 #else
-    while (this->isRunning) 
-    {
+    while (this->isRunning) {
         DNAGame_RunLoop(this);
     }
 #endif
@@ -338,7 +321,7 @@ void DNAGame_Run(DNAGame* const this)
 /**
  * DNAGame::Draw
  */
-void DNAGame_Draw(DNAGame* const this) 
+void DNAGame_Draw(DNAGame* const this)
 {
     this->override->Draw(this->subclass);
 }
@@ -347,7 +330,7 @@ void DNAGame_Draw(DNAGame* const this)
  * DNAGame::LoadContent
  */
 void DNAGame_LoadContent(DNAGame* const this)
-{ 
+{
     this->override->LoadContent(this->subclass);
 }
 
@@ -355,7 +338,7 @@ void DNAGame_LoadContent(DNAGame* const this)
  * DNAGame::Initialize
  */
 void DNAGame_Initialize(DNAGame* const this)
-{ 
+{
     this->override->Initialize(this->subclass);
 }
 
@@ -363,8 +346,6 @@ void DNAGame_Initialize(DNAGame* const this)
  * DNAGame::Update
  */
 void DNAGame_Update(DNAGame* const this)
-{ 
+{
     this->override->Update(this->subclass);
 }
-
-

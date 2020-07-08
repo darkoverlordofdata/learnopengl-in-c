@@ -7,18 +7,17 @@
 #else
 #include <glad/glad.h>
 #endif
-#include <GLFW/glfw3.h>
-#include "object.h"
-#include "dna.h"
 #include "arrayrenderer-private.h"
+#include "dna.h"
+#include "object.h"
+#include <GLFW/glfw3.h>
 
 corefw(DNAArrayRenderer);
 
-static bool ctor(void *self, va_list args) { return true; }
-static bool equal(void *ptr1, void *ptr2) { return ptr1 == ptr2; }
-static uint32_t hash(void *self) { return (uint32_t)self; }
-static void* copy(void *self) { return NULL; }
-
+static bool ctor(void* self, va_list args) { return true; }
+static bool equal(void* ptr1, void* ptr2) { return ptr1 == ptr2; }
+static uint32_t hash(void* self) { return (uint32_t)self; }
+static void* copy(void* self) { return NULL; }
 
 void InitArrayRenderData(DNAArrayRenderer* this);
 /**
@@ -27,9 +26,9 @@ void InitArrayRenderData(DNAArrayRenderer* this);
  * @param shader to use for rendering
  * 
  */
-static void dtor(void *self)
+static void dtor(void* self)
 {
-	DNAArrayRenderer *this = self;
+    DNAArrayRenderer* this = self;
     glDeleteVertexArrays(1, &this->VAO);
     glDeleteBuffers(1, &this->VBO);
 }
@@ -41,10 +40,7 @@ void* DNAArrayRenderer_New(DNAShader* shader)
     InitArrayRenderData(this);
 
     return this;
-
-
 }
-
 
 /**
  * Draw
@@ -57,15 +53,15 @@ void* DNAArrayRenderer_New(DNAShader* shader)
  * 
  */
 void DNAArrayRenderer_Draw(
-    const DNAArrayRenderer* this, 
-    DNATexture2D* texture, 
+    const DNAArrayRenderer* this,
+    DNATexture2D* texture,
     DNARect* bounds,
-    GLfloat rotate, 
+    GLfloat rotate,
     Vec3 color)
 {
     // Prepare transformations
     DNAShader_Use(this->shader);
-    Mat model= {
+    Mat model = {
         1.0f, 0.0f, 0.0f, 0.0f,
         0.0f, 1.0f, 0.0f, 0.0f,
         0.0f, 0.0f, 1.0f, 0.0f,
@@ -75,12 +71,11 @@ void DNAArrayRenderer_Draw(
     Vec3 size = { bounds->w, bounds->h, 1 };
     Vec3 position = { bounds->x, bounds->y, 0 };
 
-    model = glm_translate(model, (Vec3){ position.x, position.y, 0.0f });  // First translate (transformations are: scale happens first, then rotation and then finall translation happens; reversed order)
-    model = glm_translate(model, (Vec3){ 0.5f * size.x, 0.5f * size.y, 0.0f }); // Move origin of rotation to center of quad
-    model = glm_rotate(model, rotate, (Vec3){ 0.0f, 0.0f, 1.0f }); // Then rotate
-    model = glm_translate(model, (Vec3){ -0.5f * size.x, -0.5f * size.y, 0.0f }); // Move origin back
-    model = glm_scale(model, (Vec3){ size.x, size.y, 1.0f }); // Last scale
-
+    model = glm_translate(model, (Vec3) { position.x, position.y, 0.0f }); // First translate (transformations are: scale happens first, then rotation and then finall translation happens; reversed order)
+    model = glm_translate(model, (Vec3) { 0.5f * size.x, 0.5f * size.y, 0.0f }); // Move origin of rotation to center of quad
+    model = glm_rotate(model, rotate, (Vec3) { 0.0f, 0.0f, 1.0f }); // Then rotate
+    model = glm_translate(model, (Vec3) { -0.5f * size.x, -0.5f * size.y, 0.0f }); // Move origin back
+    model = glm_scale(model, (Vec3) { size.x, size.y, 1.0f }); // Last scale
 
     DNAShader_SetMatrix(this->shader, "model", &model, true);
 
@@ -96,14 +91,13 @@ void DNAArrayRenderer_Draw(
     glBindVertexArray(0);
 }
 
-
 void InitArrayRenderData(DNAArrayRenderer* this)
 {
-    GLfloat vertices[] = { 
+    GLfloat vertices[] = {
         // Pos      // Tex
         0.0f, 1.0f, 0.0f, 1.0f,
         1.0f, 0.0f, 1.0f, 0.0f,
-        0.0f, 0.0f, 0.0f, 0.0f, 
+        0.0f, 0.0f, 0.0f, 0.0f,
 
         0.0f, 1.0f, 0.0f, 1.0f,
         1.0f, 1.0f, 1.0f, 1.0f,
@@ -121,4 +115,4 @@ void InitArrayRenderData(DNAArrayRenderer* this)
     glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (GLvoid*)0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
-}          
+}

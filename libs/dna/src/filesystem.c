@@ -1,12 +1,11 @@
 #include "filesystem.h"
 
-typedef CFWString* (*Builder) (const char* path);
+typedef CFWString* (*Builder)(const char* path);
 static Builder getPathBuilder();
 static CFWString* getPath(const char* path);
 static char* const getRoot();
 static CFWString* getPathRelativeRoot(const char* path);
 static CFWString* getPathRelativeBinary(const char* path);
-
 
 /**
  * getPath
@@ -16,8 +15,8 @@ static CFWString* getPathRelativeBinary(const char* path);
  */
 static CFWString* getPath(const char* path)
 {
-  Builder pathBuilder = getPathBuilder();
-  return (*pathBuilder)(path);
+    Builder pathBuilder = getPathBuilder();
+    return (*pathBuilder)(path);
 }
 
 /**
@@ -27,11 +26,11 @@ static CFWString* getPath(const char* path)
  */
 static char* const getRoot()
 {
-  static char buf[2048];
+    static char buf[2048];
 #ifdef __EMSCRIPTEN__
-  return strcpy(buf, "./");
+    return strcpy(buf, "./");
 #else
-  return getcwd(buf, sizeof(buf));
+    return getcwd(buf, sizeof(buf));
 #endif
 }
 
@@ -42,10 +41,10 @@ static char* const getRoot()
  */
 static Builder getPathBuilder()
 {
-  if (strcmp(getRoot(), "") != 0)
-    return getPathRelativeRoot;
-  else
-    return getPathRelativeBinary;
+    if (strcmp(getRoot(), "") != 0)
+        return getPathRelativeRoot;
+    else
+        return getPathRelativeBinary;
 }
 
 /**
@@ -55,10 +54,10 @@ static Builder getPathBuilder()
  */
 static CFWString* getPathRelativeRoot(const char* path)
 {
-  CFWString* res = cfw_create(cfw_string, getRoot());
-  cfw_string_append_c(res, "/");
-  cfw_string_append_c(res, path);
-  return res;
+    CFWString* res = cfw_create(cfw_string, getRoot());
+    cfw_string_append_c(res, "/");
+    cfw_string_append_c(res, path);
+    return res;
 }
 
 /**
@@ -68,9 +67,9 @@ static CFWString* getPathRelativeRoot(const char* path)
  */
 static CFWString* getPathRelativeBinary(const char* path)
 {
-  CFWString* res = cfw_create(cfw_string, "../../../");
-  cfw_string_append_c(res, path);
-  return res;
+    CFWString* res = cfw_create(cfw_string, "../../../");
+    cfw_string_append_c(res, path);
+    return res;
 }
 
 /**
@@ -88,11 +87,10 @@ CFWString* readTextFile(char* path)
     fseek(f, 0L, SEEK_END);
     long s = ftell(f);
     rewind(f);
-    char* buf = (char*)calloc(1, s+1);
+    char* buf = (char*)calloc(1, s + 1);
     buf[s] = '\0';
 
-    if (buf != NULL)
-    {
+    if (buf != NULL) {
         fread(buf, s, 1, f);
         str = cfw_new(cfw_string, buf);
         free(buf);
@@ -105,16 +103,13 @@ CFWString* readTextFile(char* path)
     return str;
 }
 
-
 /**
  * DNAFileSystem object
  */
-struct DNAFileSystem DNAFileSystem =
-{
-  .getPath = getPath,
-  .getRoot = getRoot,
-  .getPathRelativeRoot = getPathRelativeRoot,
-  .getPathRelativeBinary = getPathRelativeBinary,
-  .readTextFile = readTextFile
+struct DNAFileSystem DNAFileSystem = {
+    .getPath = getPath,
+    .getRoot = getRoot,
+    .getPathRelativeRoot = getPathRelativeRoot,
+    .getPathRelativeBinary = getPathRelativeBinary,
+    .readTextFile = readTextFile
 };
-
