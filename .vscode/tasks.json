@@ -6,7 +6,8 @@
             "command": "emcc",
             "args": [
                 "src/main.c",
-                "src/triangle.c",
+                // "src/triangle.c",
+                "src/shmupwarz.c",
                 "libs/dna/src/filesystem.c",
                 "libs/dna/src/glad.c",
                 "libs/dna/src/tglm.c",
@@ -30,8 +31,11 @@
                 "-s", "USE_GLFW=3",
                 "-o", "docs/index.html",
                 "--use-preload-plugins",
+                "--preload-file", "data/shaders/es/elementrender.fs",
+                "--preload-file", "data/shaders/es/elementrender.vs",
                 "--preload-file", "data/shaders/es/triangle.fs",
                 "--preload-file", "data/shaders/es/triangle.vs",
+                "--preload-file", "data/images/background.png",
             ],
 
             "problemMatcher": {

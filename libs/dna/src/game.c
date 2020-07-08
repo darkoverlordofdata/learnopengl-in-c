@@ -90,13 +90,11 @@ static void* DNAGame_ctor(DNAGame* this, char* cstr, int width, int height, void
     this->accumulatedElapsedTime = 0;
     this->currentTime = GetTicks();
 
-
-    printf("Hello, game!\n");
     // glfw: initialize and configure
     // ------------------------------
     glfwInit();
 #ifdef __EMSCRIPTEN__
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 1);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_ANY_PROFILE );
 #else
@@ -126,18 +124,12 @@ static void* DNAGame_ctor(DNAGame* this, char* cstr, int width, int height, void
         return -1;
     }
 #endif
-    printf("Game loaded: (%d,%d) \n", this->width, this->height);
     glfwSwapInterval(1);
 
-    printf("set viewport 0\n");
     glViewport(0, 0, this->width, this->height);
-    printf("set viewport 1\n");
     glEnable(GL_CULL_FACE);
-    printf("set viewport 2\n");
     glEnable(GL_BLEND);
-    printf("set viewport 3\n");
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    printf("done\n");
     return this;
 
 }
@@ -299,7 +291,6 @@ void DNAGame_Tick(DNAGame* const this)
     else
     {
         DNAGame_Draw(this);
-        // this->override->Draw(self);
     }
 
     if (this->shouldExit) 
@@ -336,9 +327,6 @@ void DNAGame_Run(DNAGame* const this)
         DNAGame_RunLoop(this);
     }
 #endif
-    // while (this->isRunning) {
-    //     DNAGame_RunLoop(this);
-    // }
 }
 
 ////////////////////////////////////////////////////////////////////////

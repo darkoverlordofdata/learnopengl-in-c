@@ -72,8 +72,13 @@ extern void DNAShader_SetVector4v(
     const Vec4* vector,
     GLboolean useShader);
 
-extern void DNAShader_SetMatrix(
+extern method void DNAShader_SetMatrix(
     const DNAShader* this, 
     const GLchar *name, 
     const Mat* matrix, 
     GLboolean useShader);
+
+extern method void DNAShader_SetMatrix(
+    const DNAShader* this, 
+    const GLchar *name, 
+    const Mat* matrix);

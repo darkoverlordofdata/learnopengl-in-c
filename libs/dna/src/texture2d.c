@@ -87,19 +87,10 @@ void method Bind(const DNATexture2D* this)
     glBindTexture(GL_TEXTURE_2D, this->Id);    
 }
 
-//__attribute__((overloadable)) 
-// char* DNATexture2D_ToString(const DNATexture2D* this)
-// {
-//     char* s = calloc(1024, 1);
-//     sprintf(s, "%s: (%d,%d)", this->path, this->Width, this->Height);
-//     return s;    
-
-// }
 
 char* method ToString(const DNATexture2D* this)
 {
     char* s = calloc(1024, 1);
-    sprintf(s, "%s: (%d,%d)", this->path, this->Width, this->Height);
     return s;    
 
 }

@@ -38,7 +38,6 @@ void* DNAArrayRenderer_New(DNAShader* shader)
 {
     DNAArrayRenderer* this = cfw_new(DNAArrayRendererClass);
     this->shader = shader;
-    printf("%x %x \n", this, this->shader);
     InitArrayRenderData(this);
 
     return this;
@@ -64,7 +63,6 @@ void DNAArrayRenderer_Draw(
     GLfloat rotate, 
     Vec3 color)
 {
-    // printf("%s (%d,%d)\n", texture.Path, texture.Width, texture.Height);
     // Prepare transformations
     DNAShader_Use(this->shader);
     Mat model= {

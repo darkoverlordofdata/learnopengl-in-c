@@ -103,27 +103,6 @@ void DNAShader_Compile(
     const GLchar* vShaderSrc, 
     const GLchar* fShaderSrc)
 {
-    // printf("=============================\n");
-    // CFWString* vShaderPath = DNAFileSystem.getPath("data/shaders/");
-    // cfw_string_append_c(vShaderPath, vShaderFile);
-    // printf("v shader %s\n", cfw_string_c(vShaderPath));
-    // FILE* vertexShaderFile = fopen(cfw_string_c(vShaderPath), "r");
-
-    // CFWString* fShaderPath = DNAFileSystem.getPath("data/shaders/");
-    // cfw_string_append_c(fShaderPath, fShaderFile);
-    // printf("f shader %s\n", cfw_string_c(fShaderPath));
-    // FILE* fragmentShaderFile = fopen(cfw_string_c(fShaderPath), "r");
-    // printf("=============================\n");
-
-    // if (!vertexShaderFile) printf("Unable to open %s", vShaderFile);
-    // if (!fragmentShaderFile) printf("Unable to open %s", fShaderFile);
-
-    // // Read file's buffer contents into streams
-    // const GLchar *vShaderSrc = ReadTextFile(vertexShaderFile);
-    // const GLchar *fShaderSrc = ReadTextFile(fragmentShaderFile);
-    // // close file handlers
-    // fclose(vertexShaderFile);
-    // fclose(fragmentShaderFile);
 
 
     GLuint sVertex, sFragment;
@@ -243,7 +222,7 @@ void DNAShader_SetVector4v(
     glUniform4fv(glGetUniformLocation(this->Id, name), 1, (GLfloat*)vector);
 }
 
-void DNAShader_SetMatrix(
+void method DNAShader_SetMatrix(
     const DNAShader* this, 
     const GLchar *name, 
     const Mat* matrix, 
@@ -254,3 +233,10 @@ void DNAShader_SetMatrix(
     glUniformMatrix4fv(glGetUniformLocation(this->Id, name), 1, GL_FALSE, (GLfloat*)matrix);
 }
 
+void method DNAShader_SetMatrix(
+    const DNAShader* this, 
+    const GLchar *name, 
+    const Mat* matrix)
+{
+    DNAShader_SetMatrix(this, name, matrix, true);
+}

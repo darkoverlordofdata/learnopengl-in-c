@@ -189,10 +189,6 @@ DNAShader* LoadShaderFromFile(
 
     // NOTE: Emscripten adds an extra byte of garbage at the end
     // of the shader file, so convert it to a linefeed.
-#ifdef __EMSCRIPTEN__
-    vShaderCode[strlen(vShaderCode)-1] = 0x0a;
-    fShaderCode[strlen(fShaderCode)-1] = 0x0a;
-#endif
     // close file handlers
     fclose(vertexShaderFile);
     fclose(fragmentShaderFile);

@@ -8,8 +8,8 @@ set ( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -w -std=c18 -O3" )
 
 set ( SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/src/main.c )
 
-# set (SOURCE ${SOURCE} ${CMAKE_CURRENT_SOURCE_DIR}/src/shmupwarz.c )
-set (SOURCE ${SOURCE} ${CMAKE_CURRENT_SOURCE_DIR}/src/triangle.c )
+set (SOURCE ${SOURCE} ${CMAKE_CURRENT_SOURCE_DIR}/src/shmupwarz.c )
+# set (SOURCE ${SOURCE} ${CMAKE_CURRENT_SOURCE_DIR}/src/triangle.c )
 
 # add_subdirectory ( libs/util )
 add_subdirectory ( libs/dna )

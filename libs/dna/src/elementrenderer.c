@@ -38,7 +38,6 @@ void* DNAElementRenderer_New(DNAShader* shader)
 {
     DNAElementRenderer* this = cfw_new(DNAElementRendererClass);
     this->shader = shader;
-    printf("%x %x \n", this, this->shader);
     InitElementRenderData(this);
     return this;
 }
@@ -79,7 +78,7 @@ void DNAElementRenderer_Draw(
     model = glm_scale(model, (Vec3){ size.x, size.y, 1.0f }); // Last scale
 
     DNAShader_Use(this->shader);
-    DNAShader_SetMatrix(this->shader, "model", &model, true);
+    DNAShader_SetMatrix(this->shader, "model", &model);//, true);
     DNAShader_SetVector3v(this->shader, "spriteColor", &color, true);
     glActiveTexture(GL_TEXTURE0);
     Bind(texture);
