@@ -3,7 +3,7 @@
 #include <corefw/class.h>
 
 struct ECSAspect;
-extern const CFWClass *ECSAspect;
+extern const CFWClass* ECSAspect;
 
 extern void* ECSAspect_New();
 

@@ -27,11 +27,12 @@ SOFTWARE.
 #include <limits.h>
 #include <stdbool.h>
 
+
 /**
  * Generate an RFC 4122 compliant type 4 uuid
  * 
  */
-type(UUID)
+type (UUID)
 {
     Class isa;
     Object* base;
@@ -41,7 +42,9 @@ type(UUID)
     char to_string_cache[80];
 };
 
-method UUID* New(UUID* self)
+
+
+method UUID* New(UUID* self) 
 {
     self->base = extends(Object);
     self->isa = isa(UUID);
@@ -56,44 +59,47 @@ method UUID* New(UUID* self)
     memcpy(&self->uuid[8], &d2, 8);
     memcpy(&self->uuid[12], &d3, 8);
 
-    self->uuid[6] = self->uuid[6] & 0x0f | 0x40;
-    self->uuid[8] = self->uuid[8] & 0x3f | 0x80;
+    self->uuid[6] = self->uuid[6]&0x0f|0x40;
+    self->uuid[8] = self->uuid[8]&0x3f|0x80;
 
     /**
      * 
      * todo: verify that its not a duplicate
      */
 
-    return self;
+    return self;            
 }
 
-method char* GetToStringFormat(char format)
+
+method char* GetToStringFormat(char format) 
 {
     switch (format) {
-    case 'N':
-        return "%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x";
-    case 'D':
-        return "%02x%02x%02x%02x-%02x%02x-%02x%02x-%02x%02x-%02x%02x%02x%02x%02x%02x";
-    case 'B':
-        return "{%02x%02x%02x%02x-%02x%02x-%02x%02x-%02x%02x-%02x%02x%02x%02x%02x%02x}";
-    case 'P':
-        return "(%02x%02x%02x%02x-%02x%02x-%02x%02x-%02x%02x-%02x%02x%02x%02x%02x%02x)";
-    case 'X':
-        return "{0x%02x%02x%02x%02x,0x%02x%02x,0x%02x%02x,{0x%02x,0x%02x,0x%02x,0x%02x,0x%02x,0x%02x,0x%02x,0x%02x}}";
+        case 'N':
+            return "%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x";
+        case 'D':
+            return "%02x%02x%02x%02x-%02x%02x-%02x%02x-%02x%02x-%02x%02x%02x%02x%02x%02x";
+        case 'B':
+            return "{%02x%02x%02x%02x-%02x%02x-%02x%02x-%02x%02x-%02x%02x%02x%02x%02x%02x}";
+        case 'P':
+            return "(%02x%02x%02x%02x-%02x%02x-%02x%02x-%02x%02x-%02x%02x%02x%02x%02x%02x)";
+        case 'X':
+            return "{0x%02x%02x%02x%02x,0x%02x%02x,0x%02x%02x,{0x%02x,0x%02x,0x%02x,0x%02x,0x%02x,0x%02x,0x%02x,0x%02x}}";
     }
     return "%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x";
+
 }
-method char* ToString(UUID* self, char format)
+method char* ToString(UUID* self, char format) 
 {
     // if (self->to_string_cache[0] == 0)
-    sprintf(self->to_string_cache,
-        GetToStringFormat(format),
-        self->uuid[0], self->uuid[1], self->uuid[2], self->uuid[3],
-        self->uuid[4], self->uuid[5], self->uuid[6], self->uuid[7],
-        self->uuid[8], self->uuid[9], self->uuid[10], self->uuid[11],
-        self->uuid[12], self->uuid[13], self->uuid[14], self->uuid[15]);
-
+        sprintf(self->to_string_cache, 
+            GetToStringFormat(format),
+            self->uuid[0], self->uuid[1], self->uuid[2], self->uuid[3], 
+            self->uuid[4], self->uuid[5], self->uuid[6], self->uuid[7],
+            self->uuid[8], self->uuid[9], self->uuid[10], self->uuid[11], 
+            self->uuid[12], self->uuid[13], self->uuid[14], self->uuid[15]);
+    
     return self->to_string_cache;
+
 }
 method char* ToString(UUID* self)
 {

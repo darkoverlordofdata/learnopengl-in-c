@@ -21,6 +21,7 @@
  *
  */
 #include "core/aspect.h"
+#include "core/aspect-private.h"
 #include "object.h"
 #include "ecs.h"
 
@@ -33,105 +34,38 @@ struct ECSAspect {
 
 };
 
-void SetWorld(ECSAspect* self, ECSWorld* world);
-BitSet* GetAllSet(ECSAspect* self);
-BitSet* GetExclusionSet(ECSAspect* self);
-BitSet* GetOneSet(ECSAspect* self);
-ECSAspect* All(ECSAspect* self, int count, va_list _args);
-ECSAspect* Exclude(ECSAspect* self, int count, va_list _args);
-ECSAspect* One(ECSAspect* self, int count, va_list _args);
 
-
-class (ECSAspect)
+void ECSAspect_SetTypeFactory(ECSComponentTypeFactory* typeFactory)
 {
-    ECSComponentTypeFactory* TypeFactory;
-};
-
-
-delegate (ECSAspect, SetWorld, void, (ECSAspect* self, ECSWorld* world));
-delegate (ECSAspect, GetAllSet, BitSet*, (ECSAspect* self));
-delegate (ECSAspect, GetExclusionSet, BitSet*, (ECSAspect* self));
-delegate (ECSAspect, GetOneSet, BitSet*, (ECSAspect* self));
-delegate (ECSAspect, All, ECSAspect*, (ECSAspect* self, int count, va_list _args));
-delegate (ECSAspect, Exclude, ECSAspect*, (ECSAspect* self, int count, va_list _args));
-delegate (ECSAspect, One, ECSAspect*, (ECSAspect* self, int count, va_list _args));
-
-
-/**
- * ECSAspect Vtable
- */
-vtable (ECSAspect) 
-{
-    const ObjectToString        ToString;
-    const ObjectEquals          Equals;
-    const ObjectGetHashCode     GetHashCode;
-    const ObjectDispose         Dispose;
-    const ECSAspectSetWorld     SetWorld;
-    const ECSAspectGetAllSet    GetAllSet;
-    const ECSAspectGetExclusionSet       GetExclusionSet;
-    const ECSAspectGetOneSet    GetOneSet;
-    const ECSAspectAll          All;
-    const ECSAspectExclude      Exclude;
-    const ECSAspectOne          One;
-
-};
-
-static inline vptr(ECSAspect);
-/**
- * Create the class loader
- */
-static inline Class ClassLoadECSAspect(Class base) 
-{
-    Class cls = createClass(base, ECSAspect);
-    addMethod(cls, Object, ToString);
-    addMethod(cls, Object, Equals);
-    addMethod(cls, Object, GetHashCode);
-    addMethod(cls, Object, Dispose);
-    addMethod(cls, ECSAspect, SetWorld);
-    addMethod(cls, ECSAspect, GetAllSet);
-    addMethod(cls, ECSAspect, GetExclusionSet);
-    addMethod(cls, ECSAspect, GetOneSet);
-    addMethod(cls, ECSAspect, All);
-    addMethod(cls, ECSAspect, Exclude);
-    addMethod(cls, ECSAspect, One);
-    return cls; 
+    // $ECSAspect.TypeFactory = typeFactory;
 }
 
-
-
-void SetTypeFactory(ECSComponentTypeFactory* typeFactory)
+ECSAspect* ECSAspect_New(ECSAspect* this)
 {
-    $ECSAspect.TypeFactory = typeFactory;
+    this->AllSet = BitSet_New();
+    this->ExclusionSet = BitSet_New();
+    this->OneSet = BitSet_New();
+    return this;
 }
 
-ECSAspect* New(ECSAspect* self)
+void ECSAspect_SetWorld(ECSAspect* this, ECSWorld* world)
 {
-    self->base = extends(Object);
-    self->isa = isa(ECSAspect);
-    self->AllSet = new(BitSet);
-    self->ExclusionSet = new(BitSet);
-    self->OneSet = new(BitSet);
-    return self;
+    this->World = world;
 }
 
-void SetWorld(ECSAspect* self, ECSWorld* world)
+BitSet* ECSAspect_GetAllSet(ECSAspect* this)
 {
-    self->World = world;
+    return this->AllSet;
 }
 
-BitSet* GetAllSet(ECSAspect* self)
+BitSet* ECSAspect_GetExclusionSet(ECSAspect* this)
 {
-    return self->AllSet;
+    return this->ExclusionSet;
 }
 
-BitSet* GetExclusionSet(ECSAspect* self)
+BitSet* ECSAspect_GetOneSet(ECSAspect* this)
 {
-    return self->ExclusionSet;
-}
-
-BitSet* GetOneSet(ECSAspect* self)
-{
-    return self->OneSet;
+    return this->OneSet;
 }
 
 
@@ -141,18 +75,18 @@ BitSet* GetOneSet(ECSAspect* self)
  * @param {Array<Type>} types a required component type
  * @return {artemis.Aspect} an aspect that can be matched against entities
  */
-ECSAspect* All(ECSAspect* self, int count, va_list _args)
+ECSAspect* ECSAspect_All(ECSAspect* this, int count, va_list _args)
 {
     va_list args;
     va_copy(args, _args);
     for (int i = 0; i < count; ++i) 
     {
         ECSComponent* t = va_arg(args, ECSComponent*);
-        auto index = GetIndexFor($ECSAspect.TypeFactory, t);
-        Set(self->AllSet, index, true);
+        var index = ECSAspect_GetIndexFor($ECSAspect.TypeFactory, t);
+        ECSAspect_Set(this->AllSet, index, true);
     }
     va_end(args);
-    return self;
+    return this;
 }
 
 /**
@@ -163,18 +97,18 @@ ECSAspect* All(ECSAspect* self, int count, va_list _args)
  * @param {Array<Type>} types component type to exclude
  * @return {artemis.Aspect} an aspect that can be matched against entities
  */
-ECSAspect* Exclude(ECSAspect* self, int count, va_list _args)
+ECSAspect* ECSAspect_Exclude(ECSAspect* this, int count, va_list _args)
 {
     va_list args;
     va_copy(args, _args);
     for (int i = 0; i < count; ++i) 
     {
         ECSComponent* t = va_arg(args, ECSComponent*);
-        auto index = GetIndexFor($ECSAspect.TypeFactory, t);
-        Set(self->ExclusionSet, index, true);
+        var index = ECSAspect_GetIndexFor($ECSAspect.TypeFactory, t);
+        ECSAspect_Set(this->ExclusionSet, index, true);
     }
     va_end(args);
-    return self;
+    return this;
 }
 
 /**
@@ -183,18 +117,18 @@ ECSAspect* Exclude(ECSAspect* self, int count, va_list _args)
  * @param {Array<Type>} types one of the types the entity must possess
  * @return {artemis.Aspect} an aspect that can be matched against entities
  */
-ECSAspect* One(ECSAspect* self, int count, va_list _args)
+ECSAspect* ECSAspect_One(ECSAspect* this, int count, va_list _args)
 {
     va_list args;
     va_copy(args, _args);
     for (int i = 0; i < count; ++i) 
     {
         ECSComponent* t = va_arg(args, Object*);
-        auto index = GetIndexFor($ECSAspect.TypeFactory, t);
-        Set(self->OneSet, index, true);
+        var index = ECSAspect_GetIndexFor($ECSAspect.TypeFactory, t);
+        ECSAspect_Set(this->OneSet, index, true);
     }
     va_end(args);
-    return self;
+    return this;
 }
 
 
@@ -206,13 +140,13 @@ ECSAspect* One(ECSAspect* self, int count, va_list _args)
  * @return {artemis.Aspect} an aspect that can be matched against entities
  */
 #define GetAspectForAll(...) _GetAspectForAll(PP_NARG(__VA_ARGS__), __VA_ARGS__)
-ECSAspect* _GetAspectForAll(int count, ...) 
+ECSAspect* _ECSAspect_GetAspectForAll(int count, ...) 
 {
-    auto aspect = new(ECSAspect);
+    var aspect = ECSAspect_New();
 
     va_list args;
     va_start(args, count);
-    All(aspect, count, args);
+    ECSAspect_All(aspect, count, args);
     va_end(args);
 
     return aspect;
@@ -226,13 +160,13 @@ ECSAspect* _GetAspectForAll(int count, ...)
  * @return {artemis.Aspect} an aspect that can be matched against entities
  */
 #define GetAspectForOne(...) _GetAspectForOne(PP_NARG(__VA_ARGS__), __VA_ARGS__)
-ECSAspect* _GetAspectForOne(int count, ...) 
+ECSAspect* _ECSAspect_GetAspectForOne(int count, ...) 
 {
-    auto aspect = new(ECSAspect);
+    var aspect = ECSAspect_New();
 
     va_list args;
     va_start(args, count);
-    One(aspect, count, args);
+    ECSAspect_One(aspect, count, args);
     va_end(args);
 
     return aspect;
@@ -249,7 +183,7 @@ ECSAspect* _GetAspectForOne(int count, ...)
  *
  * @return {artemis.Aspect} an empty Aspect that will reject all entities.
  */
-ECSAspect* GetAspectForNone(void)
+ECSAspect* ECSAspect_GetAspectForNone(void)
 {
-    return new(ECSAspect);
+    return ECSAspect_New();
 } 

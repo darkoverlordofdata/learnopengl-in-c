@@ -11,14 +11,16 @@ set ( SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/src/main.c )
 set (SOURCE ${SOURCE} ${CMAKE_CURRENT_SOURCE_DIR}/src/shmupwarz.c )
 # set (SOURCE ${SOURCE} ${CMAKE_CURRENT_SOURCE_DIR}/src/triangle.c )
 
-# add_subdirectory ( libs/util )
+add_subdirectory ( libs/cfw )
+add_subdirectory ( libs/util )
 add_subdirectory ( libs/dna )
 # add_subdirectory ( libs/artemis )
 
 add_executable( ${PROJECT_NAME} ${SOURCE})
 
 include_directories( ./include )
-# include_directories( ./libs/util/include )
+include_directories( ./libs/cfw/include )
+include_directories( ./libs/util/include )
 include_directories( ./libs/dna/include )
 # include_directories( ./libs/artemis/include )
 include_directories( ./external/stb )

@@ -9,7 +9,7 @@
 #include <glad/glad.h>
 #endif
 #include "dna.h"
-#include "object.h"
+#include "cfw.h"
 #include "shader-private.h"
 #include <GLFW/glfw3.h>
 
@@ -43,14 +43,14 @@ void* DNAShader_New(const GLchar* vShaderSrc, const GLchar* fShaderSrc)
 {
     DNAShader* this = cfw_new((CFWClass*)DNAShaderClass);
 
-    DNAShader_Compile(this, vShaderSrc, fShaderSrc);
+    Compile(this, vShaderSrc, fShaderSrc);
     return this;
 }
 
 /**
  * Use shader
  */
-DNAShader* DNAShader_Use(DNAShader* this)
+method DNAShader* Use(DNAShader* this)
 {
     glUseProgram(this->Id);
     return this;
@@ -92,7 +92,7 @@ void CheckCompileErrors(
  * @param fragmentSource fragment shader source code
  * 
  */
-void DNAShader_Compile(
+method void Compile(
     DNAShader* this,
     const GLchar* vShaderSrc,
     const GLchar* fShaderSrc)
@@ -120,29 +120,29 @@ void DNAShader_Compile(
     glDeleteShader(sFragment);
 }
 
-void DNAShader_SetFloat(
+method void SetFloat(
     DNAShader* this,
     const GLchar* name,
     const GLfloat value,
     const GLboolean useShader)
 {
     if (useShader)
-        DNAShader_Use(this);
+        Use(this);
     glUniform1f(glGetUniformLocation(this->Id, name), value);
 }
 
-void DNAShader_SetInteger(
+method void SetInteger(
     DNAShader* this,
     const GLchar* name,
     GLint value,
     GLboolean useShader)
 {
     if (useShader)
-        DNAShader_Use(this);
+        Use(this);
     glUniform1i(glGetUniformLocation(this->Id, name), value);
 }
 
-void DNAShader_SetVector2(
+method void SetVector2(
     DNAShader* this,
     const GLchar* name,
     GLfloat x,
@@ -150,22 +150,22 @@ void DNAShader_SetVector2(
     GLboolean useShader)
 {
     if (useShader)
-        DNAShader_Use(this);
+        Use(this);
     glUniform2f(glGetUniformLocation(this->Id, name), x, y);
 }
 
-void DNAShader_SetVector2v(
+method void SetVector2v(
     DNAShader* this,
     const GLchar* name,
     const Vec2* vector,
     GLboolean useShader)
 {
     if (useShader)
-        DNAShader_Use(this);
+        Use(this);
     glUniform2fv(glGetUniformLocation(this->Id, name), 1, (GLfloat*)vector);
 }
 
-void DNAShader_SetVector3(
+method void SetVector3(
     DNAShader* this,
     const GLchar* name,
     GLfloat x,
@@ -174,22 +174,22 @@ void DNAShader_SetVector3(
     GLboolean useShader)
 {
     if (useShader)
-        DNAShader_Use(this);
+        Use(this);
     glUniform3f(glGetUniformLocation(this->Id, name), x, y, z);
 }
 
-void DNAShader_SetVector3v(
+method void SetVector3v(
     DNAShader* this,
     const GLchar* name,
     const Vec3* vector,
     GLboolean useShader)
 {
     if (useShader)
-        DNAShader_Use(this);
+        Use(this);
     glUniform3fv(glGetUniformLocation(this->Id, name), 1, (GLfloat*)vector);
 }
 
-void DNAShader_SetVector4(
+method void SetVector4(
     DNAShader* this,
     const GLchar* name,
     GLfloat x,
@@ -199,36 +199,36 @@ void DNAShader_SetVector4(
     GLboolean useShader)
 {
     if (useShader)
-        DNAShader_Use(this);
+        Use(this);
     glUniform4f(glGetUniformLocation(this->Id, name), x, y, z, w);
 }
 
-void DNAShader_SetVector4v(
+method void SetVector4v(
     DNAShader* this,
     const GLchar* name,
     const Vec4* vector,
     GLboolean useShader)
 {
     if (useShader)
-        DNAShader_Use(this);
+        Use(this);
     glUniform4fv(glGetUniformLocation(this->Id, name), 1, (GLfloat*)vector);
 }
 
-void method DNAShader_SetMatrix(
+method void SetMatrix(
     DNAShader* this,
     const GLchar* name,
     const Mat* matrix,
     GLboolean useShader)
 {
     if (useShader)
-        DNAShader_Use(this);
+        Use(this);
     glUniformMatrix4fv(glGetUniformLocation(this->Id, name), 1, GL_FALSE, (GLfloat*)matrix);
 }
 
-void method DNAShader_SetMatrix(
+method void SetMatrix(
     DNAShader* this,
     const GLchar* name,
     const Mat* matrix)
 {
-    DNAShader_SetMatrix(this, name, matrix, true);
+    SetMatrix(this, name, matrix, true);
 }

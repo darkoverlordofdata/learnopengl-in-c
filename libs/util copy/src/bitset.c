@@ -24,8 +24,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************/
 #include "bitset.h"
-#include "bitset-private.h"
-#include "cfw.h"
+#include "object.h"
 
 /*
  * BitSets are packed into arrays of "words."  Currently a word
@@ -37,11 +36,11 @@ const int64_t WORD_MASK = 0xffffffff;
 /**
  * UtilBitSet instance variables
  */
-// UtilBitSet {
-//     CFWObject obj;
-//     int length;
-//     unsigned int* words;
-// };
+struct UtilBitSet {
+    CFWObject obj;
+    int length;
+    unsigned int* words;
+};
 
 /**
  * @see http://stackoverflow.com/questions/6506356/java-implementation-of-long-numberoftrailingzeros
@@ -83,7 +82,7 @@ unsigned int numberOfTrailingZeros(unsigned int i)
  * @param value of bool
  * 
  */
-void* UtilBitSet_New(UtilBitSet* this, int nbits)
+void* UtilBitSet_New(struct UtilBitSet* this, const int nbits)
 {
     this->length = 0;
     if (nbits > 0) {
@@ -96,7 +95,7 @@ void* UtilBitSet_New(UtilBitSet* this, int nbits)
     return this;
 }
 
-int NextSetBit(UtilBitSet* this, int fromIndex)
+int UtilBitSet_NextSetBit(struct UtilBitSet* this, int fromIndex)
 {
     int u = fromIndex >> ADDRESS_BITS_PER_WORD;
     int wordsInUse = this->length;
@@ -111,7 +110,7 @@ int NextSetBit(UtilBitSet* this, int fromIndex)
     }
 }
 
-bool Intersects(UtilBitSet* this, UtilBitSet* set)
+bool UtilBitSet_Intersects(struct UtilBitSet* this, struct UtilBitSet* set)
 {
     int wordsInUse = this->length;
 
@@ -121,23 +120,23 @@ bool Intersects(UtilBitSet* this, UtilBitSet* set)
     return false;
 }
 
-bool IsEmpty(UtilBitSet* this)
+bool UtilBitSet_IsEmpty(struct UtilBitSet* this)
 {
     return this->length == 0;
 }
 
-void Set(UtilBitSet* this, int bitIndex, bool value)
+void UtilBitSet_Set(struct UtilBitSet* this, int bitIndex, bool value)
 {
     int wordIndex = bitIndex >> ADDRESS_BITS_PER_WORD;
     int wordsInUse = this->length;
     int wordsRequired = wordIndex + 1;
 
     if (wordIndex >= this->length) {
-        this = realloc(this, sizeof(CFWObject) + sizeof(int) + sizeof(unsigned int) * wordIndex + 1);
+        this = DSrealloc(this, sizeof(CFWObject) + sizeof(int) + sizeof(unsigned int) * wordIndex + 1);
     }
     if (wordsInUse < wordsRequired) {
         // words.resize(int.max(2 * wordsInUse, wordsRequired));
-        this = realloc(this, sizeof(CFWObject) + sizeof(int) + sizeof(unsigned int) * Max(2 * wordsInUse, wordsRequired));
+        this = DSrealloc(this, sizeof(CFWObject) + sizeof(int) + sizeof(unsigned int) * Max(2 * wordsInUse, wordsRequired));
         for (int i = wordsInUse, l = this->length; i < l; i++) {
             this->words[i] = 0;
         }
@@ -150,7 +149,7 @@ void Set(UtilBitSet* this, int bitIndex, bool value)
     }
 }
 
-bool Get(UtilBitSet* this, int bitIndex)
+bool UtilBitSet_Get(struct UtilBitSet* this, int bitIndex)
 {
     int wordIndex = bitIndex >> ADDRESS_BITS_PER_WORD;
     int wordsInUse = this->length;
@@ -158,7 +157,7 @@ bool Get(UtilBitSet* this, int bitIndex)
     return (wordIndex < wordsInUse) && ((this->words[wordIndex] & (1 << bitIndex)) != 0);
 }
 
-void method Clear(UtilBitSet* this, int bitIndex)
+void UtilBitSet_Clear(struct UtilBitSet* this, int bitIndex)
 {
     if (bitIndex == -1) {
         int wordsInUse = this->length;
@@ -170,11 +169,11 @@ void method Clear(UtilBitSet* this, int bitIndex)
 
     int wordIndex = bitIndex >> ADDRESS_BITS_PER_WORD;
     if (this->length <= wordIndex)
-        this = realloc(this, sizeof(CFWObject) + sizeof(int) + sizeof(unsigned int) * wordIndex + 1);
+        this = DSrealloc(this, sizeof(CFWObject) + sizeof(int) + sizeof(unsigned int) * wordIndex + 1);
     this->words[wordIndex] &= ~(1 << bitIndex);
 }
 
-void method Clear(UtilBitSet* this)
+void UtilBitSet_Clear(struct UtilBitSet* this)
 {
     Clear(this, -1);
 }
@@ -182,9 +181,9 @@ void method Clear(UtilBitSet* this)
 /**
  * Returns the string value of this UtilBitSet
  */
-CFWString* ToString(UtilBitSet* this)
+char* UtilBitSet_ToString(const struct UtilBitSet* const this)
 {
-    return cfw_new(cfw_string, "UtilBitSet");
+    return "UtilBitSet";
     //     string[] s = new string[words.length];
     //     for (var i=0; i<words.length; i++)
     //     {

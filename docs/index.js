@@ -202,7 +202,7 @@ Module['FS_createPath']('/data', 'images', true, true);
     }
   
    }
-   loadPackage({"files": [{"filename": "/data/shaders/es/elementrender.fs", "start": 0, "end": 311, "audio": 0}, {"filename": "/data/shaders/es/elementrender.vs", "start": 311, "end": 629, "audio": 0}, {"filename": "/data/shaders/es/triangle.fs", "start": 629, "end": 739, "audio": 0}, {"filename": "/data/shaders/es/triangle.vs", "start": 739, "end": 911, "audio": 0}, {"filename": "/data/images/background.png", "start": 911, "end": 62242, "audio": 0}], "remote_package_size": 62242, "package_uuid": "712bad71-b4b6-47b9-9a22-6f8287f1b415"});
+   loadPackage({"files": [{"filename": "/data/shaders/es/elementrender.fs", "start": 0, "end": 311, "audio": 0}, {"filename": "/data/shaders/es/elementrender.vs", "start": 311, "end": 629, "audio": 0}, {"filename": "/data/shaders/es/triangle.fs", "start": 629, "end": 739, "audio": 0}, {"filename": "/data/shaders/es/triangle.vs", "start": 739, "end": 911, "audio": 0}, {"filename": "/data/images/background.png", "start": 911, "end": 62242, "audio": 0}], "remote_package_size": 62242, "package_uuid": "b2e3f28f-3fc4-47a5-8b14-5eb9241364f9"});
   
   })();
   
@@ -865,8 +865,8 @@ var wasmMemory;
 // In the wasm backend, we polyfill the WebAssembly object,
 // so this creates a (non-native-wasm) table for us.
 var wasmTable = new WebAssembly.Table({
-  'initial': 100,
-  'maximum': 100 + 0,
+  'initial': 95,
+  'maximum': 95 + 0,
   'element': 'anyfunc'
 });
 
@@ -1485,11 +1485,11 @@ function updateGlobalBufferAndViews(buf) {
 }
 
 var STATIC_BASE = 1024,
-    STACK_BASE = 5255040,
+    STACK_BASE = 5254976,
     STACKTOP = STACK_BASE,
-    STACK_MAX = 12160,
-    DYNAMIC_BASE = 5255040,
-    DYNAMICTOP_PTR = 12000;
+    STACK_MAX = 12096,
+    DYNAMIC_BASE = 5254976,
+    DYNAMICTOP_PTR = 11936;
 
 assert(STACK_BASE % 16 === 0, 'stack must start aligned');
 assert(DYNAMIC_BASE % 16 === 0, 'heap must start aligned');
@@ -2051,7 +2051,7 @@ var ASM_CONSTS = {
 
 
 
-// STATICTOP = STATIC_BASE + 11136;
+// STATICTOP = STATIC_BASE + 11072;
 /* global initializers */  __ATINIT__.push({ func: function() { ___wasm_call_ctors() } });
 
 
@@ -6502,7 +6502,7 @@ var ASM_CONSTS = {
   var _abs=Math_abs;
 
   function _emscripten_get_sbrk_ptr() {
-      return 12000;
+      return 11936;
     }
 
   function _emscripten_memcpy_big(dest, src, num) {

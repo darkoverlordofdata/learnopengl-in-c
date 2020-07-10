@@ -1,3 +1,4 @@
+#pragma once
 #include <assert.h>
 #include <errno.h>
 #include <stdint.h>
@@ -14,7 +15,7 @@
 #include <glad/glad.h>
 #endif
 #include "dna.h"
-#include "object.h"
+#include "cfw.h"
 #include <GLFW/glfw3.h>
 
 struct DNAGame {

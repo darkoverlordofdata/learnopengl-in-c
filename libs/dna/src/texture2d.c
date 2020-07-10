@@ -8,7 +8,7 @@
 #include <glad/glad.h>
 #endif
 #include "dna.h"
-#include "object.h"
+#include "cfw.h"
 #include "stb_image.h"
 #include "texture2d-private.h"
 #include <GLFW/glfw3.h>
@@ -55,7 +55,7 @@ void* DNATexture2D_New(GLuint internalFormat, GLuint imageFormat, char* path)
  * @param data bitmap data
  * 
  */
-void DNATexture2D_Generate(
+method void Generate(
     DNATexture2D* this,
     GLuint width,
     GLuint height,
@@ -80,13 +80,12 @@ void DNATexture2D_Generate(
  * 
  * binds the texture to GL
  */
-// void DNATexture2D_Bind(const DNATexture2D* this)
-void method Bind(const DNATexture2D* this)
+method void Bind(const DNATexture2D* this)
 {
     glBindTexture(GL_TEXTURE_2D, this->Id);
 }
 
-char* method ToString(const DNATexture2D* this)
+method char* ToString(const DNATexture2D* this)
 {
     char* s = calloc(1024, 1);
     return s;

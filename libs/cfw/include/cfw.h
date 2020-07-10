@@ -53,3 +53,16 @@ static inline struct CFWObject* asObject(void* obj) { return obj; }
         __auto_type _b = b;  \
         (_a > _b) ? _a : _b; \
     })
+
+
+typedef CFWArray Array;
+typedef CFWBool Bool;
+typedef CFWDouble Double;
+typedef CFWFile File;
+typedef CFWInt Int;
+typedef CFWMap Map;
+typedef CFWRefPool RefPool;
+typedef CFWStream Stream;
+typedef CFWString String;
+
+

@@ -8,22 +8,22 @@ extern const CFWClass* DNAResourceManagerClass;
 
 extern void* DNAResourceManager_New();
 
-extern DNAShader* DNAResourceManager_LoadShader(
+extern method DNAShader* LoadShader(
     const DNAResourceManager* this,
     const GLchar* vShaderFile,
     const GLchar* fShaderFile,
     const char* name);
 
-extern DNAShader* DNAResourceManager_GetShader(
+extern method DNAShader* GetShader(
     const DNAResourceManager* this,
     const char* name);
 
-extern DNATexture2D* DNAResourceManager_LoadTexture(
+extern method DNATexture2D* LoadTexture(
     const DNAResourceManager* this,
     const GLchar* file,
     GLboolean alpha,
     const char* name);
 
-extern DNATexture2D* DNAResourceManager_GetTexture(
+extern method DNATexture2D* GetTexture(
     const DNAResourceManager* this,
     const char* name);

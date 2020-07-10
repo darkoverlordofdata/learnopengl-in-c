@@ -27,25 +27,23 @@ SOFTWARE.
 #include <limits.h>
 #include <stdbool.h>
 #include <assert.h>
-#include "cfw.h"
+#include <corefw/class.h>
 
-typedef struct UtilBitSet UtilBitSet;
-extern CFWClass *UtilBitSetClass;
+struct UtilBitSet
+extern CFWClass *UtilBitSet;
 
-extern void* BitSet_New(UtilBitSet* this, int nbits); 
+extern void* UtilBitSet_New(struct UtilBitSet* self, int nbits); 
 
-extern int NextSetBit(UtilBitSet* this, int fromIndex); 
+extern int UtilBitSet_NextSetBit(struct UtilBitSet* self, int fromIndex); 
 
-extern bool Intersects(UtilBitSet* this, UtilBitSet* set); 
+extern bool UtilBitSet_Intersects(struct UtilBitSet* self, struct UtilBitSet* set); 
 
-extern bool IsEmpty(UtilBitSet* this); 
+extern bool UtilBitSet_IsEmpty(struct UtilBitSet* self); 
 
-extern void Set(UtilBitSet* this, int bitIndex, bool value); 
+extern void UtilBitSet_Set(struct UtilBitSet* self, int bitIndex, bool value); 
 
-extern bool Get(UtilBitSet* this, int bitIndex); 
+extern bool UtilBitSet_Get(struct UtilBitSet* self, int bitIndex); 
 
-extern void method Clear(UtilBitSet* this);
+extern void UtilBitSet_Clear(struct UtilBitSet* self, int bitIndex);  
 
-extern void method Clear(UtilBitSet* this, int bitIndex);  
-
-extern CFWString* ToString(UtilBitSet* this);
+extern CFWString* UtilBitSet_ToString(struct UtilBitSet* self);

@@ -11,7 +11,7 @@
 
 #include "dna.h"
 #include "elementrenderer-private.h"
-#include "object.h"
+#include "cfw.h"
 
 corefw(DNAElementRenderer);
 static bool ctor(void* self, va_list args) { return true; }
@@ -52,7 +52,7 @@ void* DNAElementRenderer_New(DNAShader* shader)
  * @param color to tint
  * 
  */
-void DNAElementRenderer_Draw(
+method void Draw(
     const DNAElementRenderer* this,
     DNATexture2D* texture,
     DNARect bounds,
@@ -76,9 +76,9 @@ void DNAElementRenderer_Draw(
     model = glm_translate(model, (Vec3) { -0.5f * size.x, -0.5f * size.y, 0.0f }); // Move origin back
     model = glm_scale(model, (Vec3) { size.x, size.y, 1.0f }); // Last scale
 
-    DNAShader_Use(this->shader);
-    DNAShader_SetMatrix(this->shader, "model", &model); //, true);
-    DNAShader_SetVector3v(this->shader, "spriteColor", &color, true);
+    Use(this->shader);
+    SetMatrix(this->shader, "model", &model); //, true);
+    SetVector3v(this->shader, "spriteColor", &color, true);
     glActiveTexture(GL_TEXTURE0);
     Bind(texture);
     // DNATexture2D_Bind(texture);

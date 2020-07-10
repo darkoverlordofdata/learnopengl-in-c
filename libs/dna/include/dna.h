@@ -1,7 +1,7 @@
 #pragma once
 
 // clang-format off
-#include "object.h"
+#include "cfw.h"
 #include "rect.h"
 #include "filesystem.h"
 #include "game.h"

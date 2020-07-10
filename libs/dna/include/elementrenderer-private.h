@@ -1,3 +1,4 @@
+#pragma once
 #include <stdio.h>
 #include <string.h>
 #ifdef __EMSCRIPTEN__
@@ -10,7 +11,7 @@
 #include <GLFW/glfw3.h>
 
 #include "dna.h"
-#include "object.h"
+#include "cfw.h"
 
 /**
  *  class DNAElementRenderer

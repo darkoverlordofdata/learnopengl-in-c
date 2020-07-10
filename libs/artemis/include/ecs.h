@@ -51,19 +51,6 @@ typedef struct ECSIntervalEntitySystem;
 typedef struct ECSVoidEntitySystem;
 
 
-extern bool Remove(Array* this, Object* e)
-{
-    for (auto i=0; i<this->length; i++)
-    {
-        auto e2 = this->data[i];
-        if (e == e2) {
-            Remove(this, i);
-            return true;
-        }
-    }
-    return false;
-}
-
 #include "blackboard/blackboard.h"
 #include "blackboard/blackboard.h"
 #include "blackboard/trigger.h"
@@ -90,64 +77,3 @@ extern bool Remove(Array* this, Object* e)
 #include "systems/voidentitysystem.h"
 #include "systems/intervalentityprocessingsystem.h"
 
-void __attribute__((constructor(102))) ECSLoader() 
-{
-
-    Class ObjectClass = GetClass("Object");
-    RegisterClass(CreateComponent(ECSComponent));
-    RegisterClass(CreateComponent(ECSEntity));
-
-    Class ECSWorld = ClassLoadECSWorld(ObjectClass);
-    RegisterClass(ECSWorld);
-
-    Class ECSAspect = ClassLoadECSAspect(ObjectClass);
-    RegisterClass(ECSAspect);
-
-    Class ECSComponentType = ClassLoadECSComponentType(ObjectClass);
-    RegisterClass(ECSComponentType);
-
-    Class ECSComponentTypeFactory = ClassLoadECSComponentTypeFactory(ObjectClass);
-    RegisterClass(ECSComponentTypeFactory);
-
-    Class ECSEntityObserverClass = ClassLoadECSEntityObserver(ObjectClass);
-    RegisterClass(ECSEntityObserverClass);
-
-    Class ECSEntitySystemClass = ClassLoadECSEntitySystem(ECSEntityObserverClass);
-    RegisterClass(ECSEntitySystemClass);
-
-    Class ECSManagerClass = ClassLoadECSManager(ECSEntityObserverClass);
-    RegisterClass(ECSManagerClass);
- 
-    Class ECSComponentManagerClass = ClassLoadECSComponentManager(ECSManagerClass);
-    RegisterClass(ECSComponentManagerClass);
-    
-    Class ECSEntityManagerClass = ClassLoadECSEntityManager(ECSManagerClass);
-    RegisterClass(ECSEntityManagerClass);
-
-    Class ECSGroupManagerClass = ClassLoadECSGroupManager(ECSManagerClass);
-    RegisterClass(ECSGroupManagerClass);
- 
-    Class ECSPlayerManagerClass = ClassLoadECSPlayerManager(ECSManagerClass);
-    RegisterClass(ECSPlayerManagerClass);
- 
-    Class ECSTagManagerClass = ClassLoadECSTagManager(ECSManagerClass);
-    RegisterClass(ECSTagManagerClass);
- 
-    Class ECSTeamManagerClass = ClassLoadECSTeamManager(ECSManagerClass);
-    RegisterClass(ECSTeamManagerClass);
- 
-    Class ECSEntityProcessingSystemClass = ClassLoadECSEntityProcessingSystem(ECSEntitySystemClass);
-    RegisterClass(ECSEntityProcessingSystemClass);
-
-    Class ECSDelayedEntityProcessingSystemClass = ClassLoadECSDelayedEntityProcessingSystem(ECSEntitySystemClass);
-    RegisterClass(ECSDelayedEntityProcessingSystemClass);
-
-    Class ECSIntervalEntitySystemClass = ClassLoadECSIntervalEntitySystem(ECSEntitySystemClass);
-    RegisterClass(ECSIntervalEntitySystemClass);
-
-    Class ECSVoidEntitySystemClass = ClassLoadECSVoidEntitySystem(ECSEntitySystemClass);
-    RegisterClass(ECSVoidEntitySystemClass);
-
-    Class ECSIntervalEntityProcessingSystemClass = ClassLoadECSIntervalEntityProcessingSystem(ECSIntervalEntitySystemClass);
-    RegisterClass(ECSIntervalEntityProcessingSystemClass);
-}

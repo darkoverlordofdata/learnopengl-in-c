@@ -1,9 +1,9 @@
 /*******************************************************************
-** This code is part of the Dark Framework.
+** This code is part of the Dark Overload Framework.
 **
 MIT License
 
-Copyright (c); 2018 Dark Overlord of Data
+Copyright (c) 2020 Dark Overlord of Data
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software");, to deal
@@ -27,25 +27,11 @@ SOFTWARE.
 #include <limits.h>
 #include <stdbool.h>
 #include <assert.h>
-#include "cfw.h"
+#include "bitset.h"
 
-typedef struct UtilBitSet UtilBitSet;
-extern CFWClass *UtilBitSetClass;
+struct Util {
+    CFWClass* BitSet;
+    
+};
 
-extern void* BitSet_New(UtilBitSet* this, int nbits); 
-
-extern int NextSetBit(UtilBitSet* this, int fromIndex); 
-
-extern bool Intersects(UtilBitSet* this, UtilBitSet* set); 
-
-extern bool IsEmpty(UtilBitSet* this); 
-
-extern void Set(UtilBitSet* this, int bitIndex, bool value); 
-
-extern bool Get(UtilBitSet* this, int bitIndex); 
-
-extern void method Clear(UtilBitSet* this);
-
-extern void method Clear(UtilBitSet* this, int bitIndex);  
-
-extern CFWString* ToString(UtilBitSet* this);
+extern struct Util Util;

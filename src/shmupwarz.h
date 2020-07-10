@@ -27,9 +27,9 @@ extern const CFWClass *ShmupwarzClass;
 struct ShmupwarzVtbl;
 
 extern void* Shmupwarz_New(char* title, int width, int height);
-extern void Shmupwarz_Initialize(Shmupwarz* this);
-extern void Shmupwarz_LoadContent(Shmupwarz* this);
-extern void Shmupwarz_Update(Shmupwarz* this);
-extern void Shmupwarz_Draw(Shmupwarz* this);
-extern void Shmupwarz_Run(Shmupwarz* this);
+extern method void Initialize(Shmupwarz* this);
+extern method void LoadContent(Shmupwarz* this);
+extern method void Update(Shmupwarz* this);
+extern method void Draw(Shmupwarz* this);
+extern method void Run(Shmupwarz* this);
 

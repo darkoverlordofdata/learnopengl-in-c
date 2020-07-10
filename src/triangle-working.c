@@ -1,6 +1,6 @@
 #include <game-private.h>
 #include "triangle.h"
-#include "object.h"
+#include "cfw"
 // #include "linmath.h"
 
 struct Triangle {

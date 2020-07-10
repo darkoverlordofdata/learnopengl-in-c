@@ -9,7 +9,7 @@
 #endif
 #include "arrayrenderer-private.h"
 #include "dna.h"
-#include "object.h"
+#include "cfw.h"
 #include <GLFW/glfw3.h>
 
 corefw(DNAArrayRenderer);
@@ -52,7 +52,7 @@ void* DNAArrayRenderer_New(DNAShader* shader)
  * @param color to tint
  * 
  */
-void DNAArrayRenderer_Draw(
+method void Draw(
     const DNAArrayRenderer* this,
     DNATexture2D* texture,
     DNARect* bounds,
@@ -60,7 +60,7 @@ void DNAArrayRenderer_Draw(
     Vec3 color)
 {
     // Prepare transformations
-    DNAShader_Use(this->shader);
+    Use(this->shader);
     Mat model = {
         1.0f, 0.0f, 0.0f, 0.0f,
         0.0f, 1.0f, 0.0f, 0.0f,
@@ -77,10 +77,10 @@ void DNAArrayRenderer_Draw(
     model = glm_translate(model, (Vec3) { -0.5f * size.x, -0.5f * size.y, 0.0f }); // Move origin back
     model = glm_scale(model, (Vec3) { size.x, size.y, 1.0f }); // Last scale
 
-    DNAShader_SetMatrix(this->shader, "model", &model, true);
+    SetMatrix(this->shader, "model", &model, true);
 
     // Render textured quad
-    DNAShader_SetVector3v(this->shader, "spriteColor", &color, true);
+    SetVector3v(this->shader, "spriteColor", &color, true);
 
     glActiveTexture(GL_TEXTURE0);
     // DNATexture2D_Bind(texture);

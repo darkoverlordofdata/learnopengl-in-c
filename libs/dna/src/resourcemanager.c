@@ -10,7 +10,7 @@
 #include <GLFW/glfw3.h>
 #define STB_IMAGE_IMPLEMENTATION
 #include "dna.h"
-#include "object.h"
+#include "cfw.h"
 #include "resourcemanager-private.h"
 #include "shader-private.h"
 #include "texture2d-private.h"
@@ -96,7 +96,7 @@ void* DNAResourceManager_New()
  * @param name to cache as
  * @returns loaded, compiled and linked shader program
  */
-DNAShader* DNAResourceManager_LoadShader(
+method DNAShader* LoadShader(
     const DNAResourceManager* this,
     const GLchar* vShaderFile,
     const GLchar* fShaderFile,
@@ -113,7 +113,7 @@ DNAShader* DNAResourceManager_LoadShader(
  * @returns loaded, compiled and linked shader program
  * 
  */
-DNAShader* DNAResourceManager_GetShader(
+method DNAShader* GetShader(
     const DNAResourceManager* this,
     const char* name)
 {
@@ -129,7 +129,7 @@ DNAShader* DNAResourceManager_GetShader(
  * @returns Texture
  * 
  */
-DNATexture2D* DNAResourceManager_LoadTexture(
+method DNATexture2D* LoadTexture(
     const DNAResourceManager* this,
     const GLchar* file,
     GLboolean alpha,
@@ -146,7 +146,7 @@ DNATexture2D* DNAResourceManager_LoadTexture(
  * @returns Texture
  * 
  */
-DNATexture2D* DNAResourceManager_GetTexture(
+method DNATexture2D* GetTexture(
     const DNAResourceManager* this,
     const char* name)
 {
@@ -224,7 +224,7 @@ DNATexture2D* LoadTextureFromFile(
     // if (SDL_MUSTLOCK(surface))
     //     SDL_LockSurface(surface);
     // // Now generate texture
-    DNATexture2D_Generate(texture, width, height, (unsigned char*)data);
+    Generate(texture, width, height, (unsigned char*)data);
     // if (SDL_MUSTLOCK(surface))
     //     SDL_UnlockSurface(surface);
     // // And finally free image data

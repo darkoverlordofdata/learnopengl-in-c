@@ -1,3 +1,4 @@
+#pragma once
 #include <stdio.h>
 #include <string.h>
 #ifdef __EMSCRIPTEN__
@@ -8,7 +9,7 @@
 #include <glad/glad.h>
 #endif
 #include "dna.h"
-#include "object.h"
+#include "cfw.h"
 #include <GLFW/glfw3.h>
 
 /**

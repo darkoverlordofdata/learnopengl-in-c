@@ -47,23 +47,24 @@
 #include <stdio.h>
 #include <time.h>
 
-/* Period parameters */
+/* Period parameters */  
 #define MT19937_N 624
 #define MT19937_M 397
-#define MT19937_MATRIX_A 0x9908b0dfUL /* constant vector a */
+#define MT19937_MATRIX_A 0x9908b0dfUL   /* constant vector a */
 #define MT19937_UPPER_MASK 0x80000000UL /* most significant w-r bits */
 #define MT19937_LOWER_MASK 0x7fffffffUL /* least significant r bits */
 
 // static unsigned long mt[MT19937_N]; /* the array for the state vector  */
 // static int mti=MT19937_N+1; /* mti==MT19937_N+1 means mt[MT19937_N] is not initialized */
 
-type(Random)
+type (Random)
 {
     Class isa;
     Object* base;
     int mti;
     unsigned long mt[MT19937_N];
 };
+
 
 static Random* RandomInstance = nullptr;
 
@@ -73,11 +74,12 @@ static inline unsigned long genrand_int32(Random* self);
 static inline double genrand_real1(Random* self);
 method Random* New(Random* self, unsigned long seed);
 
+
 method unsigned long NextLong(void)
 {
     if (RandomInstance == nullptr) {
         unsigned long seed = time(nullptr);
-        RandomInstance = new (Random, seed);
+        RandomInstance = new(Random, seed);
     }
 
     return genrand_int32(RandomInstance);
@@ -87,16 +89,17 @@ method double NextDouble(void)
 {
     if (RandomInstance == nullptr) {
         unsigned long seed = time(nullptr);
-        RandomInstance = new (Random, time(nullptr));
+        RandomInstance = new(Random, time(nullptr));
     }
     return genrand_real1(RandomInstance);
 }
+
 
 method Random* New(Random* self, unsigned long seed)
 {
     self->base = extends(Object);
     self->isa = isa(Random);
-    memset(self->mt, 0, (MT19937_N * sizeof(unsigned long)));
+    memset(self->mt, 0, (MT19937_N*sizeof(unsigned long)));
     self->mti = MT19937_N + 1;
     init_genrand(self, seed);
     return self;
@@ -104,21 +107,24 @@ method Random* New(Random* self, unsigned long seed)
 
 method Random* New(Random* self, unsigned long seed[], int length)
 {
-    self = DSrealloc(self, sizeof(Random) + (MT19937_N * sizeof(unsigned long)));
+    self = DSrealloc(self, sizeof(Random)+(MT19937_N*sizeof(unsigned long)));
     self->base = extends(Object);
     self->isa = isa(Random);
-    memset(self->mt, 0, (MT19937_N * sizeof(unsigned long)));
+    memset(self->mt, 0, (MT19937_N*sizeof(unsigned long)));
     self->mti = MT19937_N + 1;
     init_by_array(self, seed, length);
     return self;
+
 }
+
 
 /* initializes mt[MT19937_N] with a seed */
 static inline void init_genrand(Random* self, unsigned long s)
 {
-    self->mt[0] = s & 0xffffffffUL;
-    for (self->mti = 1; self->mti < MT19937_N; self->mti++) {
-        self->mt[self->mti] = (1812433253UL * (self->mt[self->mti - 1] ^ (self->mt[self->mti - 1] >> 30)) + self->mti);
+    self->mt[0]= s & 0xffffffffUL;
+    for (self->mti=1; self->mti<MT19937_N; self->mti++) {
+        self->mt[self->mti] = 
+	    (1812433253UL * (self->mt[self->mti-1] ^ (self->mt[self->mti-1] >> 30)) + self->mti); 
         /* See Knuth TAOCP Vol2. 3rd Ed. P.106 for multiplier. */
         /* In the previous versions, MSBs of the seed affect   */
         /* only MSBs of the array self->mt[].                        */
@@ -136,63 +142,54 @@ static inline void init_by_array(Random* self, unsigned long init_key[], int key
 {
     int i, j, k;
     init_genrand(self, 19650218UL);
-    i = 1;
-    j = 0;
-    k = (MT19937_N > key_length ? MT19937_N : key_length);
+    i=1; j=0;
+    k = (MT19937_N>key_length ? MT19937_N : key_length);
     for (; k; k--) {
-        self->mt[i] = (self->mt[i] ^ ((self->mt[i - 1] ^ (self->mt[i - 1] >> 30)) * 1664525UL))
-            + init_key[j] + j; /* non linear */
+        self->mt[i] = (self->mt[i] ^ ((self->mt[i-1] ^ (self->mt[i-1] >> 30)) * 1664525UL))
+          + init_key[j] + j; /* non linear */
         self->mt[i] &= 0xffffffffUL; /* for WORDSIZE > 32 machines */
-        i++;
-        j++;
-        if (i >= MT19937_N) {
-            self->mt[0] = self->mt[MT19937_N - 1];
-            i = 1;
-        }
-        if (j >= key_length)
-            j = 0;
+        i++; j++;
+        if (i>=MT19937_N) { self->mt[0] = self->mt[MT19937_N-1]; i=1; }
+        if (j>=key_length) j=0;
     }
-    for (k = MT19937_N - 1; k; k--) {
-        self->mt[i] = (self->mt[i] ^ ((self->mt[i - 1] ^ (self->mt[i - 1] >> 30)) * 1566083941UL))
-            - i; /* non linear */
+    for (k=MT19937_N-1; k; k--) {
+        self->mt[i] = (self->mt[i] ^ ((self->mt[i-1] ^ (self->mt[i-1] >> 30)) * 1566083941UL))
+          - i; /* non linear */
         self->mt[i] &= 0xffffffffUL; /* for WORDSIZE > 32 machines */
         i++;
-        if (i >= MT19937_N) {
-            self->mt[0] = self->mt[MT19937_N - 1];
-            i = 1;
-        }
+        if (i>=MT19937_N) { self->mt[0] = self->mt[MT19937_N-1]; i=1; }
     }
 
-    self->mt[0] = 0x80000000UL; /* MSB is 1; assuring non-zero initial array */
+    self->mt[0] = 0x80000000UL; /* MSB is 1; assuring non-zero initial array */ 
 }
 
 /* generates a random number on [0,0xffffffff]-interval */
 static inline unsigned long genrand_int32(Random* self)
 {
     unsigned long y;
-    static unsigned long mag01[2] = { 0x0UL, MT19937_MATRIX_A };
+    static unsigned long mag01[2]={0x0UL, MT19937_MATRIX_A};
     /* mag01[x] = x * MT19937_MATRIX_A  for x=0,1 */
 
     if (self->mti >= MT19937_N) { /* generate MT19937_N words at one time */
         int kk;
 
-        if (self->mti == MT19937_N + 1) /* if init_genrand() has not been called, */
+        if (self->mti == MT19937_N+1)   /* if init_genrand() has not been called, */
             init_genrand(self, 5489UL); /* a default initial seed is used */
 
-        for (kk = 0; kk < MT19937_N - MT19937_M; kk++) {
-            y = (self->mt[kk] & MT19937_UPPER_MASK) | (self->mt[kk + 1] & MT19937_LOWER_MASK);
-            self->mt[kk] = self->mt[kk + MT19937_M] ^ (y >> 1) ^ mag01[y & 0x1UL];
+        for (kk=0;kk<MT19937_N-MT19937_M;kk++) {
+            y = (self->mt[kk]&MT19937_UPPER_MASK)|(self->mt[kk+1]&MT19937_LOWER_MASK);
+            self->mt[kk] = self->mt[kk+MT19937_M] ^ (y >> 1) ^ mag01[y & 0x1UL];
         }
-        for (; kk < MT19937_N - 1; kk++) {
-            y = (self->mt[kk] & MT19937_UPPER_MASK) | (self->mt[kk + 1] & MT19937_LOWER_MASK);
-            self->mt[kk] = self->mt[kk + (MT19937_M - MT19937_N)] ^ (y >> 1) ^ mag01[y & 0x1UL];
+        for (;kk<MT19937_N-1;kk++) {
+            y = (self->mt[kk]&MT19937_UPPER_MASK)|(self->mt[kk+1]&MT19937_LOWER_MASK);
+            self->mt[kk] = self->mt[kk+(MT19937_M-MT19937_N)] ^ (y >> 1) ^ mag01[y & 0x1UL];
         }
-        y = (self->mt[MT19937_N - 1] & MT19937_UPPER_MASK) | (self->mt[0] & MT19937_LOWER_MASK);
-        self->mt[MT19937_N - 1] = self->mt[MT19937_M - 1] ^ (y >> 1) ^ mag01[y & 0x1UL];
+        y = (self->mt[MT19937_N-1]&MT19937_UPPER_MASK)|(self->mt[0]&MT19937_LOWER_MASK);
+        self->mt[MT19937_N-1] = self->mt[MT19937_M-1] ^ (y >> 1) ^ mag01[y & 0x1UL];
 
         self->mti = 0;
     }
-
+  
     y = self->mt[self->mti++];
 
     /* Tempering */
@@ -207,34 +204,35 @@ static inline unsigned long genrand_int32(Random* self)
 /* generates a random number on [0,0x7fffffff]-interval */
 static inline long genrand_int31(Random* self)
 {
-    return (long)(genrand_int32(self) >> 1);
+    return (long)(genrand_int32(self)>>1);
 }
 
 /* generates a random number on [0,1]-real-interval */
 static inline double genrand_real1(Random* self)
 {
-    return genrand_int32(self) * (1.0 / 4294967295.0);
-    /* divided by 2^32-1 */
+    return genrand_int32(self)*(1.0/4294967295.0); 
+    /* divided by 2^32-1 */ 
 }
 
 /* generates a random number on [0,1)-real-interval */
 static inline double genrand_real2(Random* self)
 {
-    return genrand_int32(self) * (1.0 / 4294967296.0);
+    return genrand_int32(self)*(1.0/4294967296.0); 
     /* divided by 2^32 */
 }
 
 /* generates a random number on (0,1)-real-interval */
 static inline double genrand_real3(Random* self)
 {
-    return (((double)genrand_int32(self)) + 0.5) * (1.0 / 4294967296.0);
+    return (((double)genrand_int32(self)) + 0.5)*(1.0/4294967296.0); 
     /* divided by 2^32 */
 }
 
 /* generates a random number on [0,1) with 53-bit resolution*/
-static inline double genrand_res53(Random* self)
-{
-    unsigned long a = genrand_int32(self) >> 5, b = genrand_int32(self) >> 6;
-    return (a * 67108864.0 + b) * (1.0 / 9007199254740992.0);
-}
+static inline double genrand_res53(Random* self) 
+{ 
+    unsigned long a=genrand_int32(self)>>5, b=genrand_int32(self)>>6; 
+    return(a*67108864.0+b)*(1.0/9007199254740992.0); 
+} 
 /* These real versions are due to Isaku Wada, 2002/01/09 added */
+
