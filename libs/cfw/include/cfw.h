@@ -3,6 +3,7 @@
  * shims for corefw
  */
 #include <corefw/corefw.h>
+
 static inline struct CFWObject* asObject(void* obj) { return obj; }
 
 #define var __auto_type
@@ -66,3 +67,6 @@ typedef CFWStream Stream;
 typedef CFWString String;
 
 
+#include "bitset.h"
+#include "mt19937ar.h"
+#include "uuid.h"

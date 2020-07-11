@@ -7,44 +7,44 @@ extern const CFWClass *ECSIntervalEntityProcessingSystem;
 
 extern void* ECSIntervalEntityProcessingSystem_New(ECSIntervalEntityProcessingSystem* this, ECSAspect* aspect, float interval);
 
-extern void ECSIntervalEntityProcessingSystem_Begin(ECSIntervalEntityProcessingSystem* this);
+extern method void Begin(ECSIntervalEntityProcessingSystem* this);
 
-extern void ECSIntervalEntityProcessingSystem_Process(ECSIntervalEntityProcessingSystem* this);
+extern method void Process(ECSIntervalEntityProcessingSystem* this);
 
-extern void ECSIntervalEntityProcessingSystem_End(ECSIntervalEntityProcessingSystem* this);
+extern method void End(ECSIntervalEntityProcessingSystem* this);
 
-extern void ECSIntervalEntityProcessingSystem_ProcessEntities(ECSIntervalEntityProcessingSystem* this, Array* entities);
+extern method void ProcessEntities(ECSIntervalEntityProcessingSystem* this, Array* entities);
 
-extern bool ECSIntervalEntityProcessingSystem_CheckProcessing(ECSIntervalEntityProcessingSystem* this);
+extern method bool CheckProcessing(ECSIntervalEntityProcessingSystem* this);
 
-extern void ECSIntervalEntityProcessingSystem_Initialize(ECSIntervalEntityProcessingSystem* this);
+extern method void Initialize(ECSIntervalEntityProcessingSystem* this);
 
-extern void ECSIntervalEntityProcessingSystem_Inserted(ECSIntervalEntityProcessingSystem* this, ECSEntity* e);
+extern method void Inserted(ECSIntervalEntityProcessingSystem* this, ECSEntity* e);
 
-extern void ECSIntervalEntityProcessingSystem_Removed(ECSIntervalEntityProcessingSystem* this, ECSEntity* e);
+extern method void Removed(ECSIntervalEntityProcessingSystem* this, ECSEntity* e);
 
-extern void ECSIntervalEntityProcessingSystem_Check(ECSIntervalEntityProcessingSystem* this, ECSEntity* e);
+extern method void Check(ECSIntervalEntityProcessingSystem* this, ECSEntity* e);
 
-extern void ECSIntervalEntityProcessingSystem_RemoveFromSystem(ECSIntervalEntityProcessingSystem* this, ECSEntity* e); 
+extern method void RemoveFromSystem(ECSIntervalEntityProcessingSystem* this, ECSEntity* e); 
 
-extern void ECSIntervalEntityProcessingSystem_InsertToSystem(ECSIntervalEntityProcessingSystem* this, ECSEntity* e); 
+extern method void InsertToSystem(ECSIntervalEntityProcessingSystem* this, ECSEntity* e); 
 
-extern void ECSIntervalEntityProcessingSystem_Added(ECSIntervalEntityProcessingSystem* this, ECSEntity* entity);
+extern method void Added(ECSIntervalEntityProcessingSystem* this, ECSEntity* entity);
 
-extern void ECSIntervalEntityProcessingSystem_Changed(ECSIntervalEntityProcessingSystem* this, ECSEntity* e);
+extern method void Changed(ECSIntervalEntityProcessingSystem* this, ECSEntity* e);
 
-extern void ECSIntervalEntityProcessingSystem_Deleted(ECSIntervalEntityProcessingSystem* this, ECSEntity* e);
+extern method void Deleted(ECSIntervalEntityProcessingSystem* this, ECSEntity* e);
 
-extern void ECSIntervalEntityProcessingSystem_Disabled(ECSIntervalEntityProcessingSystem* this, ECSEntity* e);
+extern method void Disabled(ECSIntervalEntityProcessingSystem* this, ECSEntity* e);
 
-extern void ECSIntervalEntityProcessingSystem_Enabled(ECSIntervalEntityProcessingSystem* this, ECSEntity* e);
+extern method void Enabled(ECSIntervalEntityProcessingSystem* this, ECSEntity* e);
 
-extern void ECSIntervalEntityProcessingSystem_SetWorld(ECSIntervalEntityProcessingSystem* this, ECSWorld* world);
+extern method void SetWorld(ECSIntervalEntityProcessingSystem* this, ECSWorld* world);
 
-extern bool ECSIntervalEntityProcessingSystem_IsPassive(ECSIntervalEntityProcessingSystem* this);
+extern method bool IsPassive(ECSIntervalEntityProcessingSystem* this);
 
-extern void ECSIntervalEntityProcessingSystem_SetPassive(ECSIntervalEntityProcessingSystem* this, bool passive);
+extern method void SetPassive(ECSIntervalEntityProcessingSystem* this, bool passive);
 
-extern CFWArray* ECSIntervalEntityProcessingSystem_GetActive(ECSIntervalEntityProcessingSystem* this);
+extern method CFWArray* GetActive(ECSIntervalEntityProcessingSystem* this);
 
-extern void ECSIntervalEntityProcessingSystem_ProcessEach(ECSIntervalEntityProcessingSystem* this, ECSEntity* e);
+extern method void ProcessEach(ECSIntervalEntityProcessingSystem* this, ECSEntity* e);

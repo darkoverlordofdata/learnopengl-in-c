@@ -30,10 +30,10 @@ typedef void (*ShmupwarzProc)(Shmupwarz* this);
 void* Shmupwarz_New(char* title, int width, int height)
 {
     static struct DNAGameVtbl overrides = {
-        .Initialize = (DNAGameProc)(ShmupwarzProc)Initialize,
-        .LoadContent = (DNAGameProc)(ShmupwarzProc)LoadContent,
-        .Update = (DNAGameProc)(ShmupwarzProc)Update,
-        .Draw = (DNAGameProc)(ShmupwarzProc)Draw,
+        .Initialize = (DNAGameProc)(ShmupwarzProc)(Initialize),
+        .LoadContent = (DNAGameProc)((ShmupwarzProc)LoadContent),
+        .Update = (DNAGameProc)((ShmupwarzProc)Update),
+        .Draw = (DNAGameProc)((ShmupwarzProc)Draw),
     };
 
     Shmupwarz* this = cfw_new((CFWClass*)ShmupwarzClass);

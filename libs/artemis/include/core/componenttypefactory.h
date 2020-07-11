@@ -8,6 +8,6 @@ extern const CFWClass *ECSComponentTypeFactory;
 
 extern void* ECSComponentTypeFactory_New();
 
-extern ECSComponentType* ECSComponentTypeFactory_GetTypeFor(ECSComponentTypeFactory* this, Class c);
+extern method ECSComponentType* GetTypeFor(ECSComponentTypeFactory* this, Class c);
 
-extern int ECSComponentTypeFactory_GetIndexFor(ECSComponentTypeFactory* this, Class c);
+extern method int GetIndexFor(ECSComponentTypeFactory* this, Class c);

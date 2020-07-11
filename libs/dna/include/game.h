@@ -30,6 +30,8 @@ extern void* DNAGame_New(char* cstr, int width, int height, void* subclass, stru
  */
 extern method void HandleEvents(DNAGame* const this);
 
+extern method char* ToString(DNAGame* this);
+
 /**
  * DNAGame::Start
  */

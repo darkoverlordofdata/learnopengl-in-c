@@ -219,16 +219,7 @@ DNATexture2D* LoadTextureFromFile(
     stbi_set_flip_vertically_on_load(true); // tell stb_image.h to flip loaded texture's on the y-axis.
     int width, height, nrChannels;
     unsigned char* data = stbi_load(file, &width, &height, &nrChannels, stbiFlag);
-
-    // SDL_Surface * surface = IMG_Load(file);
-    // if (SDL_MUSTLOCK(surface))
-    //     SDL_LockSurface(surface);
-    // // Now generate texture
     Generate(texture, width, height, (unsigned char*)data);
-    // if (SDL_MUSTLOCK(surface))
-    //     SDL_UnlockSurface(surface);
-    // // And finally free image data
-    // SDL_FreeSurface(surface);
     stbi_image_free(data);
 
     return texture;

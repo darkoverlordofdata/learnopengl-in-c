@@ -8,27 +8,27 @@ extern const CFWClass *ECSPlayerManager;
 
 extern void* ECSPlayerManager_New(ECSPlayerManager* this);
 
-extern void ECSPlayerManager_Initialize(ECSPlayerManager* this);
+extern method void Initialize(ECSPlayerManager* this);
 
-extern void ECSPlayerManager_SetWorld(ECSPlayerManager* this, ECSWorld* world);
+extern method void SetWorld(ECSPlayerManager* this, ECSWorld* world);
 
-extern ECSWorld* ECSPlayerManager_GetWorld(ECSPlayerManager* this);
+extern method ECSWorld* GetWorld(ECSPlayerManager* this);
 
-extern void ECSPlayerManager_Added(ECSPlayerManager* this, ECSEntity* entity);
+extern method void Added(ECSPlayerManager* this, ECSEntity* entity);
 
-extern void ECSPlayerManager_Changed(ECSPlayerManager* this, ECSEntity* entity);
+extern method void Changed(ECSPlayerManager* this, ECSEntity* entity);
 
-extern void ECSPlayerManager_Deleted(ECSPlayerManager* this, ECSEntity* entity); 
+extern method void Deleted(ECSPlayerManager* this, ECSEntity* entity); 
 
-extern void ECSPlayerManager_Disabled(ECSPlayerManager* this, ECSEntity* entity);
+extern method void Disabled(ECSPlayerManager* this, ECSEntity* entity);
 
-extern void ECSPlayerManager_Enabled(ECSPlayerManager* this, ECSEntity* entity);
+extern method void Enabled(ECSPlayerManager* this, ECSEntity* entity);
 
-extern void ECSPlayerManager_SetPlayer(ECSPlayerManager* this, ECSEntity* e, char* player);
+extern method void SetPlayer(ECSPlayerManager* this, ECSEntity* e, char* player);
 
-extern CFWArray* ECSPlayerManager_GetEntitiesOfPlayer(ECSPlayerManager* this, char* player);
+extern method CFWArray* GetEntitiesOfPlayer(ECSPlayerManager* this, char* player);
 
-extern void ECSPlayerManager_RemoveFromPlayer(ECSPlayerManager* this, ECSEntity* e);
+extern method void RemoveFromPlayer(ECSPlayerManager* this, ECSEntity* e);
 
-extern char* ECSPlayerManager_GetPlayer(ECSPlayerManager* this, ECSEntity* e);
+extern method char* GetPlayer(ECSPlayerManager* this, ECSEntity* e);
 

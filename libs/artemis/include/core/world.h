@@ -7,52 +7,52 @@ extern const CFWClass *ECSWorld;
 
 extern void* ECSWorld_New(ECSWorld* this);
 
-extern void ECSWorld_Initialize(ECSWorld* this); 
+extern method void Initialize(ECSWorld* this); 
 
-extern ECSEntityManager* ECSWorld_GetEntityManager(ECSWorld* this); 
+extern method ECSEntityManager* GetEntityManager(ECSWorld* this); 
 
-extern ECSComponentManager* ECSWorld_GetComponentManager(ECSWorld* this); 
+extern method ECSComponentManager* GetComponentManager(ECSWorld* this); 
 
-extern ECSManager* ECSWorld_SetManager(ECSWorld* this, ECSManager* manager); 
+extern method ECSManager* SetManager(ECSWorld* this, ECSManager* manager); 
 
-extern ECSManager* ECSWorld_GetManager(ECSWorld* this, Class type); 
+extern method ECSManager* GetManager(ECSWorld* this, Class type); 
 
-extern void ECSWorld_DeleteManager(ECSWorld* this, ECSManager* manager); 
+extern method void DeleteManager(ECSWorld* this, ECSManager* manager); 
 
-extern float ECSWorld_GetDelta(ECSWorld* this); 
+extern method float GetDelta(ECSWorld* this); 
 
-extern void ECSWorld_SetDelta(ECSWorld* this, float delta); 
+extern method void SetDelta(ECSWorld* this, float delta); 
 
-extern void ECSWorld_AddEntity(ECSWorld* this, ECSEntity* e); 
+extern method void AddEntity(ECSWorld* this, ECSEntity* e); 
 
-extern void ECSWorld_ChangedEntity(ECSWorld* this, ECSEntity* e); 
+extern method void ChangedEntity(ECSWorld* this, ECSEntity* e); 
 
-extern void ECSWorld_DeleteEntity(ECSWorld* this, ECSEntity* e); 
+extern method void DeleteEntity(ECSWorld* this, ECSEntity* e); 
 
-extern void ECSWorld_Enable(ECSWorld* this, ECSEntity* e); 
+extern method void Enable(ECSWorld* this, ECSEntity* e); 
 
-extern void ECSWorld_Disable(ECSWorld* this, ECSEntity* e); 
+extern method void Disable(ECSWorld* this, ECSEntity* e); 
 
-extern ECSEntity* ECSWorld_CreateEntity(ECSWorld* this, char* name); 
+extern method ECSEntity* CreateEntity(ECSWorld* this, char* name); 
 
-extern ECSEntity* ECSWorld_GetEntity(ECSWorld* this, int entityId); 
+extern method ECSEntity* GetEntity(ECSWorld* this, int entityId); 
 
-extern CFWArray* ECSWorld_GetSystems(ECSWorld* this); 
+extern method CFWArray* GetSystems(ECSWorld* this); 
 
-extern ECSEntitySystem* ECSWorld_SetSystem(ECSWorld* this, ECSEntitySystem* system, bool passive); 
+extern method ECSEntitySystem* SetSystem(ECSWorld* this, ECSEntitySystem* system, bool passive); 
 
-extern ECSEntitySystem* ECSWorld_SetSystem(ECSWorld* this, ECSEntitySystem* system); 
+extern method ECSEntitySystem* SetSystem(ECSWorld* this, ECSEntitySystem* system); 
 
-extern void ECSWorld_DeleteSystem(ECSWorld* this, ECSEntitySystem* system); 
+extern method void DeleteSystem(ECSWorld* this, ECSEntitySystem* system); 
 
-extern void ECSWorld_NotifySystems(ECSWorld* this, ECSPerformer perform, ECSEntity* e); 
+extern method void NotifySystems(ECSWorld* this, ECSPerformer perform, ECSEntity* e); 
 
-extern void NotifyManagers(ECSWorld* this, ECSPerformer perform, ECSEntity* e); 
+extern method void NotifyManagers(ECSWorld* this, ECSPerformer perform, ECSEntity* e); 
 
-extern ECSEntitySystem* ECSWorld_GetSystem(ECSWorld* this, Class type); 
+extern method ECSEntitySystem* GetSystem(ECSWorld* this, Class type); 
 
-extern void ECSWorld_Check(ECSWorld* this, Array* entities, ECSPerformer perform); 
+extern method void Check(ECSWorld* this, Array* entities, ECSPerformer perform); 
 
-extern void ECSWorld_Update(ECSWorld* this); 
+extern method void Update(ECSWorld* this); 
 
-extern void ECSWorld_Draw(ECSWorld* this);
+extern method void Draw(ECSWorld* this);

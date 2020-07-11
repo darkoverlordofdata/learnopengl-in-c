@@ -6,7 +6,6 @@
             "command": "emcc",
             "args": [
                 "src/main.c",
-                // "src/triangle.c",
                 "src/shmupwarz.c",
                 "libs/dna/src/filesystem.c",
                 "libs/dna/src/glad.c",
@@ -18,6 +17,9 @@
                 "libs/dna/src/elementrenderer.c",
                 "libs/dna/src/resourcemanager.c",
                 "libs/cfw/src/cfw.c",
+                "libs/cfw/src/bitset.c",
+                "libs/cfw/src/uuid.c",
+                "libs/cfw/src/mt19937ar.c",
                 "libs/libcorefw.bc",
                 "libs/libBlocksRuntime.bc",
                 "-std=c18",

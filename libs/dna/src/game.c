@@ -139,6 +139,10 @@ void* DNAGame_Create(char* cstr, int width, int height, void* subclass, struct D
     return DNAGame_ctor(this, cstr, width, height, subclass, vptr);
 }
 
+method char* ToString(DNAGame* this)
+{
+    return this->title;
+}
 /**
  * DNAGame::Start
  */

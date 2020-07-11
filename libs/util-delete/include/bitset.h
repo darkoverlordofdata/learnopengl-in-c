@@ -29,23 +29,26 @@ SOFTWARE.
 #include <assert.h>
 #include "cfw.h"
 
-typedef struct UtilBitSet UtilBitSet;
-extern CFWClass *UtilBitSetClass;
+typedef struct BitSet BitSet;
+extern const CFWClass *BitSetClass;
 
-extern void* BitSet_New(UtilBitSet* this, int nbits); 
+// extern method void* BitSet_New(void); 
 
-extern int NextSetBit(UtilBitSet* this, int fromIndex); 
+// extern method 
+extern void* BitSet_New(int nbits); 
 
-extern bool Intersects(UtilBitSet* this, UtilBitSet* set); 
+extern method int NextSetBit(BitSet* this, int fromIndex); 
 
-extern bool IsEmpty(UtilBitSet* this); 
+extern method bool Intersects(BitSet* this, BitSet* set); 
 
-extern void Set(UtilBitSet* this, int bitIndex, bool value); 
+extern method bool IsEmpty(BitSet* this); 
 
-extern bool Get(UtilBitSet* this, int bitIndex); 
+extern method void Set(BitSet* this, int bitIndex, bool value); 
 
-extern void method Clear(UtilBitSet* this);
+extern method bool Get(BitSet* this, int bitIndex); 
 
-extern void method Clear(UtilBitSet* this, int bitIndex);  
+extern method void Clear(BitSet* this);
 
-extern CFWString* ToString(UtilBitSet* this);
+extern method void Clear(BitSet* this, int bitIndex);  
+
+extern method char* ToString(BitSet* this);

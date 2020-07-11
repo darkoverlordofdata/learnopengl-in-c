@@ -5,31 +5,31 @@
 struct ECSTagManager;
 extern const CFWClass *ECSTagManager;
 
-extern void* ECSTagManager_New(ECSTagManager* this);
+extern void* New(ECSTagManager* this);
 
-extern void ECSTagManager_Initialize(ECSTagManager* this);
+extern method void Initialize(ECSTagManager* this);
 
-extern void ECSTagManager_SetWorld(ECSTagManager* this, ECSWorld* world);
+extern method void SetWorld(ECSTagManager* this, ECSWorld* world);
 
-extern ECSWorld* ECSTagManager_GetWorld(ECSTagManager* this);
+extern method ECSWorld* GetWorld(ECSTagManager* this);
 
-extern void ECSTagManager_Added(ECSTagManager* this, ECSEntity* entity);
+extern method void Added(ECSTagManager* this, ECSEntity* entity);
 
-extern void ECSTagManager_Changed(ECSTagManager* this, ECSEntity* entity);
+extern method void Changed(ECSTagManager* this, ECSEntity* entity);
 
-extern void ECSTagManager_Deleted(ECSTagManager* this, ECSEntity* entity); 
+extern method void Deleted(ECSTagManager* this, ECSEntity* entity); 
 
-extern void ECSTagManager_Disabled(ECSTagManager* this, ECSEntity* entity);
+extern method void Disabled(ECSTagManager* this, ECSEntity* entity);
 
-extern void ECSTagManager_Enabled(ECSTagManager* this, ECSEntity* entity);
+extern method void Enabled(ECSTagManager* this, ECSEntity* entity);
 
-extern void ECSTagManager_Register(ECSTagManager* this, char* tag, ECSEntity* e);
+extern method void Register(ECSTagManager* this, char* tag, ECSEntity* e);
 
-extern void ECSTagManager_Unregister(ECSTagManager* this, char* tag);
+extern method void Unregister(ECSTagManager* this, char* tag);
 
-extern bool ECSTagManager_IsRegistered(ECSTagManager* this, char* tag);
+extern method bool IsRegistered(ECSTagManager* this, char* tag);
 
-extern ECSEntity* ECSTagManager_GetEntity(ECSTagManager* this, char* tag);
+extern method ECSEntity* GetEntity(ECSTagManager* this, char* tag);
 
-extern CFWArray* ECSTagManager_GetRegisteredTags(ECSTagManager* this);
+extern method CFWArray* GetRegisteredTags(ECSTagManager* this);
 
