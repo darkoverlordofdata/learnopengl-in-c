@@ -9,12 +9,19 @@
 #endif
 #include <GLFW/glfw3.h>
 #define STB_IMAGE_IMPLEMENTATION
-#include "dna.h"
 #include "cfw.h"
+#include "dna.h"
 #include "resourcemanager-private.h"
 #include "shader-private.h"
 #include "texture2d-private.h"
 #include <stb_image.h>
+
+#include <fcntl.h>
+#include <unistd.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/stat.h>
+
 
 corefw(DNAResourceManager);
 static bool ctor(void* self, va_list args) { return true; }
@@ -60,31 +67,8 @@ void Init(DNAResourceManager* this)
     this->Shaders = cfw_new(cfw_map, NULL);
     this->Textures = cfw_new(cfw_map, NULL);
 }
-/**
- * ReadTextFile
- * 
- * @param path path to file
- * @returns string with file contents
- * 
- */
-static char* ReadTextFile(FILE* f)
+method void* New(DNAResourceManager* this)
 {
-    fseek(f, 0L, SEEK_END);
-    long s = ftell(f);
-    rewind(f);
-    char* buf = (char*)calloc(1, s + 1);
-    buf[s] = '\0';
-
-    if (buf != NULL) {
-        fread(buf, s, 1, f);
-        return buf;
-    }
-    return buf;
-}
-
-void* DNAResourceManager_New()
-{
-    DNAResourceManager* this = cfw_new((CFWClass*)DNAResourceManagerClass);
     Init(this);
     return this;
 }
@@ -168,34 +152,17 @@ void Clear(DNAResourceManager* this)
  * @returns loaded, compiled and linked shader program
  * 
  */
+
+
 DNAShader* LoadShaderFromFile(
     const DNAResourceManager* this,
     const GLchar* vShaderFile,
     const GLchar* fShaderFile)
 {
-
-    FILE* vertexShaderFile = fopen(vShaderFile, "r");
-    FILE* fragmentShaderFile = fopen(fShaderFile, "r");
-
-    if (!vertexShaderFile)
-        printf("Unable to open %s", vShaderFile);
-    if (!fragmentShaderFile)
-        printf("Unable to open %s", fShaderFile);
-
-    // Read file's buffer contents into streams
-    GLchar* vShaderCode = ReadTextFile(vertexShaderFile);
-    GLchar* fShaderCode = ReadTextFile(fragmentShaderFile);
-
-    // NOTE: Emscripten adds an extra byte of garbage at the end
-    // of the shader file, so convert it to a linefeed.
-    // close file handlers
-    fclose(vertexShaderFile);
-    fclose(fragmentShaderFile);
-
-    // 2. Now create shader object from source code
-    DNAShader* shader = DNAShader_New(vShaderCode, fShaderCode);
-    // DNAShaderCompile(shader, vShaderCode, fShaderCode);
-    return shader;
+    CFWString* vShader = CFWFS.readTextFile((char*)vShaderFile);
+    CFWString* fShader = CFWFS.readTextFile((char*)fShaderFile);
+    
+    return new (DNAShader, vShader, fShader);
 }
 
 /**
@@ -214,7 +181,7 @@ DNATexture2D* LoadTextureFromFile(
     int format = alpha ? GL_RGBA : GL_RGB;
     int stbiFlag = alpha ? STBI_rgb_alpha : STBI_rgb;
 
-    DNATexture2D* texture = DNATexture2D_New(format, format, (char*)file);
+    DNATexture2D* texture = new (DNATexture2D, format, format, (char*)file);
 
     stbi_set_flip_vertically_on_load(true); // tell stb_image.h to flip loaded texture's on the y-axis.
     int width, height, nrChannels;

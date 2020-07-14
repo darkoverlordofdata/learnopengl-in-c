@@ -1,11 +1,13 @@
 #pragma once
-#include <assert.h>
-#include <corefw/class.h>
+#include "cfw.h"
 
-struct ECSTagManager;
-extern const CFWClass *ECSTagManager;
+typedef struct ECSTagManager ECSTagManager;
+extern const CFWClass* ECSTagManagerClass;
 
-extern void* New(ECSTagManager* this);
+typedef struct ECSEntity ECSEntity;
+typedef struct ECSWorld ECSWorld;
+
+extern method void* New(ECSTagManager* this);
 
 extern method void Initialize(ECSTagManager* this);
 

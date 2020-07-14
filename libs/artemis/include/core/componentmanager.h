@@ -1,14 +1,19 @@
 #pragma once
-#include <assert.h>
-#include <corefw/class.h>
+#include "cfw.h"
+#include "entity.h"
 
-struct ECSComponentManager;
-extern const CFWClass *ECSComponentManager;
+typedef struct ECSComponentManager ECSComponentManager;
+extern const CFWClass* ECSComponentManagerClass;
 
-extern method BitSet* GetComponentBits(ECSEntity* this);
+typedef struct ECSEntity ECSEntity;
+typedef struct ECSComponentManager ECSComponentManager;
+typedef struct ECSComponentType ECSComponentType;
+typedef struct ECSComponentTypeFactory ECSComponentTypeFactory;
+
+extern method CFWBitVector* GetComponentBits(ECSEntity* this);
 extern method int GetId(ECSEntity* this);
 
-extern void* ECSComponentManager_New();
+extern method void* New(ECSComponentManager* this);
 
 extern method ECSComponentTypeFactory* GetTypeFactory(ECSComponentManager* this);
 

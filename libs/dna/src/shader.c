@@ -24,29 +24,11 @@ static void dtor(void* self)
     DNAShader* this = self;
 }
 
-static char* ReadTextFile(FILE* f)
+method void* New(DNAShader* this, CFWString* vShader, CFWString* fShader)
 {
-    fseek(f, 0L, SEEK_END);
-    long s = ftell(f);
-    rewind(f);
-    char* buf = (char*)calloc(1, s + 1);
-    buf[s] = '\0';
-
-    if (buf != NULL) {
-        fread(buf, s, 1, f);
-        return buf;
-    }
-    return buf;
-}
-
-void* DNAShader_New(const GLchar* vShaderSrc, const GLchar* fShaderSrc)
-{
-    DNAShader* this = cfw_new((CFWClass*)DNAShaderClass);
-
-    Compile(this, vShaderSrc, fShaderSrc);
+    Compile(this, cfw_string_c(vShader), cfw_string_c(fShader));
     return this;
 }
-
 /**
  * Use shader
  */

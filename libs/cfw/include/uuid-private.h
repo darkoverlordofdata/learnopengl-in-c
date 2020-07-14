@@ -31,7 +31,7 @@ SOFTWARE.
  * Generate an RFC 4122 compliant type 4 uuid
  * 
  */
-struct UUID
+struct CFWUuid
 {
     CFWObject obj;
     /* uuid data */

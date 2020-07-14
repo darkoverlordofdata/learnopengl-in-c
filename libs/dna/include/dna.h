@@ -3,7 +3,6 @@
 // clang-format off
 #include "cfw.h"
 #include "rect.h"
-#include "filesystem.h"
 #include "game.h"
 #include "resourcemanager.h"
 #include "arrayrenderer.h"

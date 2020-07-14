@@ -29,17 +29,15 @@ SOFTWARE.
 #include <stdbool.h>
 #include <string.h>
 
-corefw(UUID);
+corefw(CFWUuid);
 static bool ctor(void* self, va_list args) { return true; }
 static bool equal(void* ptr1, void* ptr2) { return ptr1 == ptr2; }
 static uint32_t hash(void* self) { return (uint32_t)self; }
 static void* copy(void* self) { return NULL; }
 static void dtor(void* self) {}
 
-method UUID* UUID_New(void)
+method void* New(CFWUuid* this)
 {
-
-    UUID* this = cfw_new((CFWClass*)UUIDClass);
     unsigned long d0 = NextLong();
     unsigned long d1 = NextLong();
     unsigned long d2 = NextLong();
@@ -77,7 +75,7 @@ method char* GetToStringFormat(char format)
     }
     return "%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x";
 }
-method char* ToString(UUID* this, char format)
+method char* ToString(CFWUuid* this, char format)
 {
     // if (this->to_string_cache[0] == 0)
     sprintf(this->to_string_cache,
@@ -89,7 +87,7 @@ method char* ToString(UUID* this, char format)
 
     return this->to_string_cache;
 }
-method char* ToString(UUID* this)
+method char* ToString(CFWUuid* this)
 {
     return ToString(this, 'D');
 }

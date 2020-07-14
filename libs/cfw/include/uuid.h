@@ -28,13 +28,13 @@ SOFTWARE.
 #include <limits.h>
 #include <stdbool.h>
 
-typedef struct UUID UUID;
-extern const CFWClass* UUIDClass;
+typedef struct CFWUuid CFWUuid;
+extern const CFWClass* CFWUuidClass;
 
-extern method UUID* UUID_New(void);
+extern method void* New(CFWUuid* this);
 
 extern method char* GetToStringFormat(char format);
 
-extern method char* ToString(UUID* self, char format);
+extern method char* ToString(CFWUuid* self, char format);
 
-extern method char* ToString(UUID* self);
+extern method char* ToString(CFWUuid* self);

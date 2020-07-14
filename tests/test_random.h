@@ -3,12 +3,12 @@
 static inline void test_random()
 {
 
-	Random* rnd = Random_New(time(NULL));
+	CFWRandom* rnd = new(CFWRandom);
 
 	unsigned long l = NextLong();
 	double d = NextDouble();
 
-    Describe("Run Tests", ^{
+    Describe("CFWRandom Tests", ^{
 
         It("Should: be not 0", ^{
 			printf("l = %lu\n", l);

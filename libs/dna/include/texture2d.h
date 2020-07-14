@@ -9,7 +9,7 @@
 typedef struct DNATexture2D DNATexture2D;
 extern const CFWClass* DNATexture2DClass;
 
-extern void* DNATexture2D_New(GLuint internalFormat, GLuint imageFormat, char* path);
+extern method void* New(DNATexture2D* this, GLuint internalFormat, GLuint imageFormat, char* path);
 
 extern method void Generate(
     DNATexture2D* this,

@@ -15,7 +15,7 @@ extern const CFWClass* DNAShaderClass;
 
 extern method DNAShader* Use(DNAShader* this);
 
-extern void* DNAShader_New();
+extern method void* New(DNAShader* this, CFWString* vShader, CFWString* fShader);
 extern method GLuint GetId(DNAShader* this);
 extern method void Compile(DNAShader* this, const GLchar* vertexSource, const GLchar* fragmentSource);
 extern method void SetFloat(

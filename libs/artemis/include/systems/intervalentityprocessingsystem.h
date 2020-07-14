@@ -1,11 +1,14 @@
 #pragma once
-#include <assert.h>
-#include <corefw/class.h>
+#include "cfw.h"
+#include "core/world.h"
+#include "core/entity.h"
+#include "core/aspect.h"
+#include "systems/entityprocessingsystem.h"
 
-struct ECSIntervalEntityProcessingSystem;
-extern const CFWClass *ECSIntervalEntityProcessingSystem;
+typedef struct ECSIntervalEntityProcessingSystem ECSIntervalEntityProcessingSystem;
+extern const CFWClass* ECSIntervalEntityProcessingSystemClass;
 
-extern void* ECSIntervalEntityProcessingSystem_New(ECSIntervalEntityProcessingSystem* this, ECSAspect* aspect, float interval);
+extern method void* New(ECSIntervalEntityProcessingSystem* this, ECSAspect* aspect, float interval);
 
 extern method void Begin(ECSIntervalEntityProcessingSystem* this);
 
@@ -13,7 +16,7 @@ extern method void Process(ECSIntervalEntityProcessingSystem* this);
 
 extern method void End(ECSIntervalEntityProcessingSystem* this);
 
-extern method void ProcessEntities(ECSIntervalEntityProcessingSystem* this, Array* entities);
+extern method void ProcessEntities(ECSIntervalEntityProcessingSystem* this, CFWArray* entities);
 
 extern method bool CheckProcessing(ECSIntervalEntityProcessingSystem* this);
 

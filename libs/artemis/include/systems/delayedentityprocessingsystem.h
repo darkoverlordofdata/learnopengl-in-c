@@ -1,11 +1,14 @@
 #pragma once
-#include <assert.h>
-#include <corefw/class.h>
+#include "cfw.h"
+#include "core/world.h"
+#include "core/entity.h"
+#include "core/aspect.h"
+#include "systems/entityprocessingsystem.h"
 
-struct ECSDelayedEntityProcessingSystem;
-extern const CFWClass *ECSDelayedEntityProcessingSystem;
+typedef struct ECSDelayedEntityProcessingSystem ECSDelayedEntityProcessingSystem;
+extern const CFWClass* ECSDelayedEntityProcessingSystemClass;
 
-extern void* ECSDelayedEntityProcessingSystem_New(ECSDelayedEntityProcessingSystem* this, ECSAspect* aspect);
+extern method void* New(ECSDelayedEntityProcessingSystem* this, ECSAspect* aspect);
 
 extern method void Begin(ECSDelayedEntityProcessingSystem* this);
 
@@ -13,7 +16,7 @@ extern method void Process(ECSDelayedEntityProcessingSystem* this);
 
 extern method void End(ECSDelayedEntityProcessingSystem* this);
 
-extern method void ProcessEntities(ECSDelayedEntityProcessingSystem* this, Array* entities) 
+extern method void ProcessEntities(ECSDelayedEntityProcessingSystem* this, CFWArray* entities);
 
 extern method bool CheckProcessing(ECSDelayedEntityProcessingSystem* this);
 

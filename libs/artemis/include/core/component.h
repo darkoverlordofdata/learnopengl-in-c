@@ -1,8 +1,7 @@
 #pragma once
-#include <assert.h>
-#include <corefw/class.h>
+#include "cfw.h"
 
-struct ECSComponent;
-extern const CFWClass *ECSComponent;
+typedef struct ECSComponent ECSComponent;
+extern const CFWClass* ECSComponentClass;
 
-extern void* ECSComponent_New(ECSComponent* this)
+extern method void* New(ECSComponent* this);

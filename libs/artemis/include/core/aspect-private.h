@@ -20,14 +20,15 @@
  * @author Arni Arent
  *
  */
-#include "core/aspect.h"
+#pragma once
+#include "aspect.h"
+#include "cfw.h"
 #include "ecs.h"
-#include "object.h"
 
 struct ECSAspect {
     CFWObject obj;
-    BitSet* AllSet;
-    BitSet* ExclusionSet;
-    BitSet* OneSet;
-    struct ECSWorld* World;
+    CFWBitVector* AllSet;
+    CFWBitVector* ExclusionSet;
+    CFWBitVector* OneSet;
+    ECSWorld* World;
 };

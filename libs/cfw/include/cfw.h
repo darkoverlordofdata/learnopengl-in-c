@@ -55,18 +55,42 @@ static inline struct CFWObject* asObject(void* obj) { return obj; }
         (_a > _b) ? _a : _b; \
     })
 
-
-typedef CFWArray Array;
-typedef CFWBool Bool;
-typedef CFWDouble Double;
-typedef CFWFile File;
-typedef CFWInt Int;
-typedef CFWMap Map;
-typedef CFWRefPool RefPool;
-typedef CFWStream Stream;
-typedef CFWString String;
+#define new(T, args...) New((T*)cfw_new((CFWClass*)T##Class), ## args)
+#define create(T, args...) New((T*)cfw_create((CFWClass*)T##Class), ## args)
 
 
-#include "bitset.h"
-#include "mt19937ar.h"
+// typedef CFWArray Array;
+// typedef CFWBool Bool;
+// typedef CFWDouble Double;
+// typedef CFWFile File;
+// typedef CFWInt Int;
+// typedef CFWMap Map;
+// typedef CFWRefPool RefPool;
+// typedef CFWStream Stream;
+// typedef CFWString String;
+
+// #define ArrayClass cfw_array
+// #define BoolClass cfw_bool
+// #define DoubleClass cfw_double
+// #define FileClass cfw_file
+// #define CFWIntClass cfw_int
+// #define MapClass cfw_map
+// #define RefPoolClass cfw_refpool
+// #define StreamClass cfw_stream
+// #define StringClass cfw_string
+
+#include "cfwfs.h"
+#include "bitvector.h"
+#include "random.h"
 #include "uuid.h"
+extern method void* Get(CFWArray* this, int i);
+extern method void* Get(CFWMap* this, char* key);
+extern method void Add(CFWArray* this, void* item);
+extern method void Remove(CFWArray* this, int i);
+extern method void Remove(CFWMap* this, char* key);
+extern method void Put(CFWMap* this, char* key, void* object);
+extern method void Put(CFWArray* this, int index, void* object);
+extern method void ForEach(CFWMap* this, void(^func)(void* key, void* item));
+extern method void ForEach(CFWMap* this, void(*func)(void* key, void* item));
+
+

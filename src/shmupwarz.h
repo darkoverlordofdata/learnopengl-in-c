@@ -26,7 +26,7 @@ typedef struct Shmupwarz Shmupwarz;
 extern const CFWClass *ShmupwarzClass;
 struct ShmupwarzVtbl;
 
-extern void* Shmupwarz_New(char* title, int width, int height);
+extern void* New(Shmupwarz* this, char* title, int width, int height);
 extern method void Initialize(Shmupwarz* this);
 extern method void LoadContent(Shmupwarz* this);
 extern method void Update(Shmupwarz* this);

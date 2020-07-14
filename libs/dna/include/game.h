@@ -21,9 +21,9 @@ struct DNAGameVtbl {
     void (*Draw)(void* self);
 };
 
-extern void* DNAGame_ctor(DNAGame* this, char* cstr, int width, int height, void* subclass, struct DNAGameVtbl* vptr);
+// extern void* DNAGame_ctor(DNAGame* this, char* cstr, int width, int height, void* subclass, struct DNAGameVtbl* vptr);
 
-extern void* DNAGame_New(char* cstr, int width, int height, void* subclass, struct DNAGameVtbl* vptr);
+extern method void* New(DNAGame* this, char* cstr, int width, int height, void* subclass, struct DNAGameVtbl* vptr);
 
 /**
  * DNAGame::HandleEvents

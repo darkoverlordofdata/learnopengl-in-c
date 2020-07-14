@@ -28,13 +28,10 @@ static void dtor(void* self) {}
  * @param imageFormat
  * @param path to image
  */
-void* DNATexture2D_New(GLuint internalFormat, GLuint imageFormat, char* path)
+method void* New(DNATexture2D* this, GLuint internalFormat, GLuint imageFormat, char* path)
 {
-    DNATexture2D* this = cfw_new((CFWClass*)DNATexture2DClass);
-#ifdef __EMSCRIPTEN__
-#else
-    this->path = strdup(path);
-#endif
+    // DNATexture2D* this = cfw_new((CFWClass*)DNATexture2DClass);
+    this->path = cfw_strdup(path);
     this->Width = 0;
     this->Height = 0;
     this->wrapS = GL_REPEAT;

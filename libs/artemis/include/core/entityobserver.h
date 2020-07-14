@@ -1,11 +1,22 @@
 #pragma once
-#include <assert.h>
-#include <corefw/class.h>
+#include "cfw.h"
 
-struct ECSEntityObserver;
-extern const CFWClass *ECSEntityObserver;
+typedef struct ECSEntityObserver ECSEntityObserver;
+extern const CFWClass* ECSEntityObserverClass;
 
-extern void* ECSEntityObserver_New(ECSEntityObserver* this);
+typedef struct ECSEntity ECSEntity;
+// typedef struct ECS ECS;
+
+typedef void (*ECSEntityProc)(void* this, void* entity);
+struct ECSIEntityObserver {
+    void (*Added)(void* this, void* entity);
+    void (*Changed)(void* this, void* entity);
+    void (*Deleted)(void* this, void* entity);
+    void (*Disabled)(void* this, void* entity);
+    void (*Enabled)(void* this, void* entity);
+};
+
+extern method void* New(ECSEntityObserver* this);
 
 extern method void Added(ECSEntityObserver* this, ECSEntity* entity);
 

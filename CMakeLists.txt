@@ -12,6 +12,11 @@ set ( SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/src/main.c )
 set (SOURCE ${SOURCE} ${CMAKE_CURRENT_SOURCE_DIR}/src/shmupwarz.c )
 # set (SOURCE ${SOURCE} ${CMAKE_CURRENT_SOURCE_DIR}/src/triangle.c )
 
+# if (EXISTS ${CMAKE_SOURCE_DIR}/data )
+#     add_subdirectory (data)
+#     list ( APPEND RESOURCES ${resources_gresource_xml_C_FILE} )
+# endif ()
+
 add_subdirectory ( libs/cfw )
 add_subdirectory ( libs/dna )
 # add_subdirectory ( libs/artemis )

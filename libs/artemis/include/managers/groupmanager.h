@@ -1,11 +1,13 @@
 #pragma once
-#include <assert.h>
-#include <corefw/class.h>
+#include "cfw.h"
 
-struct ECSGroupManager;
-extern const CFWClass *ECSGroupManager;
+typedef struct ECSGroupManager ECSGroupManager;
+extern const CFWClass* ECSGroupManagerClass;
 
-extern void* ECSGroupManager_New(ECSGroupManager* this);
+typedef struct ECSEntity ECSEntity;
+typedef struct ECSWorld ECSWorld;
+
+extern method void* New(ECSGroupManager* this);
 
 extern method void Initialize(ECSGroupManager* this);
 
@@ -17,7 +19,7 @@ extern method void Added(ECSGroupManager* this, ECSEntity* entity);
 
 extern method void Changed(ECSGroupManager* this, ECSEntity* entity);
 
-extern method void Deleted(ECSGroupManager* this, ECSEntity* entity) 
+extern method void Deleted(ECSGroupManager* this, ECSEntity* entity);
 
 extern method void Disabled(ECSGroupManager* this, ECSEntity* entity);
 

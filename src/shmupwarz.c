@@ -27,7 +27,7 @@ static void dtor(void* self)
 ////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////
 typedef void (*ShmupwarzProc)(Shmupwarz* this);
-void* Shmupwarz_New(char* title, int width, int height)
+void* New(Shmupwarz* this, char* title, int width, int height)
 {
     static struct DNAGameVtbl overrides = {
         .Initialize = (DNAGameProc)(ShmupwarzProc)(Initialize),
@@ -36,8 +36,7 @@ void* Shmupwarz_New(char* title, int width, int height)
         .Draw = (DNAGameProc)((ShmupwarzProc)Draw),
     };
 
-    Shmupwarz* this = cfw_new((CFWClass*)ShmupwarzClass);
-    DNAGame_ctor(&this->game, title, width, height, this, &overrides);
+    New(&this->game, title, width, height, this, &overrides);
     return (void*)this;
 }
 
@@ -49,7 +48,7 @@ method void LoadContent(Shmupwarz* this)
 {
     Mat projection = glm_ortho(0.0f, this->game.width, this->game.height, 0.0f, -1.0f, 1.0f);
 
-    this->resource = DNAResourceManager_New();
+    this->resource = new(DNAResourceManager);
 #ifdef __EMSCRIPTEN__
     this->shader = LoadShader(this->resource, "data/shaders/es/elementrender.vs", "data/shaders/es/elementrender.fs", "shader");
 #else
@@ -60,7 +59,7 @@ method void LoadContent(Shmupwarz* this)
     SetMatrix(this->shader, "projection", &projection, true);
 
     this->bg = LoadTexture(this->resource, "data/images/background.png", GL_TRUE, "background");
-    this->renderer = DNAElementRenderer_New(this->shader);
+    this->renderer = new(DNAElementRenderer, this->shader);
 }
 
 method void Update(Shmupwarz* this)

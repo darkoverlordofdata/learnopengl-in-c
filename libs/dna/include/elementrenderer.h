@@ -16,7 +16,7 @@
 typedef struct DNAElementRenderer DNAElementRenderer;
 extern const CFWClass* DNAElementRendererClass;
 
-extern void* DNAElementRenderer_New(DNAShader* shader);
+extern method void* New(DNAElementRenderer* this, DNAShader* shader);
 
 extern method void Draw(
     const DNAElementRenderer* this,

@@ -1,11 +1,13 @@
 #pragma once
-#include <assert.h>
-#include <corefw/class.h>
+#include "cfw.h"
+#include "core/world.h"
+#include "core/entity.h"
+#include "core/aspect.h"
 
-struct ECSVoidEntitySystem;
-extern const CFWClass *ECSVoidEntitySystem;
+typedef struct ECSVoidEntitySystem ECSVoidEntitySystem;
+extern const CFWClass* ECSVoidEntitySystemClass;
 
-extern void* ECSVoidEntitySystem_New(ECSVoidEntitySystem* this);
+extern method void* New(ECSVoidEntitySystem* this);
 
 extern method void Begin(ECSVoidEntitySystem* this);
 
@@ -13,7 +15,7 @@ extern method void Process(ECSVoidEntitySystem* this);
 
 extern method void End(ECSVoidEntitySystem* this);
 
-extern method void ProcessEntities(ECSVoidEntitySystem* this, Array* entities);
+extern method void ProcessEntities(ECSVoidEntitySystem* this, CFWArray* entities);
 
 extern method bool CheckProcessing(ECSVoidEntitySystem* this);
 

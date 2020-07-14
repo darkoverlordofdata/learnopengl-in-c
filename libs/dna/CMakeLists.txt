@@ -1,6 +1,5 @@
 set(SOURCE
    ${SOURCE}
-   ${CMAKE_CURRENT_SOURCE_DIR}/src/filesystem.c
    ${CMAKE_CURRENT_SOURCE_DIR}/src/glad.c
    ${CMAKE_CURRENT_SOURCE_DIR}/src/tglm.c
    ${CMAKE_CURRENT_SOURCE_DIR}/src/game.c

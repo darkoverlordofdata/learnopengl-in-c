@@ -64,9 +64,8 @@ static uint64_t GetTicks()
     return ((ts * 1000000L) + us) * 10;
 }
 
-void* DNAGame_ctor(DNAGame* this, char* cstr, int width, int height, void* subclass, struct DNAGameVtbl* vptr)
+method void* New(DNAGame* this, char* cstr, int width, int height, void* subclass, struct DNAGameVtbl* vptr)
 {
-
     this->subclass = subclass;
     this->override = vptr;
     srand(time(NULL));
@@ -125,18 +124,6 @@ void* DNAGame_ctor(DNAGame* this, char* cstr, int width, int height, void* subcl
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     return this;
-}
-
-void* DNAGame_New(char* cstr, int width, int height, void* subclass, struct DNAGameVtbl* vptr)
-{
-    DNAGame* this = cfw_new((CFWClass*)DNAGameClass);
-    return DNAGame_ctor(this, cstr, width, height, subclass, vptr);
-}
-
-void* DNAGame_Create(char* cstr, int width, int height, void* subclass, struct DNAGameVtbl* vptr)
-{
-    DNAGame* this = cfw_create((CFWClass*)DNAGameClass);
-    return DNAGame_ctor(this, cstr, width, height, subclass, vptr);
 }
 
 method char* ToString(DNAGame* this)

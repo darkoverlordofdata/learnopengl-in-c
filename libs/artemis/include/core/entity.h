@@ -1,31 +1,34 @@
 #pragma once
-#include <assert.h>
-#include <corefw/class.h>
+#include "cfw.h"
 
-struct ECSEntity;
-extern const CFWClass *ECSEntity;
+typedef struct ECSEntity ECSEntity;
+extern const CFWClass* ECSEntityClass;
 
-extern void* ECSEntity_New(ECSEntity* this, ECSWorld* world, int id, char* name);
+typedef struct ECSWorld ECSWorld;
+typedef struct ECSComponent ECSComponent;
+typedef struct ECSComponentType ECSComponentType;
 
-extern method BitSet* GetComponentBits(ECSEntity* this);
+extern method void* New(ECSEntity* this, ECSWorld* world, int id, char* name);
 
-extern method BitSet* GetSystemBits(ECSEntity* this);
+extern method CFWBitVector* GetComponentBits(ECSEntity* this);
+
+extern method CFWBitVector* GetSystemBits(ECSEntity* this);
 
 extern method int GetId(ECSEntity* this);
 
-extern method UUID* GetUUID(ECSEntity* this);
+extern method CFWUuid* GetUUID(ECSEntity* this);
 
 extern method void Reset(ECSEntity* this);
 
 extern method ECSEntity* AddComponent(ECSEntity* this, ECSComponent* component);
 
-extern method ECSComponentType* GetTypeFor(ECSEntity* this, Class c);
+extern method ECSComponentType* GetTypeFor(ECSEntity* this, CFWClass* c);
 
 extern method ECSEntity* RemoveComponentInstance(ECSEntity* this, ECSComponent* component);
 
 extern method ECSEntity* RemoveComponent(ECSEntity* this, ECSComponentType* type);
 
-extern method ECSEntity* RemoveComponentByType(ECSEntity* this, Class type);
+extern method ECSEntity* RemoveComponentByType(ECSEntity* this, CFWClass* type);
 
 extern method bool IsActive(ECSEntity* this);
 
@@ -33,9 +36,9 @@ extern method bool IsEnabled(ECSEntity* this);
 
 extern method ECSComponent* GetComponent(ECSEntity* this, ECSComponentType* type);
 
-extern method ECSComponent* GetComponentByType(ECSEntity* this, Class type);
+extern method ECSComponent* GetComponentByType(ECSEntity* this, CFWClass* type);
 
-extern method Array* GetCompoments(ECSEntity* this, Array* fillBag);
+extern method CFWArray* GetCompoments(ECSEntity* this, CFWArray* fillBag);
 
 extern method void AddToWorld(ECSEntity* this);
 

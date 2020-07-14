@@ -1,21 +1,22 @@
 #pragma once
-#include <assert.h>
-#include <corefw/class.h>
+#include "cfw.h"
 
-struct ECSIdentifierPool;
-extern const CFWClass *ECSIdentifierPool;
+typedef struct ECSIdentifierPool  ECSIdentifierPool;
+extern const CFWClass* ECSIdentifierPoolClass;
 
+typedef struct ECSEntity ECSEntity;
+typedef struct ECSWorld ECSWorld;
 
-extern void* ECSIdentifierPool_New();
+extern method void* New(ECSIdentifierPool* this);
 
 extern method void CheckIn(ECSIdentifierPool* this, int id);
 
 extern method int CheckOut(ECSIdentifierPool* this);
 
-struct ECSEntityManager;
-extern const CFWClass *ECSEntityManager;
+typedef struct ECSEntityManager ECSEntityManager;
+extern const CFWClass* ECSEntityManagerClass;
 
-extern void* ECSEntityManager_New();
+extern method void* New(ECSEntityManager* this);
 
 extern method void SetWorld(ECSEntityManager* this, ECSWorld* world);
 

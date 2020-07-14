@@ -1,12 +1,11 @@
 #pragma once
-#include <assert.h>
-#include <corefw/class.h>
+#include "cfw.h"
 
-struct ECSComponentType;
-extern const CFWClass *ECSComponentType;
+typedef struct ECSComponentType ECSComponentType;
+extern const CFWClass* ECSComponentTypeClass;
 
 extern int ECSUniqueComponentIndex;
 
-extern void* ECSComponentType_New(\Class type);
+extern method void* New(ECSComponentType* this, CFWClass* type);
 extern method char* GetName(ECSComponentType* this);
 extern method int GetIndex(ECSComponentType* this);

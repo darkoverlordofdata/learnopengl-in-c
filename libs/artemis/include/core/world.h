@@ -1,11 +1,20 @@
 #pragma once
-#include <assert.h>
-#include <corefw/class.h>
+#include "cfw.h"
+#include "entity.h"
 
-struct ECSWorld;
-extern const CFWClass *ECSWorld;
+typedef void (*ECSPerformer)(void* observer, ECSEntity* entity);
+// typedef void (^ECSPerformer)(void* observer, ECSEntity* entity);
 
-extern void* ECSWorld_New(ECSWorld* this);
+typedef struct ECSWorld ECSWorld;
+extern const CFWClass* ECSWorldClass;
+
+typedef struct ECSEntity ECSEntity;
+typedef struct ECSManager ECSManager;
+typedef struct ECSEntitySystem ECSEntitySystem;
+typedef struct ECSEntityManager ECSEntityManager;
+typedef struct ECSComponentManager ECSComponentManager;
+
+extern method void* New(ECSWorld* this);
 
 extern method void Initialize(ECSWorld* this); 
 
@@ -15,7 +24,7 @@ extern method ECSComponentManager* GetComponentManager(ECSWorld* this);
 
 extern method ECSManager* SetManager(ECSWorld* this, ECSManager* manager); 
 
-extern method ECSManager* GetManager(ECSWorld* this, Class type); 
+extern method ECSManager* GetManager(ECSWorld* this, CFWClass* type); 
 
 extern method void DeleteManager(ECSWorld* this, ECSManager* manager); 
 
@@ -49,9 +58,9 @@ extern method void NotifySystems(ECSWorld* this, ECSPerformer perform, ECSEntity
 
 extern method void NotifyManagers(ECSWorld* this, ECSPerformer perform, ECSEntity* e); 
 
-extern method ECSEntitySystem* GetSystem(ECSWorld* this, Class type); 
+extern method ECSEntitySystem* GetSystem(ECSWorld* this, CFWClass* type); 
 
-extern method void Check(ECSWorld* this, Array* entities, ECSPerformer perform); 
+extern method void Check(ECSWorld* this, CFWArray* entities, ECSPerformer perform); 
 
 extern method void Update(ECSWorld* this); 
 

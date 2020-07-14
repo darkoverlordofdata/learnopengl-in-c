@@ -6,7 +6,7 @@
 typedef struct DNAResourceManager DNAResourceManager;
 extern const CFWClass* DNAResourceManagerClass;
 
-extern void* DNAResourceManager_New();
+extern method void* New(DNAResourceManager* this);
 
 extern method DNAShader* LoadShader(
     const DNAResourceManager* this,

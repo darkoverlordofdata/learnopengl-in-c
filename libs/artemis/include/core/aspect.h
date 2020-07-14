@@ -1,21 +1,30 @@
 #pragma once
-#include <assert.h>
-#include <corefw/class.h>
+#include "cfw.h"
+#include "world.h"
+#include "entity.h"
+#include "component.h"
+#include "componenttypefactory.h"
 
-struct ECSAspect;
-extern const CFWClass* ECSAspect;
+typedef struct ECSAspect ECSAspect;
+extern const CFWClass* ECSAspectClass;
 
-extern void* ECSAspect_New();
+typedef struct ECSWorld ECSWorld;
+typedef struct ECSAspect ECSAspect;
+typedef struct ECSComponentTypeFactory ECSComponentTypeFactory;
+
+extern ECSComponentTypeFactory* ECSAspect_TypeFactory;
+
+extern method void* New(ECSAspect* this);
 
 extern method void SetTypeFactory(ECSComponentTypeFactory* typeFactory);
 
 extern method void SetWorld(ECSAspect* this, ECSWorld* world);
 
-extern method BitSet* GetAllSet(ECSAspect* this);
+extern method CFWBitVector* GetAllSet(ECSAspect* this);
 
-extern method BitSet* GetExclusionSet(ECSAspect* this);
+extern method CFWBitVector* GetExclusionSet(ECSAspect* this);
 
-extern method BitSet* GetOneSet(ECSAspect* this);
+extern method CFWBitVector* GetOneSet(ECSAspect* this);
 
 extern method ECSAspect* All(ECSAspect* this, int count, va_list _args);
 

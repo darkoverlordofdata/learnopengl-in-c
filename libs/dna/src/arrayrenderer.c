@@ -8,8 +8,8 @@
 #include <glad/glad.h>
 #endif
 #include "arrayrenderer-private.h"
-#include "dna.h"
 #include "cfw.h"
+#include "dna.h"
 #include <GLFW/glfw3.h>
 
 corefw(DNAArrayRenderer);
@@ -19,7 +19,6 @@ static bool equal(void* ptr1, void* ptr2) { return ptr1 == ptr2; }
 static uint32_t hash(void* self) { return (uint32_t)self; }
 static void* copy(void* self) { return NULL; }
 
-void InitArrayRenderData(DNAArrayRenderer* this);
 /**
  * ArrayRenderer
  * 
@@ -33,12 +32,33 @@ static void dtor(void* self)
     glDeleteBuffers(1, &this->VBO);
 }
 
-void* DNAArrayRenderer_New(DNAShader* shader)
+method void* New(DNAArrayRenderer* this, DNAShader* shader)
 {
-    DNAArrayRenderer* this = cfw_new((CFWClass*)DNAArrayRendererClass);
     this->shader = shader;
-    InitArrayRenderData(this);
+    // set up vertex data (and buffer(s)) and configure vertex attributes
+    // ------------------------------------------------------------------
+    GLfloat vertices[] = {
+        // Pos      // Tex
+        0.0f, 1.0f, 0.0f, 1.0f,
+        1.0f, 0.0f, 1.0f, 0.0f,
+        0.0f, 0.0f, 0.0f, 0.0f,
 
+        0.0f, 1.0f, 0.0f, 1.0f,
+        1.0f, 1.0f, 1.0f, 1.0f,
+        1.0f, 0.0f, 1.0f, 0.0f
+    };
+
+    glGenVertexArrays(1, &this->VAO);
+    glGenBuffers(1, &this->VBO);
+
+    glBindBuffer(GL_ARRAY_BUFFER, this->VBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+    glBindVertexArray(this->VAO);
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (GLvoid*)0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindVertexArray(0);
     return this;
 }
 
@@ -91,28 +111,3 @@ method void Draw(
     glBindVertexArray(0);
 }
 
-void InitArrayRenderData(DNAArrayRenderer* this)
-{
-    GLfloat vertices[] = {
-        // Pos      // Tex
-        0.0f, 1.0f, 0.0f, 1.0f,
-        1.0f, 0.0f, 1.0f, 0.0f,
-        0.0f, 0.0f, 0.0f, 0.0f,
-
-        0.0f, 1.0f, 0.0f, 1.0f,
-        1.0f, 1.0f, 1.0f, 1.0f,
-        1.0f, 0.0f, 1.0f, 0.0f
-    };
-
-    glGenVertexArrays(1, &this->VAO);
-    glGenBuffers(1, &this->VBO);
-
-    glBindBuffer(GL_ARRAY_BUFFER, this->VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-    glBindVertexArray(this->VAO);
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (GLvoid*)0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindVertexArray(0);
-}
