@@ -4,10 +4,32 @@
 #include "core/entity.h"
 #include "core/aspect.h"
 
+typedef struct ECSIVoidEntitySystem ECSIVoidEntitySystem;
 typedef struct ECSVoidEntitySystem ECSVoidEntitySystem;
 extern const CFWClass* ECSVoidEntitySystemClass;
 
-extern method void* New(ECSVoidEntitySystem* this);
+struct ECSIVoidEntitySystem {
+    //ECSIEntityObserver
+    void (*Added)(void* this, ECSEntity* entity);
+    void (*Changed)(void* this, ECSEntity* entity);
+    void (*Deleted)(void* this, ECSEntity* entity);
+    void (*Disabled)(void* this, ECSEntity* entity);
+    void (*Enabled)(void* this, ECSEntity* entity);
+    void (*Begin)(void* this);
+    void (*End)(void* this);
+
+    //ECSIEntitySystem
+    void (*ProcessEntities)(void* this, CFWArray* entities);
+    bool (*CheckProcessing)(void* this);
+    void (*Initialize)(void* this);
+    void (*Inserted)(void* this, ECSEntity* e);
+    void (*Removed)(void* this, ECSEntity* e);
+
+    //ECSIVoidEntitySystem
+    void (*ProcessSystem)(void* this);
+};
+
+extern method void* New(ECSVoidEntitySystem* this, ECSIVoidEntitySystem* vptr);
 
 extern method void Begin(ECSVoidEntitySystem* this);
 

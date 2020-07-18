@@ -7,7 +7,9 @@
             "args": [
                 "src/main.c",
                 "src/shmupwarz.c",
-                "libs/dna/src/filesystem.c",
+                "src/oop/animal.c",
+                "src/oop/cat.c",
+                "src/oop/dog.c",
                 "libs/dna/src/glad.c",
                 "libs/dna/src/tglm.c",
                 "libs/dna/src/game.c",
@@ -17,6 +19,7 @@
                 "libs/dna/src/elementrenderer.c",
                 "libs/dna/src/resourcemanager.c",
                 "libs/cfw/src/cfw.c",
+                "libs/cfw/src/cfwfs.c",
                 "libs/cfw/src/bitvector.c",
                 "libs/cfw/src/uuid.c",
                 "libs/cfw/src/random.c",

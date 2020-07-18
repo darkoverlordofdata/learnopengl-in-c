@@ -5,10 +5,36 @@
 #include "core/aspect.h"
 #include "systems/entityprocessingsystem.h"
 
+typedef struct ECSIDelayedEntityProcessingSystem ECSIDelayedEntityProcessingSystem;
 typedef struct ECSDelayedEntityProcessingSystem ECSDelayedEntityProcessingSystem;
 extern const CFWClass* ECSDelayedEntityProcessingSystemClass;
 
-extern method void* New(ECSDelayedEntityProcessingSystem* this, ECSAspect* aspect);
+struct ECSIDelayedEntityProcessingSystem {
+
+    //ECSIEntityObserver
+    void (*Added)(void* this, ECSEntity* entity);
+    void (*Changed)(void* this, ECSEntity* entity);
+    void (*Deleted)(void* this, ECSEntity* entity);
+    void (*Disabled)(void* this, ECSEntity* entity);
+    void (*Enabled)(void* this, ECSEntity* entity);
+    void (*Begin)(void* this);
+    void (*End)(void* this);
+
+    //ECSIEntitySystem
+    void (*ProcessEntities)(void* this, CFWArray* entities);
+    bool (*CheckProcessing)(void* this);
+    void (*Initialize)(void* this);
+    void (*Inserted)(void* this, ECSEntity* e);
+    void (*Removed)(void* this, ECSEntity* e);
+
+    //ECSIDelayedEntityProcessingSystem
+    float (*GetRemainingDelay)(void* this, ECSEntity* e);
+    void (*ProcessDelta)(void* this, ECSEntity* e, float accumulatedDelta);
+    void (*ProcessExpired)(void* this, ECSEntity* e);
+};
+
+
+extern method void* New(ECSDelayedEntityProcessingSystem* this, ECSAspect* aspect, ECSIDelayedEntityProcessingSystem* vptr);
 
 extern method void Begin(ECSDelayedEntityProcessingSystem* this);
 

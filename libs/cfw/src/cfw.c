@@ -1,6 +1,16 @@
 #include "cfw.h"
 
-// Initialize((EcsManager*)cfw_map_get(this->ManagersBag, i));
+/**
+ * CoreFW wrappers
+ */
+method void* New(CFWString* this)
+{
+    return cfw_new(cfw_string, NULL);
+}
+method void* New(CFWString* this, char* value)
+{
+    return cfw_new(cfw_string, value);    
+}
 
 method void* Get(CFWArray* this, int i)
 {
@@ -17,9 +27,9 @@ method void Add(CFWArray* this, void* item)
     cfw_array_push(this, item);
 }
 
-method void Remove(CFWMap* this, char* key)
+method bool Remove(CFWMap* this, char* key)
 {
-    cfw_map_set(this, key, NULL);
+    return cfw_map_set(this, key, NULL);
 }
 
 method void Put(CFWMap* this, char* key, void* object)
@@ -52,4 +62,20 @@ method void ForEach(CFWMap* this, void(^func)(void* key, void* item))
         func(iter.key, iter.obj);
         cfw_map_iter_next(&iter);
     }
+}
+
+method char* cstr(CFWString* this)
+{
+    return cfw_string_c(this);
+}
+
+
+method int Length(CFWArray* this)
+{
+    return cfw_array_size(this);
+}
+
+method int Length(CFWString* this)
+{
+    return cfw_string_length(this);
 }

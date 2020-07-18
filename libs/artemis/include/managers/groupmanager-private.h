@@ -5,7 +5,7 @@
 
 struct ECSGroupManager {
     CFWObject object;
-    ECSManager* override;
+    ECSIManager* vptr;
     ECSWorld* World;
     CFWMap* EntitiesByGroup;
     CFWMap* GroupsByEntity;

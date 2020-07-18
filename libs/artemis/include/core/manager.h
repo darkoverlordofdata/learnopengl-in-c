@@ -5,10 +5,26 @@ typedef struct ECSWorld ECSWorld;
 typedef struct ECSEntity ECSEntity;
 typedef struct ECSManager ECSManager;
 
+typedef struct ECSIManager ECSIManager;
 typedef struct ECSManager ECSManager;
 extern const CFWClass* ECSManagerClass;
 
-extern method void* New(ECSManager* this);
+struct ECSIManager {
+    //ECSIEntityObserver
+    void (*Added)(void* this, ECSEntity* entity);
+    void (*Changed)(void* this, ECSEntity* entity);
+    void (*Deleted)(void* this, ECSEntity* entity);
+    void (*Disabled)(void* this, ECSEntity* entity);
+    void (*Enabled)(void* this, ECSEntity* entity);
+    void (*Begin)(void* this);
+    void (*End)(void* this);
+
+    //ECSIManager
+    void (*Initialize)(void* this);
+};
+
+
+extern method void* New(ECSManager* this, ECSIManager* vptr);
 
 extern method void Initialize(ECSManager* this);
 

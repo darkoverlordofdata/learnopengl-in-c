@@ -28,29 +28,50 @@
  *
  */
 
+static bool ctor(void* self, va_list args) { return true; }
+static bool equal(void* ptr1, void* ptr2) { return ptr1 == ptr2; }
+static uint32_t hash(void* self) { return (uint32_t)self; }
+static void* copy(void* self) { return NULL; }
+static void dtor(void* self) {}
+
+corefw(ECSDelayedEntityProcessingSystem);
+
+#define super ECSEntitySystem
+
 /**
  * Creates an entity system that uses the specified aspect as a matcher against entities.
  * @param aspect to match against entities
  */
-method void* New(ECSDelayedEntityProcessingSystem* this, ECSAspect* aspect)
+method void* New(ECSDelayedEntityProcessingSystem* this, ECSAspect* aspect, ECSIDelayedEntityProcessingSystem* vptr)
 {
+    this->vptr = New((super*)this, aspect, (ECSIEntitySystem*)vptr);    
+    vptr->GetRemainingDelay = abstract(ECSDelayedEntityProcessingSystem, GetRemainingDelay);
+    vptr->ProcessDelta = abstract(ECSDelayedEntityProcessingSystem, ProcessDelta);    
+    vptr->ProcessExpired = abstract(ECSDelayedEntityProcessingSystem, ProcessExpired);
     return this;
 }
+
 
 /**
  * Called before processing of entities begins. 
  */
-method void Begin(ECSDelayedEntityProcessingSystem* this) { this->overload->Begin(this); }
+method void Begin(ECSDelayedEntityProcessingSystem* this) 
+{ 
+    Begin((super*)this);
+}
 
 method void Process(ECSDelayedEntityProcessingSystem* this)
 {   
-    Process(this->overload);
+    Process((super*)this);
 }
 
 /**
  * Called after the processing of entities ends.
  */
-method void End(ECSDelayedEntityProcessingSystem* this) { this->overload->End(this); }
+method void End(ECSDelayedEntityProcessingSystem* this) 
+{ 
+    End((super*)this);
+}
 
 /**
  * Any implementing entity system must implement this method and the logic
@@ -58,8 +79,8 @@ method void End(ECSDelayedEntityProcessingSystem* this) { this->overload->End(th
  * 
  * @param entities the entities this system contains.
  */
-method void ProcessEntities(ECSDelayedEntityProcessingSystem* this, Array* entities) { 
-    for (var i=0; i<entities->length; i++) {
+method void ProcessEntities(ECSDelayedEntityProcessingSystem* this, CFWArray* entities) { 
+    for (var i=0; i<Length(entities); i++) {
         var entity = Get(entities, i);
         ProcessDelta(this, entity, this->Acc);
         var remaining = GetRemainingDelay(this, entity);
@@ -89,7 +110,10 @@ method bool CheckProcessing(ECSDelayedEntityProcessingSystem* this) {
 /**
  * Override to implement code that gets executed when systems are initialized.
  */
-method void Initialize(ECSDelayedEntityProcessingSystem* this) { this->overload->Initialize(this); }
+method void Initialize(ECSDelayedEntityProcessingSystem* this) 
+{ 
+    Initialize((super*)this);
+}
 
 /**
  * Called if the system has received a entity it is interested in, e.g. created or a component was added to it.
@@ -107,7 +131,7 @@ method void Inserted(ECSDelayedEntityProcessingSystem* this, ECSEntity* e) {
  * @param e the entity that was removed from this system.
  */
 method void Removed(ECSDelayedEntityProcessingSystem* this, ECSEntity* e) { 
-    this->overload->Removed(this, e); 
+    Removed((super*)this, e);
 }
 
 /**
@@ -115,51 +139,51 @@ method void Removed(ECSDelayedEntityProcessingSystem* this, ECSEntity* e) {
  * @param e entity to Check
  */
 method void Check(ECSDelayedEntityProcessingSystem* this, ECSEntity* e) { 
-    Check(this->overload, e);
+    Checked((super*)this, e);
 }
 
 method void RemoveFromSystem(ECSDelayedEntityProcessingSystem* this, ECSEntity* e) 
 {
-    RemoveFromSystem(this->overload, e);
+    RemoveFromSystem((super*)this, e);
 }
 
 method void InsertToSystem(ECSDelayedEntityProcessingSystem* this, ECSEntity* e) 
 {
-    InsertToSystem(this->overload, e);
+    InsertToSystem((super*)this, e);
 }
 
 method void Added(ECSDelayedEntityProcessingSystem* this, ECSEntity* entity) { }
 
 method void Changed(ECSDelayedEntityProcessingSystem* this, ECSEntity* e) {
-    Check(this->overload, e);
-}
+    Check((super*)this, e);
+ 
 
 method void Deleted(ECSDelayedEntityProcessingSystem* this, ECSEntity* e) {
-    Deleted(this->overload, e);
+    Deleted((super*)this, e);
 }
 
 method void Disabled(ECSDelayedEntityProcessingSystem* this, ECSEntity* e) {
-    Disabled(this->overload, e);
+    Disabled((super*)this, e);
 }
 
 method void Enabled(ECSDelayedEntityProcessingSystem* this, ECSEntity* e) {
-    Enabled(this->overload, e);
+    Enabled((super*)this, e);
 }
 
 method void SetWorld(ECSDelayedEntityProcessingSystem* this, ECSWorld* world) {
-    SetWorld(this->overload, world);
+    SetWorld((super*)this, world);
 }
 
 method bool IsPassive(ECSDelayedEntityProcessingSystem* this) {
-    return IsPassive(this->overload);
+    return IsPassive((super*)this);
 }
 
 method void SetPassive(ECSDelayedEntityProcessingSystem* this, bool passive) {
-    SetPassive(this->overload, passive);
+    SetPassive((super*)this, passive);
 }
 
-method Array* GetActive(ECSDelayedEntityProcessingSystem* this) {
-    return GetActive(this->overload);
+method CFWArray* GetActive(ECSDelayedEntityProcessingSystem* this) {
+    return GetActive((super*)this);
 }
 
 /**
@@ -169,7 +193,7 @@ method Array* GetActive(ECSDelayedEntityProcessingSystem* this) {
  * @return delay
  */
 method float GetRemainingDelay(ECSDelayedEntityProcessingSystem* this, ECSEntity* e) {
-    this->overload->GetRemainingDelay(this, e); 
+    this->vptr->GetRemainingDelay(this, e); 
 }
 
 /**
@@ -180,11 +204,11 @@ method float GetRemainingDelay(ECSDelayedEntityProcessingSystem* this, ECSEntity
 * @param accumulatedDelta the delta time since this system was last executed.
 */
 method void ProcessDelta(ECSDelayedEntityProcessingSystem* this, ECSEntity* e, float accumulatedDelta) {
-    this->overload->ProcessDelta(this, e, accumulatedDelta); 
+    this->vptr->ProcessDelta(this, e, accumulatedDelta); 
 }
 
 method void ProcessExpired(ECSDelayedEntityProcessingSystem* this, ECSEntity* e) {
-    this->overload->ProcessExpired(this, e); 
+    this->vptr->ProcessExpired(this, e); 
 }
 
 
@@ -263,3 +287,4 @@ method void Stop(ECSDelayedEntityProcessingSystem* this) {
     this->Acc = 0;
 }
 
+#undef super

@@ -1,41 +1,80 @@
 #include "managers/playermanager.h"
 #include "cfw.h"
+#include "core/entity-private.h"
 #include "core/entity.h"
+#include "core/manager-private.h"
+#include "core/manager.h"
 #include "core/world.h"
 #include "ecs.h"
 #include "managers/playermanager-private.h"
 
+static bool ctor(void* self, va_list args) { return true; }
+static bool equal(void* ptr1, void* ptr2) { return ptr1 == ptr2; }
+static uint32_t hash(void* self) { return (uint32_t)self; }
+static void* copy(void* self) { return NULL; }
+static void dtor(void* self) {}
+
+corefw(ECSPlayerManager);
+
+#define super ECSManager
+
 method void* New(ECSPlayerManager* this)
 {
+    static ECSIManager vtable = {
+        .Initialize = abstract(ECSPlayerManager, Initialize),
+        .Added = abstract(ECSPlayerManager, Added),
+        .Changed = abstract(ECSPlayerManager, Changed),
+        .Deleted = abstract(ECSPlayerManager, Deleted),
+        .Disabled = abstract(ECSPlayerManager, Disabled),
+        .Enabled = abstract(ECSPlayerManager, Enabled),
+    };
+
+    New((super*) this, &vtable);
+
     this->PlayerByEntity = cfw_new(cfw_map, NULL);
     this->EntitiesByPlayer = cfw_new(cfw_map, NULL);
     return this;
 }
 
-method void Initialize(ECSPlayerManager* this) { this->overload->Initialize(this); }
+method void Initialize(ECSPlayerManager* this)
+{
+    this->vptr->Initialize(this);
+}
 
 method void SetWorld(ECSPlayerManager* this, ECSWorld* world)
 {
-    SetWorld(this->overload, world);
+    SetWorld((super*)this, world);
 }
 
 method ECSWorld* GetWorld(ECSPlayerManager* this)
 {
-    return GetWorld(this->overload);
+    return GetWorld((super*)this);
 }
 
-method void Added(ECSPlayerManager* this, ECSEntity* entity) { this->overload->Added(this, entity); }
+method void Added(ECSPlayerManager* this, ECSEntity* entity)
+{
+    this->vptr->Added(this, entity);
+}
 
-method void Changed(ECSPlayerManager* this, ECSEntity* entity) { this->overload->Changed(this, entity); }
+method void Changed(ECSPlayerManager* this, ECSEntity* entity) 
+{ 
+    this->vptr->Changed(this, entity); 
+}
 
 method void Deleted(ECSPlayerManager* this, ECSEntity* entity)
 {
     RemoveFromPlayer(this, entity);
 }
 
-method void Disabled(ECSPlayerManager* this, ECSEntity* entity) { this->overload->Disabled(this, entity); }
+method void Disabled(ECSPlayerManager* this, ECSEntity* entity)
+{
+    this->vptr->Disabled(this, entity);
+}
 
-method void Enabled(ECSPlayerManager* this, ECSEntity* entity) { this->overload->Enabled(this, entity); }
+method void Enabled(ECSPlayerManager* this, ECSEntity* entity)
+{
+    this->vptr->Enabled(this, entity);
+}
 
 method void SetPlayer(ECSPlayerManager* this, ECSEntity* e, char* player)
 {

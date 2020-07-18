@@ -5,7 +5,7 @@
 
 struct ECSTagManager {
     CFWObject obj;
-    ECSManager* base;
+    ECSIManager* vptr;
     ECSWorld* World;
     CFWMap* EntitiesByTag;
     CFWMap* TagsByEntity;

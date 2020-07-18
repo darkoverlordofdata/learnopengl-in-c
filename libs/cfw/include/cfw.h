@@ -58,6 +58,9 @@ static inline struct CFWObject* asObject(void* obj) { return obj; }
 #define new(T, args...) New((T*)cfw_new((CFWClass*)T##Class), ## args)
 #define create(T, args...) New((T*)cfw_create((CFWClass*)T##Class), ## args)
 
+// #define override(super, class, method) (void(*)(super* this))((void(*)(class* this))method)
+
+#define abstract(class, method) (void(*)(void* this))((void(*)(class* this))method)
 
 // typedef CFWArray Array;
 // typedef CFWBool Bool;
@@ -86,11 +89,15 @@ static inline struct CFWObject* asObject(void* obj) { return obj; }
 extern method void* Get(CFWArray* this, int i);
 extern method void* Get(CFWMap* this, char* key);
 extern method void Add(CFWArray* this, void* item);
-extern method void Remove(CFWArray* this, int i);
-extern method void Remove(CFWMap* this, char* key);
+extern method bool Remove(CFWArray* this, int i);
+extern method bool Remove(CFWMap* this, char* key);
 extern method void Put(CFWMap* this, char* key, void* object);
 extern method void Put(CFWArray* this, int index, void* object);
 extern method void ForEach(CFWMap* this, void(^func)(void* key, void* item));
 extern method void ForEach(CFWMap* this, void(*func)(void* key, void* item));
-
+extern method int Length(CFWArray* this);
+extern method int Length(CFWString* this);
+extern method char* cstr(CFWString* this);
+extern method void* New(CFWString* this);
+extern method void* New(CFWString* this, char* value);
 

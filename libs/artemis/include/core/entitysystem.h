@@ -1,30 +1,38 @@
 #pragma once
 #include "cfw.h"
 
+typedef struct ECSIEntitySystem ECSIEntitySystem;
 typedef struct ECSEntitySystem ECSEntitySystem;
 extern const CFWClass* ECSEntitySystemClass;
 
 typedef struct ECSAspect ECSAspect;
 typedef struct ECSEntity ECSEntity;
+typedef struct ECSWorld ECSWorld;
 
-typedef void (*ECSEntityProc0)(void* this);
-typedef void (*ECSEntityProc1)(void* this, CFWArray* entities);
-typedef void (*ECSEntityProc2)(void* this, ECSEntity e);
+struct ECSIEntitySystem {
 
-struct ECSEntitySystemVtbl {
+    //ECSIEntityObserver
+    void (*Added)(void* this, ECSEntity* entity);
+    void (*Changed)(void* this, ECSEntity* entity);
+    void (*Deleted)(void* this, ECSEntity* entity);
+    void (*Disabled)(void* this, ECSEntity* entity);
+    void (*Enabled)(void* this, ECSEntity* entity);
     void (*Begin)(void* this);
     void (*End)(void* this);
+
+    //ECSIEntitySystem
     void (*ProcessEntities)(void* this, CFWArray* entities);
+    bool (*CheckProcessing)(void* this);
     void (*Initialize)(void* this);
-    void (*Inserted)(void* this, ECSEntity e);
-    void (*Removed)(void* this, ECSEntity e);
+    void (*Inserted)(void* this, ECSEntity* e);
+    void (*Removed)(void* this, ECSEntity* e);
 };
 
 
 typedef struct ECSSystemIndexManager ECSSystemIndexManager;
 extern method int GetIndexFor(char* es);
 
-extern method void* New(ECSEntitySystem* this, ECSAspect* aspect);
+extern method void* New(ECSEntitySystem* this, ECSAspect* aspect, ECSIEntitySystem* vptr);
 
 extern method void Begin(ECSEntitySystem* this);
 

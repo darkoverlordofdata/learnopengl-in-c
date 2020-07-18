@@ -5,7 +5,7 @@
 
 struct ECSPlayerManager {
     CFWObject obj;
-    ECSManager* overload;
+    ECSIManager* vptr;
     ECSWorld* World;
     CFWMap* PlayerByEntity;
     CFWMap* EntitiesByPlayer;

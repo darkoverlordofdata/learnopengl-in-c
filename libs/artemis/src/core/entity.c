@@ -1,7 +1,18 @@
 #include "core/entity.h"
 #include "cfw.h"
+#include "core/component-private.h"
+#include "core/component.h"
 #include "core/entity-private.h"
 #include "ecs.h"
+
+static bool ctor(void* self, va_list args) { return true; }
+static bool equal(void* ptr1, void* ptr2) { return ptr1 == ptr2; }
+static uint32_t hash(void* self) { return (uint32_t)self; }
+static void* copy(void* self) { return NULL; }
+static void dtor(void* self) {}
+
+corefw(ECSEntity);
+
 
 /**
  * The entity class. Cannot be instantiated outside the framework, you must
@@ -84,7 +95,7 @@ method ECSComponentType* GetTypeFor(ECSEntity* this, CFWClass* c)
  */
 method ECSEntity* RemoveComponentInstance(ECSEntity* this, ECSComponent* component)
 {
-    ECSComponentType* type = GetTypeFor(this, component->obj);
+    ECSComponentType* type = GetTypeFor(this, &component->obj);
     RemoveComponent(this, type);
     return this;
 }
@@ -176,7 +187,7 @@ method ECSComponent* GetComponentByType(ECSEntity* this, CFWClass* type)
  * @param fillBag the bag to put the components into.
  * @return the fillBag with the components in.
  */
-method Array* GetCompoments(ECSEntity* this, CFWArray* fillBag)
+method CFWArray* GetCompoments(ECSEntity* this, CFWArray* fillBag)
 {
     return GetComponentsFor(this->ComponentManager, this, fillBag);
 }

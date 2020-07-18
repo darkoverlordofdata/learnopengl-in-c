@@ -1,41 +1,80 @@
 #include "managers/groupmanager.h"
 #include "cfw.h"
+#include "core/entity-private.h"
 #include "core/entity.h"
+#include "core/manager-private.h"
+#include "core/manager.h"
 #include "core/world.h"
 #include "ecs.h"
 #include "managers/groupmanager-private.h"
 
-method ECSGroupManager* New(ECSGroupManager* this)
+static bool ctor(void* self, va_list args) { return true; }
+static bool equal(void* ptr1, void* ptr2) { return ptr1 == ptr2; }
+static uint32_t hash(void* self) { return (uint32_t)self; }
+static void* copy(void* self) { return NULL; }
+static void dtor(void* self) {}
+
+corefw(ECSGroupManager);
+
+#define super ECSManager
+
+method void* New(ECSGroupManager* this)
 {
+    static ECSIManager vtable = {
+        .Initialize = abstract(ECSGroupManager, Initialize),
+        .Added = abstract(ECSGroupManager, Added),
+        .Changed = abstract(ECSGroupManager, Changed),
+        .Deleted = abstract(ECSGroupManager, Deleted),
+        .Disabled = abstract(ECSGroupManager, Disabled),
+        .Enabled = abstract(ECSGroupManager, Enabled),
+    };
+
+    New((super*) this, &vtable);
+
     this->EntitiesByGroup = cfw_new(cfw_map, NULL);
     this->GroupsByEntity = cfe_new(cfw_map, NULL);
     return this;
 }
 
-method void Initialize(ECSGroupManager* this) { this->override->Initialize(this->override); }
+method void Initialize(ECSGroupManager* this)
+{
+    this->vptr->Initialize(this);
+}
 
 method void SetWorld(ECSGroupManager* this, ECSWorld* world)
 {
-    SetWorld(this->override, world);
+    SetWorld((super*)this, world);
 }
 
 method ECSWorld* GetWorld(ECSGroupManager* this)
 {
-    return GetWorld(this->override);
+    return GetWorld((super*)this);
 }
 
-method void Added(ECSGroupManager* this, ECSEntity* entity) { this->override->Added(this->override, entity); }
+method void Added(ECSGroupManager* this, ECSEntity* entity)
+{
+    this->vptr->Added(this, entity);
+}
 
-method void Changed(ECSGroupManager* this, ECSEntity* entity) { this->override->Changed(this->override, entity); }
+method void Changed(ECSGroupManager* this, ECSEntity* entity)
+{
+    this->vptr->Changed(this, entity);
+}
 
 method void Deleted(ECSGroupManager* this, ECSEntity* entity)
 {
     RemoveFromAllGroups(this, entity);
 }
 
-method void Disabled(ECSGroupManager* this, ECSEntity* entity) { this->override->Disabled(this, entity); }
+method void Disabled(ECSGroupManager* this, ECSEntity* entity)
+{
+    this->vptr->Disabled(this, entity);
+}
 
-method void Enabled(ECSGroupManager* this, ECSEntity* entity) { this->override->Enabled(this, entity); }
+method void Enabled(ECSGroupManager* this, ECSEntity* entity)
+{
+    this->vptr->Enabled(this, entity);
+}
 
 /**
  * Set the group of the entity.
@@ -82,7 +121,7 @@ method void RemoveFromAllGroups(ECSGroupManager* this, ECSEntity* e)
 {
     CFWArray* groups = Get(this->GroupsByEntity, e->key);
     if (groups != NULL) {
-        for (var i = 0, s = groups->length; s > i; i++) {
+        for (var i = 0, s = Length(groups); s > i; i++) {
             CFWArray* entities = Get(this->EntitiesByGroup, Get(groups, i));
             if (entities != NULL) {
                 Remove(entities, e);
@@ -101,7 +140,7 @@ method CFWArray* GetEntities(ECSGroupManager* this, char* group)
 {
     CFWArray* entities = Get(this->EntitiesByGroup, group);
     if (entities == NULL) {
-        entities = new (CFWArray, of(Entity));
+        entities = cfw_new (cfw_array, NULL);
         Put(this->EntitiesByGroup, group, entities);
     }
     return entities;
@@ -136,7 +175,7 @@ method bool IsInGroup(ECSGroupManager* this, ECSEntity* e, char* group)
 {
     if (group != NULL) {
         CFWArray* groups = Get(this->GroupsByEntity, e->key);
-        for (var i = 0, s = groups->length; s > i; i++) {
+        for (var i = 0, s = Length(groups); s > i; i++) {
             char* g = Get(groups, i);
             if (strcmp(group, g) == 0) {
                 return true;
@@ -145,3 +184,5 @@ method bool IsInGroup(ECSGroupManager* this, ECSEntity* e, char* group)
     }
     return false;
 }
+
+#undef super

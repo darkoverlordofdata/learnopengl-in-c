@@ -1,18 +1,20 @@
 #include "core/entitymanager.h"
 #include "cfw.h"
+#include "core/entity-private.h"
+#include "core/entity.h"
 #include "core/entitymanager-private.h"
 #include "ecs.h"
 
 method void* New(ECSIdentifierPool* this)
 {
-    this->Ids = cfw_new (cfw_array, NULL);
+    this->Ids = cfw_new(cfw_array, NULL);
     this->NextAvailableId = 0;
     return this;
 }
 
 method void CheckIn(ECSIdentifierPool* this, int id)
 {
-    cfw_array_push(this->Ids, cfw_new (cfw_int, id));
+    cfw_array_push(this->Ids, cfw_new(cfw_int, id));
 }
 
 method int CheckOut(ECSIdentifierPool* this)
@@ -20,13 +22,21 @@ method int CheckOut(ECSIdentifierPool* this)
     if (cfw_array_size(this->Ids) > 0) {
         var last = cfw_array_pop(this->Ids);
         return cfw_int_value(last);
-    } 
+    }
     return this->NextAvailableId++;
 }
 
-method ECSEntityManager* New(ECSEntityManager* this)
+static bool ctor(void* self, va_list args) { return true; }
+static bool equal(void* ptr1, void* ptr2) { return ptr1 == ptr2; }
+static uint32_t hash(void* self) { return (uint32_t)self; }
+static void* copy(void* self) { return NULL; }
+static void dtor(void* self) {}
+
+corefw(ECSEntityManager);
+
+method void* New(ECSEntityManager* this)
 {
-    this->Entities = cfw_new (CFWArray, NULL);
+    this->Entities = cfw_new(cfw_array, NULL);
     this->Disabled = new (CFWBitVector);
     this->IdentifierPool = new (ECSIdentifierPool);
     this->Active = 0;
@@ -37,12 +47,12 @@ method ECSEntityManager* New(ECSEntityManager* this)
 }
 method void SetWorld(ECSEntityManager* this, ECSWorld* world)
 {
-    SetWorld(this->base, world);
+    SetWorld(this->override, world);
 }
 
 method ECSWorld* GetWorld(ECSEntityManager* this)
 {
-    return GetWorld(this->base);
+    return GetWorld(this->override);
 }
 
 method ECSEntity* CreateEntityInstance(ECSEntityManager* this, char* name)

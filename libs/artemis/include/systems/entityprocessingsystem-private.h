@@ -1,9 +1,14 @@
 #pragma once
 #include "cfw.h"
-#include "component.h"
-#include "system/entityprocessingsystem.h"
-#include "entity.h"
-#include "world.h"
+#include "core/component-private.h"
+#include "core/component.h"
+#include "core/entity-private.h"
+#include "core/entity.h"
+#include "core/entitysystem-private.h"
+#include "core/entitysystem.h"
+#include "core/world-private.h"
+#include "core/world.h"
+#include "systems/entityprocessingsystem.h"
 /**
  * A typical entity system. Use this when you need to process entities possessing the
  * provided component types.
@@ -13,7 +18,7 @@
  */
 struct ECSEntityProcessingSystem {
     CFWObject obj;
-    ECSEntitySystem* overload;
+    ECSIEntityProcessingSystem* vptr;
     ECSWorld* World;
     int SystemIndex;
     CFWArray* Actives;

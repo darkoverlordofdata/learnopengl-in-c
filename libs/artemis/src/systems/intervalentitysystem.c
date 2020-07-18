@@ -2,31 +2,51 @@
 #include "cfw.h"
 #include "systems/intervalentitysystem-private.h"
 #include "ecs.h"
+
+static bool ctor(void* self, va_list args) { return true; }
+static bool equal(void* ptr1, void* ptr2) { return ptr1 == ptr2; }
+static uint32_t hash(void* self) { return (uint32_t)self; }
+static void* copy(void* self) { return NULL; }
+static void dtor(void* self) {}
+
+corefw(ECSIntervalEntitySystem);
+
+#define super ECSEntitySystem
+
 /**
  * Creates an entity system that uses the specified aspect as a matcher against entities.
  * @param aspect to match against entities
  */
-method void* New(ECSIntervalEntitySystem* this, ECSAspect* aspect, float interval)
+method void* New(ECSIntervalEntitySystem* this, ECSAspect* aspect, float interval, ECSIIntervalEntitySystem* vptr)
 {
+    this->vptr = New((super*)this, aspect, (ECSIEntitySystem*)vptr);    
     this->Acc = 0;
     this->Interval = interval;
     return this;
 }
 
+
 /**
  * Called before processing of entities begins. 
  */
-method void Begin(ECSIntervalEntitySystem* this) { this->overload->Begin(this); }
+method void Begin(ECSIntervalEntitySystem* this) 
+{ 
+    Begin((super*)this);
+}
 
 method void Process(ECSIntervalEntitySystem* this)
 {   
-    Process(this->overload);
+    Process((super*)this);
 }
+
 
 /**
  * Called after the processing of entities ends.
  */
-method void End(ECSIntervalEntitySystem* this) { this->overload->End(this); }
+method void End(ECSIntervalEntitySystem* this) 
+{ 
+    End((super*)this); 
+}
 
 /**
  * Any implementing entity system must implement this method and the logic
@@ -34,8 +54,8 @@ method void End(ECSIntervalEntitySystem* this) { this->overload->End(this); }
  * 
  * @param entities the entities this system contains.
  */
-method void ProcessEntities(ECSIntervalEntitySystem* this, Array* entities) { 
-    this->overload->ProcessEntities(this, entities); 
+method void ProcessEntities(ECSIntervalEntitySystem* this, CFWArray* entities) { 
+    ProcessEntities((super*)this, entities); 
 }
 
 /**
@@ -53,14 +73,14 @@ method bool CheckProcessing(ECSIntervalEntitySystem* this) {
 /**
  * Override to implement code that gets executed when systems are initialized.
  */
-method void Initialize(ECSIntervalEntitySystem* this) { this->overload->Initialize(this); }
+method void Initialize(ECSIntervalEntitySystem* this) { Initialize(this); }
 
 /**
  * Called if the system has received a entity it is interested in, e.g. created or a component was added to it.
  * @param e the entity that was added to this system.
  */
 method void Inserted(ECSIntervalEntitySystem* this, ECSEntity* e) { 
-    this->overload->Inserted(this, e); 
+    Inserted((super*)this, e); 
 }
 
 /**
@@ -68,7 +88,7 @@ method void Inserted(ECSIntervalEntitySystem* this, ECSEntity* e) {
  * @param e the entity that was removed from this system.
  */
 method void Removed(ECSIntervalEntitySystem* this, ECSEntity* e) { 
-    this->overload->Removed(this, e); 
+    Removed((super*)this, e); 
 }
 
 /**
@@ -76,50 +96,52 @@ method void Removed(ECSIntervalEntitySystem* this, ECSEntity* e) {
  * @param e entity to Check
  */
 method void Check(ECSIntervalEntitySystem* this, ECSEntity* e) { 
-    Check(this->overload, e);
+    Check((super*)this, e);
 }
 
 method void RemoveFromSystem(ECSIntervalEntitySystem* this, ECSEntity* e) 
 {
-    RemoveFromSystem(this->overload, e);
+    RemoveFromSystem((super*)this, e);
 }
 
 method void InsertToSystem(ECSIntervalEntitySystem* this, ECSEntity* e) 
 {
-    InsertToSystem(this->overload, e);
+    InsertToSystem((super*)this, e);
 }
 
 method void Added(ECSIntervalEntitySystem* this, ECSEntity* entity) { }
 
 method void Changed(ECSIntervalEntitySystem* this, ECSEntity* e) {
-    Check(this, e);
+    Check((super*)this, e);
 }
 
 method void Deleted(ECSIntervalEntitySystem* this, ECSEntity* e) {
-    Deleted(this->overload, e);
+    Deleted((super*)this, e);
 }
 
 method void Disabled(ECSIntervalEntitySystem* this, ECSEntity* e) {
-    Disabled(this->overload, e);
+    Disabled((super*)this, e);
 }
 
 method void Enabled(ECSIntervalEntitySystem* this, ECSEntity* e) {
-    Enabled(this->overload, e);
+    Enabled((super*)this, e);
 }
 
 method void SetWorld(ECSIntervalEntitySystem* this, ECSWorld* world) {
-    SetWorld(this->overload, world);
+    SetWorld((super*)this, world);
 }
 
 method bool IsPassive(ECSIntervalEntitySystem* this) {
-    return IsPassive(this->overload);
+    return IsPassive((super*)this);
 }
 
 method void SetPassive(ECSIntervalEntitySystem* this, bool passive) {
-    SetPassive(this->overload, passive);
+    SetPassive((super*)this, passive);
 }
 
-method Array* GetActive(ECSIntervalEntitySystem* this) {
-    return GetActive(this);
+method CFWArray* GetActive(ECSIntervalEntitySystem* this) {
+    return GetActive((super*)this);
 }
 
+
+#undef super

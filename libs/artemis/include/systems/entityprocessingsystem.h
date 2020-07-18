@@ -4,13 +4,36 @@
 #include "core/entity.h"
 #include "core/aspect.h"
 
+typedef struct ECSIEntityProcessingSystem ECSIEntityProcessingSystem;
 typedef struct ECSEntityProcessingSystem ECSEntityProcessingSystem;
 extern const CFWClass* ECSEntityProcessingSystemClass;
 
 typedef struct ECSEntity ECSEntity;
 typedef struct ECSWorld ECSWorld;
 
-extern method void* New(ECSEntityProcessingSystem* this, ECSAspect* aspect);
+struct ECSIEntityProcessingSystem 
+{
+    //ECSIEntityObserver
+    void (*Added)(void* this, ECSEntity* entity);
+    void (*Changed)(void* this, ECSEntity* entity);
+    void (*Deleted)(void* this, ECSEntity* entity);
+    void (*Disabled)(void* this, ECSEntity* entity);
+    void (*Enabled)(void* this, ECSEntity* entity);
+    void (*Begin)(void* this);
+    void (*End)(void* this);
+
+    //ECSIEntitySystem
+    void (*ProcessEntities)(void* this, CFWArray* entities);
+    bool (*CheckProcessing)(void* this);
+    void (*Initialize)(void* this);
+    void (*Inserted)(void* this, ECSEntity* e);
+    void (*Removed)(void* this, ECSEntity* e);
+
+    //ECSIEntityProcessingSystem
+    void (*ProcessEach)(void* this, ECSEntity* e);
+};
+
+extern method void* New(ECSEntityProcessingSystem* this, ECSAspect* aspect, ECSIEntityProcessingSystem* vptr)
 
 extern method void Begin(ECSEntityProcessingSystem* this);
 

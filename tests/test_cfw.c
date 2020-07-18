@@ -1,7 +1,15 @@
-#pragma once
+#include <stdarg.h>
+#include <stddef.h>
+#include <setjmp.h>
+#include <stdio.h>
+#include <stdint.h>
+#include <dna.h>
+#include "unit.h"
+#include "cfw.h"
 
-static inline void test_cfw()
+int main(int argc, char *argv[])
 {
+	CFWRefPool *pool = cfw_new(cfw_refpool);
 
     var index = cfw_create(cfw_int, 10);
 
@@ -24,25 +32,22 @@ static inline void test_cfw()
 		cfw_string_append(str, cfw_array_get(array, i));
 
     ForEach(table, ^(void* k, void* i) {
-        printf("ForEach: %s = %i\n", cfw_string_c(k), cfw_int_value(i));
+        printf("ForEach: %s = %ji\n", cfw_string_c(k), cfw_int_value(i));
 
     });
 
 
-    Describe("CFW Tests", ^{
+    Describe("Base CFW Tests", ^{
 
-        It("Should: value be 10", ^{
-			printf("Int = %ji\n", cfw_int_value(index));
+        It("Should: be 10\n", ^{
 			Expect(cfw_int_value(index) == 10);
         });
 
-        It("Should: be greater than ''", ^{
-	        printf("%s\n", cfw_string_c(str));
-            Expect(cfw_string_length(str) > 0);
+        It("Should: be > 0\n", ^{
+			Expect(cfw_string_length(str) > 0);
         });
+    });
 
-		
-
-	});
+    cfw_unref(pool);
 
 }

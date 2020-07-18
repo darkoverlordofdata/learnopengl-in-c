@@ -5,5 +5,6 @@
 
 struct ECSEntityObserver {
     CFWObject obj;
-    CFWObject* override;
+    ECSIEntityObserver* vptr;
 };
+

@@ -1,6 +1,8 @@
 #pragma once
 #include "cfw.h"
 
+
+typedef struct ECSIEntityObserver ECSIEntityObserver;
 typedef struct ECSEntityObserver ECSEntityObserver;
 extern const CFWClass* ECSEntityObserverClass;
 
@@ -9,14 +11,14 @@ typedef struct ECSEntity ECSEntity;
 
 typedef void (*ECSEntityProc)(void* this, void* entity);
 struct ECSIEntityObserver {
-    void (*Added)(void* this, void* entity);
-    void (*Changed)(void* this, void* entity);
-    void (*Deleted)(void* this, void* entity);
-    void (*Disabled)(void* this, void* entity);
-    void (*Enabled)(void* this, void* entity);
+    void (*Added)(void* this, ECSEntity* entity);
+    void (*Changed)(void* this, ECSEntity* entity);
+    void (*Deleted)(void* this, ECSEntity* entity);
+    void (*Disabled)(void* this, ECSEntity* entity);
+    void (*Enabled)(void* this, ECSEntity* entity);
 };
 
-extern method void* New(ECSEntityObserver* this);
+extern method void* New(ECSEntityObserver* this, ECSIEntityObserver* vptr);
 
 extern method void Added(ECSEntityObserver* this, ECSEntity* entity);
 

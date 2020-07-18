@@ -54,10 +54,10 @@ static inline int TestPassInc();
 #define Expect(test)                                                    \
 ({                                                                      \
     if (!(test)) {                                                      \
-        fprintf(stdout, " failed (%s:%i)\n", __FILENAME__, __LINE__);   \
+        fprintf(stdout , " failed (%s:%i)\n", __FILENAME__, __LINE__);   \
 	    TestFailInc();                                                  \
     } else {                                                            \
-        fprintf(stdout, " passed\n");                                   \
+        fprintf(stdout , " passed\n");                                   \
 	    TestPassInc();                                                  \
     }                                                                   \
     TestCountInc();                                                     \
@@ -88,7 +88,7 @@ static inline int TestPassInc()  { return tests.passed++; }
  * print a section title & execute
  */
 static inline void Describe(char* desc, void (^lambda)()) {
-	fprintf(stdout, "%s\n======================================\n", desc);
+	fprintf(stdout , "%s\n======================================\n", desc);
 	lambda();
 }
 
@@ -100,7 +100,7 @@ static inline void Describe(char* desc, void (^lambda)()) {
  * print a test title & execute
  */
 static inline void It(char* desc, void (^lambda)()) {
-    fprintf(stdout, "%s - ", desc);
+    fprintf(stdout , "%s - ", desc);
 	fflush(stdout);
 	lambda();
 }
@@ -109,9 +109,9 @@ static inline void It(char* desc, void (^lambda)()) {
  * print summary info
  */
 static inline int Summary() {
-    fprintf(stdout, "Tests run: %d\n", tests.total);
-    fprintf(stdout, "Tests passed: %d\n", tests.passed);
-    fprintf(stdout, "Tests failed: %d\n", tests.failed);
+    fprintf(stdout , "Tests run: %d\n", tests.total);
+    fprintf(stdout , "Tests passed: %d\n", tests.passed);
+    fprintf(stdout , "Tests failed: %d\n", tests.failed);
 	return tests.failed;
 }
 
@@ -131,12 +131,12 @@ static inline void resethandlers() {
  */
 static inline void sighandler(int signum) {
 	switch(signum) {
-		case SIGABRT: 	fprintf(stdout, "Program Aborted\n");		break;
-		case SIGFPE: 	fprintf(stdout, "Division by Zero\n");		break;
-		case SIGILL: 	fprintf(stdout, "Illegal Instruction\n"); 	break;
-		case SIGINT: 	fprintf(stdout, "Program Interrupted\n"); 	break;
-		case SIGSEGV: 	fprintf(stdout, "Segmentation fault\n"); 	break;
-		case SIGTERM:	fprintf(stdout, "Program Terminated\n"); 	break;
+		case SIGABRT: 	fprintf(stderr , "Program Aborted\n");		break;
+		case SIGFPE: 	fprintf(stderr , "Division by Zero\n");		break;
+		case SIGILL: 	fprintf(stderr , "Illegal Instruction\n"); 	break;
+		case SIGINT: 	fprintf(stderr , "Program Interrupted\n"); 	break;
+		case SIGSEGV: 	fprintf(stderr , "Segmentation fault\n"); 	break;
+		case SIGTERM:	fprintf(stderr , "Program Terminated\n"); 	break;
 	}
 	resethandlers();
 	exit(0);

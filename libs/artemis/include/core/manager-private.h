@@ -1,10 +1,12 @@
 #pragma once
 #include "cfw.h"
 #include "ecs.h"
+#include "entityobserver-private.h"
+#include "entityobserver.h"
 #include "manager.h"
 
 struct ECSManager {
     CFWObject obj;
-    ECSEntityObserver* override;
+    ECSIManager* vptr;
     ECSWorld* World;
 };

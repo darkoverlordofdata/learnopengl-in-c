@@ -5,6 +5,7 @@
         "string": "c",
         "string_view": "c",
         "*.tcc": "c",
-        "random": "c"
+        "random": "c",
+        "typeinfo": "c"
     }
 }

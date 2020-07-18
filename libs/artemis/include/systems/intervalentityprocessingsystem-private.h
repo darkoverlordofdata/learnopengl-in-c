@@ -1,10 +1,16 @@
 #pragma once
 #include "cfw.h"
-#include "component.h"
-#include "entity.h"
-#include "system/entityprocessingsystem.h"
-#include "system/intervalentityprocessingsystem.h"
-#include "world.h"
+#include "core/component-private.h"
+#include "core/component.h"
+#include "core/entity-private.h"
+#include "core/entity.h"
+#include "core/world-private.h"
+#include "core/world.h"
+#include "systems/entityprocessingsystem-private.h"
+#include "systems/entityprocessingsystem.h"
+#include "systems/intervalentityprocessingsystem.h"
+#include "systems/intervalentitysystem-private.h"
+#include "systems/intervalentitysystem.h"
 
 // method bool CheckProcessing(ECSIntervalEntityProcessingSystem* self);
 /**
@@ -13,7 +19,7 @@
  */
 struct ECSIntervalEntityProcessingSystem {
     CFWObject obj;
-    ECSIntervalEntitySystem* overload;
+    ECSIIntervalEntityProcessingSystem* vptr;
     ECSWorld* World;
     int SystemIndex;
     CFWArray* Actives;

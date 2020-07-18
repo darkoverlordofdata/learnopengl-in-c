@@ -1,8 +1,12 @@
 #pragma once
 #include "cfw.h"
-#include "component.h"
-#include "entity.h"
-#include "world.h"
+#include "core/component-private.h"
+#include "core/component.h"
+#include "core/entity-private.h"
+#include "core/entity.h"
+#include "core/world-private.h"
+#include "core/world.h"
+#include "systems/voidentitysystem.h"
 
 // method bool CheckProcessing(ECSVoidEntitySystem* self);
 /**
@@ -11,7 +15,7 @@
  */
 struct ECSVoidEntitySystem {
     CFWObject obj;
-    ECSEntitySystem* overload;
+    ECSIVoidEntitySystem* vptr;
     ECSWorld* World;
     int SystemIndex;
     CFWArray* Actives;

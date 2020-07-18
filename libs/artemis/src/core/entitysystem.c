@@ -1,43 +1,55 @@
 #include "core/entitysystem.h"
 #include "cfw.h"
 #include "core/aspect.h"
+#include "core/entityobserver-private.h"
+#include "core/entityobserver.h"
 #include "core/entitysystem-private.h"
+#include "core/entity.h"
+#include "core/entity-private.h"
 #include "ecs.h"
 
-// method bool CheckProcessing(ECSEntitySystem* this);
-/**
- * Used to generate a unique bit for each system.
- * Only used internally in EntitySystem.
- */
+ECSSystemIndexManager IndexManager;
 
-method int GetIndexFor(CFWObject es)
+method int GetIndexFor(CFWObject* es)
 {
     static bool first = true;
     if (first) {
         first = false;
-        ECSSystemIndexManager.Index = 0;
-        ECSSystemIndexManager.Indices = cfw_new(cfw_map, NULL);
+        IndexManager.Index = 0;
+        IndexManager.Indices = cfw_new(cfw_map, NULL);
     }
 
     var index = 0;
-    if (cfw_map_get(ECSSystemIndexManager.Indices, es.cls.name) == NULL) {
-        index = ECSSystemIndexManager.Index++;
-        cfw_map_set(ECSSystemIndexManager.Indices, es.cls.name, cfw_new(cfw_int, index));
+    if (cfw_map_get(IndexManager.Indices, es->cls->name) == NULL) {
+        index = IndexManager.Index++;
+        cfw_map_set(IndexManager.Indices, es->cls->name, cfw_new(cfw_int, index));
     } else {
-        index = cfw_int_value(cfw_map_get(ECSSystemIndexManager.Indices, es.cls.name));
+        index = cfw_int_value(cfw_map_get(IndexManager.Indices, es->cls->name));
     }
     return index;
 }
+
+static bool ctor(void* self, va_list args) { return true; }
+static bool equal(void* ptr1, void* ptr2) { return ptr1 == ptr2; }
+static uint32_t hash(void* self) { return (uint32_t)self; }
+static void* copy(void* self) { return NULL; }
+static void dtor(void* self) {}
+
+corefw(ECSEntitySystem);
+
+#define super ECSEntityObserver
+
 
 /**
  * Creates an entity system that uses the specified aspect as a matcher against entities.
  * @param aspect to match against entities
  */
-method void* New(ECSEntitySystem* this, ECSAspect* aspect)
+method void* New(ECSEntitySystem* this, ECSAspect* aspect, ECSIEntitySystem* vptr)
 {
+    New((super*)this, vptr);
     this->Actives = cfw_new(cfw_array, NULL);
     this->Aspect = aspect;
-    this->SystemIndex = GetIndexFor(this->obj);
+    this->SystemIndex = GetIndexFor(&this->obj);
     this->AllSet = GetAllSet(this->Aspect);
     this->AllSet = GetExclusionSet(this->Aspect);
     this->AllSet = GetOneSet(this->Aspect);
@@ -48,7 +60,7 @@ method void* New(ECSEntitySystem* this, ECSAspect* aspect)
 /**
  * Called before processing of entities begins. 
  */
-method void Begin(ECSEntitySystem* this) { this->override->Begin(this); }
+method void Begin(ECSEntitySystem* this) {}
 
 method void Process(ECSEntitySystem* this)
 {
@@ -62,8 +74,7 @@ method void Process(ECSEntitySystem* this)
 /**
  * Called after the processing of entities ends.
  */
-method void End(ECSEntitySystem* this) { this->override->End(this); }
-
+method void End(ECSEntitySystem* this) {}
 /**
  * Any implementing entity system must implement this method and the logic
  * to process the given entities of the system.
@@ -72,7 +83,7 @@ method void End(ECSEntitySystem* this) { this->override->End(this); }
  */
 method void ProcessEntities(ECSEntitySystem* this, CFWArray* entities)
 {
-    this->override->ProcessEntities(this->override, entities);
+    this->vptr->ProcessEntities(this, entities);
 }
 
 /**
@@ -87,25 +98,19 @@ method bool CheckProcessing(ECSEntitySystem* this)
 /**
  * Override to implement code that gets executed when systems are initialized.
  */
-method void Initialize(ECSEntitySystem* this) { this->override->Initialize(this); }
+method void Initialize(ECSEntitySystem* this) {}
 
 /**
  * Called if the system has received a entity it is interested in, e.g. created or a component was added to it.
  * @param e the entity that was added to this system.
  */
-method void Inserted(ECSEntitySystem* this, ECSEntity* e)
-{
-    this->override->Inserted(this, e);
-}
+method void Inserted(ECSEntitySystem* this, ECSEntity* e) {}
 
 /**
  * Called if a entity was removed from this system, e.g. deleted or had one of it's components removed.
  * @param e the entity that was removed from this system.
  */
-method void Removed(ECSEntitySystem* this, ECSEntity* e)
-{
-    this->override->Removed(this, e);
-}
+method void Removed(ECSEntitySystem* this, ECSEntity* e) {}
 
 /**
  * Will Check if the entity is of interest to this system.
@@ -161,11 +166,14 @@ method void InsertToSystem(ECSEntitySystem* this, ECSEntity* e)
     Inserted(this, e);
 }
 
-method void Added(ECSEntitySystem* this, ECSEntity* entity) {}
+method void Added(ECSEntitySystem* this, ECSEntity* entity) 
+{
+    Check(this, entity);
+}
 
 method void Changed(ECSEntitySystem* this, ECSEntity* e)
 {
-    Check(this, e);
+    Check(this, entity);
 }
 
 method void Deleted(ECSEntitySystem* this, ECSEntity* e)
@@ -206,3 +214,5 @@ method CFWArray* GetActive(ECSEntitySystem* this)
 {
     return this->Actives;
 }
+
+#undef super

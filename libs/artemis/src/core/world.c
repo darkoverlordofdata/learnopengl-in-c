@@ -1,6 +1,10 @@
-#include "cfw.h"
-#include "core/world-private.h"
 #include "core/world.h"
+#include "cfw.h"
+#include "core/entitysystem-private.h"
+#include "core/entitysystem.h"
+#include "core/manager-private.h"
+#include "core/manager.h"
+#include "core/world-private.h"
 #include "ecs.h"
 /**
  * The primary instance for the framework. It contains all the managers.
@@ -16,7 +20,7 @@ method void* New(ECSWorld* this)
 {
     this->Managers = cfw_new(cfw_map, NULL);
     this->ManagersBag = cfw_new(cfw_array, NULL);
-    
+
     this->Systems = cfw_new(cfw_map, NULL);
     this->SystemsBag = cfw_new(cfw_array, NULL);
 
@@ -26,23 +30,22 @@ method void* New(ECSWorld* this)
     this->Enable = cfw_new(cfw_array, NULL);
     this->Disable = cfw_new(cfw_array, NULL);
 
-    this->Cm = new(ECSComponentManager);
+    this->Cm = new (ECSComponentManager);
     assert(this != NULL);
     assert(this->Cm != NULL);
     SetManager(this, this->Cm);
-    
-    this->Em = new(ECSEntityManager);
+
+    this->Em = new (ECSEntityManager);
     SetManager(this, this->Em);
     return this;
-
 }
 
 /**
  * Makes sure all managers systems are initialized in the order they were added.
  */
-method void Initialize(ECSWorld* this) 
+method void Initialize(ECSWorld* this)
 {
-    for (var i=0; i<this->ManagersBag->length; i++)
+    for (var i = 0; i < Length(this->ManagersBag); i++)
         Initialize((ECSManager*)Get(this->ManagersBag, i));
 
     /** 
@@ -53,7 +56,7 @@ method void Initialize(ECSWorld* this)
     // this->EntityTemplates = new(Map, of(ECSEntityTemplate));
     // if (EntityTemplate.entityTemplates.Keys != null)
     // {
-    //     foreach (var entityName in EntityTemplate.entityTemplates.Keys) 
+    //     foreach (var entityName in EntityTemplate.entityTemplates.Keys)
     //     {
     //         var Template = (Type)EntityTemplate.entityTemplates[entityName];
     //         SetEntityTemplate(entityName, (EntityTemplate)GLib.Object.new(Template));
@@ -72,14 +75,13 @@ method void Initialize(ECSWorld* this)
     // }
 }
 
-
 /**
  * Returns a manager that takes care of all the entities in the world.
  * entities of this world.
  * 
  * @return entity manager.
  */
-method ECSEntityManager* GetEntityManager(ECSWorld* this) 
+method ECSEntityManager* GetEntityManager(ECSWorld* this)
 {
     return this->Em;
 }
@@ -89,7 +91,7 @@ method ECSEntityManager* GetEntityManager(ECSWorld* this)
  * 
  * @return component manager.
  */
-method ECSComponentManager* GetComponentManager(ECSWorld* this) 
+method ECSComponentManager* GetComponentManager(ECSWorld* this)
 {
     return this->Cm;
 }
@@ -100,9 +102,9 @@ method ECSComponentManager* GetComponentManager(ECSWorld* this)
  * 
  * @param manager to be added
  */
-method ECSManager* SetManager(ECSWorld* this, ECSManager* manager) 
+method ECSManager* SetManager(ECSWorld* this, ECSManager* manager)
 {
-    Put(this->Managers, manager->obj.name, manager);
+    Put(this->Managers, manager->obj.cls->name, manager);
     Add(this->ManagersBag, manager);
     SetWorld(manager, this);
     return manager;
@@ -116,7 +118,7 @@ method ECSManager* SetManager(ECSWorld* this, ECSManager* manager)
 *            class type of the manager
 * @return the manager
 */
-method ECSManager* GetManager(ECSWorld* this, Class type) 
+method ECSManager* GetManager(ECSWorld* this, CFWClass* type)
 {
     return Get(this->Managers, type->name);
 }
@@ -125,9 +127,9 @@ method ECSManager* GetManager(ECSWorld* this, Class type)
  * Deletes the manager from this world.
  * @param manager to delete.
  */
-method void DeleteManager(ECSWorld* this, ECSManager* manager) 
+method void DeleteManager(ECSWorld* this, ECSManager* manager)
 {
-    Remove(this->Managers, manager->obj.name);
+    Remove(this->Managers, manager->obj.cls->name);
     Remove(this->ManagersBag, manager);
 }
 
@@ -136,7 +138,7 @@ method void DeleteManager(ECSWorld* this, ECSManager* manager)
 * 
 * @return delta time since last game loop.
 */
-method float GetDelta(ECSWorld* this) 
+method float GetDelta(ECSWorld* this)
 {
     return this->Delta;
 }
@@ -146,7 +148,7 @@ method float GetDelta(ECSWorld* this)
 * 
 * @param delta time since last game loop.
 */
-method void SetDelta(ECSWorld* this, float delta) 
+method void SetDelta(ECSWorld* this, float delta)
 {
     this->Delta = delta;
 }
@@ -156,7 +158,7 @@ method void SetDelta(ECSWorld* this, float delta)
 * 
 * @param e entity
 */
-method void AddEntity(ECSWorld* this, ECSEntity* e) 
+method void AddEntity(ECSWorld* this, ECSEntity* e)
 {
     Add(this->Added, e);
 }
@@ -168,7 +170,7 @@ method void AddEntity(ECSWorld* this, ECSEntity* e)
 * 
 * @param e entity
 */
-method void ChangedEntity(ECSWorld* this, ECSEntity* e) 
+method void ChangedEntity(ECSWorld* this, ECSEntity* e)
 {
     Add(this->Changed, e);
 }
@@ -178,10 +180,9 @@ method void ChangedEntity(ECSWorld* this, ECSEntity* e)
 * 
 * @param e entity
 */
-method void DeleteEntity(ECSWorld* this, ECSEntity* e) 
+method void DeleteEntity(ECSWorld* this, ECSEntity* e)
 {
-    if (!Contains(this->Deleted, e)) 
-    {
+    if (!Contains(this->Deleted, e)) {
         Add(this->Deleted, e);
     }
 }
@@ -190,7 +191,7 @@ method void DeleteEntity(ECSWorld* this, ECSEntity* e)
  * (Re)enable the entity in the world, after it having being disabled.
 * Won't do anything unless it was already disabled.
 */
-method void Enable(ECSWorld* this, ECSEntity* e) 
+method void Enable(ECSWorld* this, ECSEntity* e)
 {
     Add(this->Enable, e);
 }
@@ -199,11 +200,10 @@ method void Enable(ECSWorld* this, ECSEntity* e)
  * Disable the entity from being processed. Won't delete it, it will
 * continue to exist but won't get processed.
 */
-method void Disable(ECSWorld* this, ECSEntity* e) 
+method void Disable(ECSWorld* this, ECSEntity* e)
 {
     Add(this->Disable, e);
 }
-
 
 /**
  * Create and return a new or reused entity instance.
@@ -212,7 +212,7 @@ method void Disable(ECSWorld* this, ECSEntity* e)
 * @param name optional name for debugging
 * @return entity
 */
-method ECSEntity* CreateEntity(ECSWorld* this, char* name) 
+method ECSEntity* CreateEntity(ECSWorld* this, char* name)
 {
     return CreateEntityInstance(this->Em, name);
 }
@@ -223,7 +223,7 @@ method ECSEntity* CreateEntity(ECSWorld* this, char* name)
 * @param entityId
 * @return entity
 */
-method ECSEntity* GetEntity(ECSWorld* this, int entityId) 
+method ECSEntity* GetEntity(ECSWorld* this, int entityId)
 {
     return GetEntity(this->Em, entityId);
 }
@@ -233,7 +233,7 @@ method ECSEntity* GetEntity(ECSWorld* this, int entityId)
 * 
 * @return all entity systems in world.
 */
-method CFWArray* GetSystems(ECSWorld* this) 
+method CFWArray* GetSystems(ECSWorld* this)
 {
     return this->SystemsBag;
 }
@@ -245,17 +245,17 @@ method CFWArray* GetSystems(ECSWorld* this)
 * @param passive wether or not this system will be processed by World.process()
 * @return the added system.
 */
-method ECSEntitySystem* SetSystem(ECSWorld* this, ECSEntitySystem* system, bool passive) 
+method ECSEntitySystem* SetSystem(ECSWorld* this, ECSEntitySystem* system, bool passive)
 {
     SetWorld(system, this);
     SetPassive(system, passive);
-    
-    Put(this->Systems, system->obj.name, system);
+
+    Put(this->Systems, system->obj.cls->name, system);
     Add(this->SystemsBag, system);
-    
+
     return system;
 }
-method ECSEntitySystem* SetSystem(ECSWorld* this, ECSEntitySystem* system) 
+method ECSEntitySystem* SetSystem(ECSWorld* this, ECSEntitySystem* system)
 {
     return SetSystem(this, system, false);
 }
@@ -263,26 +263,25 @@ method ECSEntitySystem* SetSystem(ECSWorld* this, ECSEntitySystem* system)
  * Removed the specified system from the world.
 * @param system to be deleted from world.
 */
-method void DeleteSystem(ECSWorld* this, ECSEntitySystem* system) 
+method void DeleteSystem(ECSWorld* this, ECSEntitySystem* system)
 {
-    Remove(this->Systems, system->obj.name);
+    Remove(this->Systems, system->obj.cls->name);
     Remove(this->SystemsBag, system);
 }
 
-method void NotifySystems(ECSWorld* this, ECSPerformer perform, ECSEntity* e) 
+method void NotifySystems(ECSWorld* this, ECSPerformer perform, ECSEntity* e)
 {
-    for (var i=0; i<this->SystemsBag->length; i++) {
+    for (var i = 0; i < Length(this->SystemsBag); i++) {
         var system = Get(this->SystemsBag, i);
         perform(system, e);
     }
 }
 
-method void NotifyManagers(ECSWorld* this, ECSPerformer perform, ECSEntity* e) 
+method void NotifyManagers(ECSWorld* this, ECSPerformer perform, ECSEntity* e)
 {
-    for (var i=0; i<this->ManagersBag->length; i++) {
+    for (var i = 0; i < Length(this->ManagersBag); i++) {
         var manager = Get(this->ManagersBag, i);
         perform(manager, e);
-
     }
 }
 
@@ -292,7 +291,7 @@ method void NotifyManagers(ECSWorld* this, ECSPerformer perform, ECSEntity* e)
 * @param type type of system.
 * @return instance of the system in this world.
 */
-method ECSEntitySystem* GetSystem(ECSWorld* this, Class type) 
+method ECSEntitySystem* GetSystem(ECSWorld* this, CFWClass* type)
 {
     return Get(this->Systems, type->name);
 }
@@ -302,12 +301,10 @@ method ECSEntitySystem* GetSystem(ECSWorld* this, Class type)
 * @param entities
 * @param performer
 */
-method void Check(ECSWorld* this, CFWArray* entities, ECSPerformer perform) 
+method void Check(ECSWorld* this, CFWArray* entities, ECSPerformer perform)
 {
-    if (!IsEmpty(entities)) 
-    {
-        for (var i=0; i<entities->length; i++)
-        {
+    if (!IsEmpty(entities)) {
+        for (var i = 0; i < Length(entities); i++) {
             var e = Get(entities, i);
             NotifyManagers(this, perform, e);
             NotifySystems(this, perform, e);
@@ -319,68 +316,33 @@ method void Check(ECSWorld* this, CFWArray* entities, ECSPerformer perform)
 /**
  * Process all non-passive systems.
 */
-method void Update(ECSWorld* this) 
+method void Update(ECSWorld* this)
 {
-    Check(this, this->Added,   Added);
-    Check(this, this->Changed, Changed);
-    Check(this, this->Disable, Disabled);
-    Check(this, this->Enable,  Enabled);
-    Check(this, this->Deleted, Deleted);
-    
+    /*
+    Check(this, this->Added, (ECSPerformer)Added);
+    Check(this, this->Changed, (ECSPerformer)Changed);
+    Check(this, this->Disable, (ECSPerformer)Disabled);
+    Check(this, this->Enable, (ECSPerformer)Enabled);
+    Check(this, this->Deleted, (ECSPerformer)Deleted);
+
     Clean(this->Cm);
 
-    for (var i = 0; i<this->SystemsBag->length; i++)
-    {
+    for (var i = 0; i < Length(this->SystemsBag); i++) {
         var system = Get(this->SystemsBag, i);
         if (!IsPassive(system)) {
             Process(system);
         }
     }
+    */
 }
 
 method void Draw(ECSWorld* this)
 {
-    for (var i = 0; i<this->SystemsBag->length; i++)
-    {
-        var system = Get(this->SystemsBag, i);
-        if (IsPassive(system)) {
-            Process(system);
-        }
-    }
+    // for (var i = 0; i < Length(this->SystemsBag); i++) {
+    //     var system = Get(this->SystemsBag, i);
+    //     if (IsPassive(system)) {
+    //         Process(system);
+    //     }
+    // }
 }
-/**
- * Retrieves a ComponentMapper instance for fast retrieval of components from entities.
-* 
-* @param type of component to get mapper for.
-* @return mapper for specified component type.
-*/
-// method ComponentMapper<T> GetMapper<T>(Type type) 
-// method ComponentMapper<T> GetMapper<T>(ECSWorld* this) 
-// {
-//     return ComponentMapper.GetFor<T>(typeof(T), this);
-// }
 
-
-/**
- * Set an Entity Template
- *
- * @param entityTag
- * @param entityTemplate
- */
-// method void SetEntityTemplate(ECSWorld* this, char* entityTag, EntityTemplate entityTemplate) 
-// {
-//     entityTemplates[entityTag] = entityTemplate;
-// }
-/**
- * Creates a entity from template.
- *
- * @param name
- * @param args
- * @returns {Entity}
- * EntityTemplate
- */
-// method Entity CreateEntityFromTemplate(ECSWorld* this, string name, ...) 
-// {
-//     var list = va_list();
-//     return entityTemplates[name].BuildEntity(CreateEntity(name), this, list);
-// }
