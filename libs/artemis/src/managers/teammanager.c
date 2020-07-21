@@ -20,12 +20,12 @@ corefw(ECSTeamManager);
 method void* New(ECSTeamManager* this)
 {
     static ECSIManager vtable = {
-        .Initialize = abstract(ECSTeamManager, Initialize),
-        .Added = abstract(ECSTeamManager, Added),
-        .Changed = abstract(ECSTeamManager, Changed),
-        .Deleted = abstract(ECSTeamManager, Deleted),
-        .Disabled = abstract(ECSTeamManager, Disabled),
-        .Enabled = abstract(ECSTeamManager, Enabled),
+        .Initialize = (ECSManager_Initialize)Initialize,
+        .Added = (ECSManager_Added)Added,
+        .Changed = (ECSManager_Changed)Changed,
+        .Deleted = (ECSManager_Deleted)Deleted,
+        .Disabled = (ECSManager_Disabled)Disabled,
+        .Enabled = (ECSManager_Enabled)Enabled,
     };
 
     New((super*) this, &vtable);

@@ -17,9 +17,4 @@ extern const CFWClass* DNAArrayRendererClass;
 
 extern method void* New(DNAArrayRenderer* this, DNAShader* shader);
 
-extern method void Draw(
-    const DNAArrayRenderer* this,
-    DNATexture2D* texture,
-    DNARect* bounds,
-    GLfloat rotate,
-    Vec3 color);
+extern method void Draw(DNAArrayRenderer* this, DNATexture2D* texture, DNARect* bounds, GLfloat rotate, Vec3 color);

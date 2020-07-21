@@ -17,13 +17,11 @@ method void* New(Animal* this, IAnimal* vptr)
     return this;
 }
 
-method void Talk(Animal* this)
+method void* Talk(Animal* this)
 {
-    printf("Animal Talk:\n");
-    this->vptr->Talk(this);
+    return this->vptr->Talk(this);
 }
-method void Eat(Animal* this)
+method void* Eat(Animal* this)
 {
-    printf("yum!\n");
-    Talk(this);
+    return Talk(this);
 }

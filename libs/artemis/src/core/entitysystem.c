@@ -173,7 +173,7 @@ method void Added(ECSEntitySystem* this, ECSEntity* entity)
 
 method void Changed(ECSEntitySystem* this, ECSEntity* e)
 {
-    Check(this, entity);
+    Check(this, e);
 }
 
 method void Deleted(ECSEntitySystem* this, ECSEntity* e)

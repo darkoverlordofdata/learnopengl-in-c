@@ -20,7 +20,7 @@ corefw(ECSManager);
 
 method void* New(ECSManager* this, ECSIManager* vptr)
 {
-    New((super*)this, vptr);
+    New((super*)this, (ECSIEntityObserver*)vptr);
     return this;
 }
 

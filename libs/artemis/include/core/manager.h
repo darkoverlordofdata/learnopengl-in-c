@@ -23,6 +23,16 @@ struct ECSIManager {
     void (*Initialize)(void* this);
 };
 
+// typedefs for virtual methods
+typedef void (*ECSManager_Added)(ECSManager* this, ECSEntity* entity);
+typedef void (*ECSManager_Changed)(ECSManager* this, ECSEntity* entity);
+typedef void (*ECSManager_Deleted)(ECSManager* this, ECSEntity* entity);
+typedef void (*ECSManager_Disabled)(ECSManager* this, ECSEntity* entity);
+typedef void (*ECSManager_Enabled)(ECSManager* this, ECSEntity* entity);
+typedef void (*ECSManager_Begin)(ECSManager* this);
+typedef void (*ECSManager_End)(ECSManager* this);
+typedef void (*ECSManager_Initialize)(ECSManager* this);
+
 
 extern method void* New(ECSManager* this, ECSIManager* vptr);
 

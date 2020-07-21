@@ -2,6 +2,8 @@
 #include "cfw.h"
 #include "core/component-private.h"
 #include "core/component.h"
+#include "core/componentmanager-private.h"
+#include "core/componentmanager.h"
 #include "core/entity-private.h"
 #include "ecs.h"
 
@@ -12,7 +14,6 @@ static void* copy(void* self) { return NULL; }
 static void dtor(void* self) {}
 
 corefw(ECSEntity);
-
 
 /**
  * The entity class. Cannot be instantiated outside the framework, you must
@@ -179,6 +180,7 @@ method ECSComponent* GetComponentByType(ECSEntity* this, CFWClass* type)
 {
     return GetCompoment(this->ComponentManager, this, GetTypeFor(this, type));
 }
+//method ECSComponent* GetComponent(ECSComponentManager* this, ECSEntity* e, ECSComponentType* type)
 
 /**
  * Returns a bag of all components this entity has.

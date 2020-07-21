@@ -21,12 +21,12 @@ corefw(ECSGroupManager);
 method void* New(ECSGroupManager* this)
 {
     static ECSIManager vtable = {
-        .Initialize = abstract(ECSGroupManager, Initialize),
-        .Added = abstract(ECSGroupManager, Added),
-        .Changed = abstract(ECSGroupManager, Changed),
-        .Deleted = abstract(ECSGroupManager, Deleted),
-        .Disabled = abstract(ECSGroupManager, Disabled),
-        .Enabled = abstract(ECSGroupManager, Enabled),
+        .Initialize = (ECSManager_Initialize)((ECSGroupManager_Initialize)Initialize),
+        .Added = (ECSManager_Added)((ECSGroupManager_Added)Added),
+        .Changed = (ECSManager_Changed)((ECSGroupManager_Changed)Changed),
+        .Deleted = (ECSManager_Deleted)((ECSGroupManager_Deleted)Deleted),
+        .Disabled = (ECSManager_Disabled)((ECSGroupManager_Disabled)Disabled),
+        .Enabled = (ECSManager_Enabled)((ECSGroupManager_Enabled)Enabled),
     };
 
     New((super*) this, &vtable);

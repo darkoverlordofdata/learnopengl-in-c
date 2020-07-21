@@ -52,7 +52,7 @@ method void End(ECSVoidEntitySystem* this)
  * 
  * @param entities the entities this system contains.
  */
-method void ProcessEntities(ECSVoidEntitySystem* this, Array* entities) { 
+method void ProcessEntities(ECSVoidEntitySystem* this, CFWArray* entities) { 
     ProcessSystem((super*)this);
 }
 

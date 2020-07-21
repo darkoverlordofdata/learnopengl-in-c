@@ -5,6 +5,7 @@
 #include "core/world.h"
 // #include "core/entityprocessingsystem.h"
 
+typedef struct ECSIIntervalEntitySystem ECSIIntervalEntitySystem;
 typedef struct ECSIntervalEntitySystem ECSIntervalEntitySystem;
 extern const CFWClass* ECSIntervalEntitySystemClass;
 
@@ -29,12 +30,10 @@ struct ECSIIntervalEntitySystem {
 extern method void* New(ECSIntervalEntitySystem* this, ECSAspect* aspect, float interval, ECSIIntervalEntitySystem* vptr);
 
 extern method void Begin(ECSIntervalEntitySystem* this);
-virtual(ECSIntervalEntitySystem);
 
 extern method void Process(ECSIntervalEntitySystem* this);
 
 extern method void End(ECSIntervalEntitySystem* this);
-virtual(ECSIntervalEntitySystem);
 
 extern method void ProcessEntities(ECSIntervalEntitySystem* this, CFWArray* entities);
 

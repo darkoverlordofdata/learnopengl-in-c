@@ -21,12 +21,12 @@ corefw(ECSPlayerManager);
 method void* New(ECSPlayerManager* this)
 {
     static ECSIManager vtable = {
-        .Initialize = abstract(ECSPlayerManager, Initialize),
-        .Added = abstract(ECSPlayerManager, Added),
-        .Changed = abstract(ECSPlayerManager, Changed),
-        .Deleted = abstract(ECSPlayerManager, Deleted),
-        .Disabled = abstract(ECSPlayerManager, Disabled),
-        .Enabled = abstract(ECSPlayerManager, Enabled),
+        .Initialize = (ECSManager_Initialize)Initialize,
+        .Added = (ECSManager_Added)Added,
+        .Changed = (ECSManager_Changed)Changed,
+        .Deleted = (ECSManager_Deleted)Deleted,
+        .Disabled = (ECSManager_Disabled)Disabled,
+        .Enabled = (ECSManager_Enabled)Enabled,
     };
 
     New((super*) this, &vtable);

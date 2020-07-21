@@ -33,7 +33,9 @@ struct ECSIEntityProcessingSystem
     void (*ProcessEach)(void* this, ECSEntity* e);
 };
 
-extern method void* New(ECSEntityProcessingSystem* this, ECSAspect* aspect, ECSIEntityProcessingSystem* vptr)
+typedef void (*ECSEntityProcessingSystem_ProcessEach)(ECSEntityProcessingSystem* this, ECSEntity* entity);
+
+extern method void* New(ECSEntityProcessingSystem* this, ECSAspect* aspect, ECSIEntityProcessingSystem* vptr);
 
 extern method void Begin(ECSEntityProcessingSystem* this);
 

@@ -28,6 +28,7 @@ struct ECSIEntitySystem {
     void (*Removed)(void* this, ECSEntity* e);
 };
 
+typedef void (*ECSEntitySystem_ProcessEach)(ECSEntitySystem* this, ECSEntity* entity);
 
 typedef struct ECSSystemIndexManager ECSSystemIndexManager;
 extern method int GetIndexFor(char* es);

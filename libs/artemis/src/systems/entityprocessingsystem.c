@@ -20,9 +20,10 @@ corefw(ECSEntityProcessingSystem);
 method void* New(ECSEntityProcessingSystem* this, ECSAspect* aspect, ECSIEntityProcessingSystem* vptr)
 {
     this->vptr = New((super*)this, aspect, (ECSIEntitySystem*)vptr);  
-    vptr->ProcessEach = abstract(ECSEntityProcessingSystem, ProcessEach);
+    vptr->ProcessEach = (ECSEntitySystem_ProcessEach)((ECSEntityProcessingSystem_ProcessEach)ProcessEach);
     return this;
 }
+
 
 
 /**

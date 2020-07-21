@@ -4,8 +4,6 @@
 #include <game-private.h>
 
 struct Shmupwarz {
-    CFWObject obj;
-    // DNAGame* game;
     DNAGame game;
     DNATexture2D* bg;
     DNAElementRenderer* renderer;

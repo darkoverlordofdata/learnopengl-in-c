@@ -1,16 +1,10 @@
-#include <stdarg.h>
-#include <stddef.h>
-#include <setjmp.h>
-#include <stdio.h>
-#include <stdint.h>
-#include <dna.h>
 #include "unit.h"
 #include "cfw.h"
 
 
-#include "../src/oop/animal.h"
-#include "../src/oop/cat.h"
-#include "../src/oop/dog.h"
+#include "oop/animal.h"
+#include "oop/cat.h"
+#include "oop/dog.h"
 
 int main(int argc, char *argv[])
 {
@@ -19,17 +13,42 @@ int main(int argc, char *argv[])
     Animal* a = new(Cat, "Frodo");
     Animal* b = new(Dog, "Fido");
 
-    // polymorphic behaviour
+    Describe("Properties", ^{ 
+        It("name is Frodo", ^{ 
+            Expect(0 == strcmp(ToString(a->name), "Frodo"));
+        });
 
-    Talk(a);
-    Talk(b);
+        It("class name is Cat", ^{ 
+            Expect(0 == strcmp(a->obj.cls->name, "Cat"));
+        });
 
-    Cat* a1 = (Cat*)a;
-    Dog* b1 = (Dog*)b;
+        It("name is Fido", ^{ 
+            Expect(0 == strcmp(ToString(b->name), "Fido"));
+        });
 
-    Eat(a1);
-    Eat(b1);
+        It("class name is Dog", ^{ 
+            Expect(0 == strcmp(b->obj.cls->name, "Dog"));
+        });
+    });
+
+    Describe("Polymorphic behaviour", ^{ 
+        It("Frodo is a Cat", ^{
+            Expect(0 == strcmp(cstr(Talk(a)), "(Frodo: Cat)"));
+        });
+
+        It("Fido is a Dog", ^{
+            Expect(0 == strcmp(cstr(Talk(b)), "(Fido: Dog)"));
+        });
+
+    });
+
+    // Cat* a1 = (Cat*)a;
+    // Dog* b1 = (Dog*)b;
+
+    // printf("Eat(a1) = %s", cstr(Eat(a1)));
+    // printf("Eat(b1) = %s", cstr(Eat(b1)));
 
     cfw_unref(pool);
+	exit(tests.failed);
 
 }

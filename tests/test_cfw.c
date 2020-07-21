@@ -1,9 +1,3 @@
-#include <stdarg.h>
-#include <stddef.h>
-#include <setjmp.h>
-#include <stdio.h>
-#include <stdint.h>
-#include <dna.h>
 #include "unit.h"
 #include "cfw.h"
 
@@ -22,32 +16,32 @@ int main(int argc, char *argv[])
 
 	var str = cfw_create(cfw_string, (void*)NULL);
 
-    var table = cfw_create(cfw_map,
-        cfw_create(cfw_string, "a"), cfw_create(cfw_int, 4),
-        cfw_create(cfw_string, "b"), cfw_create(cfw_int, 2),
-        cfw_create(cfw_string, "c"), cfw_create(cfw_int, 0),
-        (void*)NULL);
-
 	for (var i = 0; i < cfw_array_size(array); i++)
 		cfw_string_append(str, cfw_array_get(array, i));
 
-    ForEach(table, ^(void* k, void* i) {
-        printf("ForEach: %s = %ji\n", cfw_string_c(k), cfw_int_value(i));
+    // var table = cfw_create(cfw_map,
+    //     cfw_create(cfw_string, "a"), cfw_create(cfw_int, 4),
+    //     cfw_create(cfw_string, "b"), cfw_create(cfw_int, 2),
+    //     cfw_create(cfw_string, "c"), cfw_create(cfw_int, 0),
+    //     (void*)NULL);
 
-    });
+    // ForEach(table, ^(void* k, void* i) {
+    //     printf("ForEach: %s = %ji\n", cfw_string_c(k), cfw_int_value(i));
+    // });
 
 
     Describe("Base CFW Tests", ^{
 
-        It("Should: be 10\n", ^{
+        It("value is 10", ^{
 			Expect(cfw_int_value(index) == 10);
         });
 
-        It("Should: be > 0\n", ^{
+        It("string length is > 0", ^{
 			Expect(cfw_string_length(str) > 0);
         });
     });
 
     cfw_unref(pool);
+	exit(tests.failed);
 
 }

@@ -31,11 +31,13 @@ SOFTWARE.
 
 static inline void Describe(char* desc, void (^lambda)());
 static inline void It(char* desc, void (^lambda)());
-static inline int Summary();
+static inline int Summary(void);
 
 static inline int TestCountInc();
 static inline int TestFailInc();
 static inline int TestPassInc();
+
+static first_time = 1;
 
 #define Log(x) printf("%s\n", x)
 /**
@@ -54,10 +56,10 @@ static inline int TestPassInc();
 #define Expect(test)                                                    \
 ({                                                                      \
     if (!(test)) {                                                      \
-        fprintf(stdout , " failed (%s:%i)\n", __FILENAME__, __LINE__);   \
+        fprintf(stdout , " failed (%s:%i) ", __FILENAME__, __LINE__);   \
 	    TestFailInc();                                                  \
     } else {                                                            \
-        fprintf(stdout , " passed\n");                                   \
+        fprintf(stdout , " passed ");                                   \
 	    TestPassInc();                                                  \
     }                                                                   \
     TestCountInc();                                                     \
@@ -73,8 +75,9 @@ typedef struct test_stats {
     int total;
     int failed;
     int passed;
+	int verbosity;
 } test_stats;
-test_stats tests;
+test_stats tests = { 0, 0, 0, 1};
 
 static inline int TestCountInc() { return tests.total++; }
 static inline int TestFailInc()  { return tests.failed++; }
@@ -88,7 +91,8 @@ static inline int TestPassInc()  { return tests.passed++; }
  * print a section title & execute
  */
 static inline void Describe(char* desc, void (^lambda)()) {
-	fprintf(stdout , "%s\n======================================\n", desc);
+	// fprintf(stdout , "\n");
+	fprintf(stdout , "\n\n%s\n======================================", desc);
 	lambda();
 }
 
@@ -100,20 +104,25 @@ static inline void Describe(char* desc, void (^lambda)()) {
  * print a test title & execute
  */
 static inline void It(char* desc, void (^lambda)()) {
-    fprintf(stdout , "%s - ", desc);
-	fflush(stdout);
+	fprintf(stdout, "\n");
 	lambda();
+    fprintf(stdout , "[%s]", desc);
+	fflush(stdout);
+	// lambda();
 }
 
 /**
  * print summary info
  */
-static inline int Summary() {
-    fprintf(stdout , "Tests run: %d\n", tests.total);
-    fprintf(stdout , "Tests passed: %d\n", tests.passed);
-    fprintf(stdout , "Tests failed: %d\n", tests.failed);
+static inline int Summary(void) {
+	if (tests.verbosity > 1) {
+		fprintf(stdout , "Tests run: %d\n", tests.total);
+		fprintf(stdout , "Tests passed: %d\n", tests.passed);
+		fprintf(stdout , "Tests failed: %d\n", tests.failed);
+	}
 	return tests.failed;
 }
+
 
 /**
  * Handle fatal errors
@@ -131,15 +140,30 @@ static inline void resethandlers() {
  */
 static inline void sighandler(int signum) {
 	switch(signum) {
-		case SIGABRT: 	fprintf(stderr , "Program Aborted\n");		break;
-		case SIGFPE: 	fprintf(stderr , "Division by Zero\n");		break;
-		case SIGILL: 	fprintf(stderr , "Illegal Instruction\n"); 	break;
-		case SIGINT: 	fprintf(stderr , "Program Interrupted\n"); 	break;
-		case SIGSEGV: 	fprintf(stderr , "Segmentation fault\n"); 	break;
-		case SIGTERM:	fprintf(stderr , "Program Terminated\n"); 	break;
+	case SIGABRT: 	
+		fprintf(stderr , "Program Aborted\n");		
+		break;
+	case SIGFPE: 	
+		fprintf(stderr , "Division by Zero\n");		
+		break;
+	case SIGILL: 	
+		fprintf(stderr , "Illegal Instruction\n"); 	
+		break;
+	case SIGINT: 	
+		fprintf(stderr , "Program Interrupted\n"); 	
+		break;
+	case SIGSEGV: 	
+		fprintf(stderr , "Segmentation fault\n"); 	
+		break;
+	case SIGTERM:	
+		fprintf(stderr , "Program Terminated\n"); 	
+		break;
+	default:
+		fprintf(stderr , "Unknown Signal %x\n", signum); 	
+		break;
 	}
 	resethandlers();
-	exit(0);
+	exit(-1);
 }
 /**
  * Set some fatal error traps

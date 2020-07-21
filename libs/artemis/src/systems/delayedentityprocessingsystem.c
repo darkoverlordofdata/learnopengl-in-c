@@ -156,7 +156,7 @@ method void Added(ECSDelayedEntityProcessingSystem* this, ECSEntity* entity) { }
 
 method void Changed(ECSDelayedEntityProcessingSystem* this, ECSEntity* e) {
     Check((super*)this, e);
- 
+} 
 
 method void Deleted(ECSDelayedEntityProcessingSystem* this, ECSEntity* e) {
     Deleted((super*)this, e);

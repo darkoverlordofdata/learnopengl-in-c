@@ -25,13 +25,29 @@ method void Initialize(Dog* this, char* name)
 {
     this->name = cfw_new(cfw_string, name);
 }
-method void Talk(Dog* this)
-{
-    printf("(%s): bow wow\n", cfw_string_c(this->name));
+
+method void* Talk(Dog* this)
+{    
+	var str = cfw_create(cfw_string, (void*)NULL);
+
+	CFWRefPool *pool = cfw_new(cfw_refpool);
+    var array = cfw_create(cfw_array,
+	    cfw_create(cfw_string, "("),
+	    cfw_create(cfw_string, cstr(this->name)),
+	    cfw_create(cfw_string, ": Dog)"), 
+        (void*)NULL);
+
+	for (var i = 0; i < cfw_array_size(array); i++)
+		cfw_string_append(str, cfw_array_get(array, i));
+
+	cfw_unref(pool);
+    return str;
+
 }
-method void Eat(Dog* this)
+method void* Eat(Dog* this)
 {
-    printf("Dog Eats: ");
     Eat((super*)this);
+    return cfw_create(cfw_string, "Dog Eats: ");
+
 }
 #undef super

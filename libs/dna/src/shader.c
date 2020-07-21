@@ -113,6 +113,14 @@ method void SetFloat(
     glUniform1f(glGetUniformLocation(this->Id, name), value);
 }
 
+method void SetFloat(
+    DNAShader* this,
+    const GLchar* name,
+    const GLfloat value)
+{
+    SetFloat(this, name, value, true);
+}
+
 method void SetInteger(
     DNAShader* this,
     const GLchar* name,
@@ -122,6 +130,14 @@ method void SetInteger(
     if (useShader)
         Use(this);
     glUniform1i(glGetUniformLocation(this->Id, name), value);
+}
+
+method void SetInteger(
+    DNAShader* this,
+    const GLchar* name,
+    GLint value)
+{
+    SetInteger(this, name, value, true);
 }
 
 method void SetVector2(
@@ -136,6 +152,15 @@ method void SetVector2(
     glUniform2f(glGetUniformLocation(this->Id, name), x, y);
 }
 
+method void SetVector2(
+    DNAShader* this,
+    const GLchar* name,
+    GLfloat x,
+    GLfloat y)
+{
+    SetVector2(this, name, x, y, true);
+}
+
 method void SetVector2v(
     DNAShader* this,
     const GLchar* name,
@@ -145,6 +170,14 @@ method void SetVector2v(
     if (useShader)
         Use(this);
     glUniform2fv(glGetUniformLocation(this->Id, name), 1, (GLfloat*)vector);
+}
+
+method void SetVector2v(
+    DNAShader* this,
+    const GLchar* name,
+    const Vec2* vector)
+{
+    SetVector2v(this, name, vector, true);
 }
 
 method void SetVector3(
@@ -160,6 +193,16 @@ method void SetVector3(
     glUniform3f(glGetUniformLocation(this->Id, name), x, y, z);
 }
 
+method void SetVector3(
+    DNAShader* this,
+    const GLchar* name,
+    GLfloat x,
+    GLfloat y,
+    GLfloat z)
+{
+    SetVector3(this, name, x, y, z, true);
+}
+
 method void SetVector3v(
     DNAShader* this,
     const GLchar* name,
@@ -169,6 +212,14 @@ method void SetVector3v(
     if (useShader)
         Use(this);
     glUniform3fv(glGetUniformLocation(this->Id, name), 1, (GLfloat*)vector);
+}
+
+method void SetVector3v(
+    DNAShader* this,
+    const GLchar* name,
+    const Vec3* vector)
+{
+    SetVector3v(this, name, vector, true);
 }
 
 method void SetVector4(
@@ -185,6 +236,17 @@ method void SetVector4(
     glUniform4f(glGetUniformLocation(this->Id, name), x, y, z, w);
 }
 
+method void SetVector4(
+    DNAShader* this,
+    const GLchar* name,
+    GLfloat x,
+    GLfloat y,
+    GLfloat z,
+    GLfloat w)
+{
+    SetVector4(this, name, x, y, z, w, true);
+}
+
 method void SetVector4v(
     DNAShader* this,
     const GLchar* name,
@@ -194,6 +256,14 @@ method void SetVector4v(
     if (useShader)
         Use(this);
     glUniform4fv(glGetUniformLocation(this->Id, name), 1, (GLfloat*)vector);
+}
+
+method void SetVector4v(
+    DNAShader* this,
+    const GLchar* name,
+    const Vec4* vector)
+{
+    SetVector4v(this, name, vector, true);
 }
 
 method void SetMatrix(

@@ -26,10 +26,7 @@ corefw(ECSIntervalEntityProcessingSystem);
  */
 method void* New(ECSIntervalEntityProcessingSystem* this, ECSAspect* aspect, float interval, ECSIIntervalEntityProcessingSystem* vptr)
 {
-    this->vptr = New((super*)this, aspect, (ECSIIntervalEntitySystem*)vptr);    
-    // vptr->Begin = abstract(ECSEntityProcessingSystem, Begin);
-    // vptr->End = abstract(ECSEntityProcessingSystem, End);
-    // vptr->Initialize = abstract(ECSEntityProcessingSystem, Initialize);
+    this->vptr = New((super*)this, aspect, interval, (ECSIIntervalEntitySystem*)vptr);    
     return this;
 }
 

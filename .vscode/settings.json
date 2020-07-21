@@ -1,6 +1,6 @@
 {
     "files.associations": {
-        "*.h": "objective-c",
+        // "*.h": "objective-c",
         "array": "c",
         "string": "c",
         "string_view": "c",

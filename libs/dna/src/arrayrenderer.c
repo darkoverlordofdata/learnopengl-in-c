@@ -73,7 +73,7 @@ method void* New(DNAArrayRenderer* this, DNAShader* shader)
  * 
  */
 method void Draw(
-    const DNAArrayRenderer* this,
+    DNAArrayRenderer* this,
     DNATexture2D* texture,
     DNARect* bounds,
     GLfloat rotate,

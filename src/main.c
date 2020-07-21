@@ -14,7 +14,7 @@ int main(int argc, char *argv[])
 
 	Run(game);
 
-	cfw_unref(game);
+	// cfw_unref(game);
 	cfw_unref(pool);
 
 	return 0;

@@ -13,5 +13,5 @@ struct Dog {
 
 extern method void* New(Dog* this, char* name);
 extern method void Initialize(Dog* this, char* name);
-extern method void Talk(Dog* this);
-extern method void Eat(Dog* this);
+extern method void* Talk(Dog* this);
+extern method void* Eat(Dog* this);

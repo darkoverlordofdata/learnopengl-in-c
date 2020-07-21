@@ -1,9 +1,3 @@
-#include <stdarg.h>
-#include <stddef.h>
-#include <setjmp.h>
-#include <stdio.h>
-#include <stdint.h>
-#include <dna.h>
 #include "unit.h"
 #include "cfw.h"
 
@@ -18,18 +12,17 @@ int main(int argc, char *argv[])
 
     Describe("CFWRandom Tests", ^{
 
-        It("Should: be not 0\n", ^{
-			// printf("l = %lu\n", l);
+        It("is not 0", ^{
 			Expect(l != 0);
         });
 		
-        It("Should: be not 0.0f\n", ^{
-			// printf("d = %f\n", d);
+        It("is not 0.0f", ^{
 			Expect(d != 0.0f);
         });
 
 	});
 
     cfw_unref(pool);
+	exit(tests.failed);
 
 }

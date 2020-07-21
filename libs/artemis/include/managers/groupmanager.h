@@ -7,6 +7,15 @@ extern const CFWClass* ECSGroupManagerClass;
 typedef struct ECSEntity ECSEntity;
 typedef struct ECSWorld ECSWorld;
 
+// typedefs for overrides
+typedef void (*ECSGroupManager_Initialize)(ECSGroupManager* this);
+typedef void (*ECSGroupManager_Added)(ECSGroupManager* this, ECSEntity* entity);
+typedef void (*ECSGroupManager_Changed)(ECSGroupManager* this, ECSEntity* entity);
+typedef void (*ECSGroupManager_Deleted)(ECSGroupManager* this, ECSEntity* entity);
+typedef void (*ECSGroupManager_Disabled)(ECSGroupManager* this, ECSEntity* entity);
+typedef void (*ECSGroupManager_Enabled)(ECSGroupManager* this, ECSEntity* entity);
+
+
 extern method void* New(ECSGroupManager* this);
 
 extern method void Initialize(ECSGroupManager* this);
