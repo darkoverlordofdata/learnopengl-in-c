@@ -33,18 +33,6 @@ static bool equal(void* ptr1, void* ptr2) { return ptr1 == ptr2; }
 static uint32_t hash(void* self) { return (uint32_t)self; }
 static void* copy(void* self) { return NULL; }
 
-#define TicksPerMillisecond 10000.0
-#define MillisecondsPerTick 1.0 / (TicksPerMillisecond)
-#define TicksPerSecond TicksPerMillisecond * 1000.0 // 10,000,000
-#define SecondsPerTick 1.0 / (TicksPerSecond) // 0.0001
-
-void DNAGame_framebuffer_size_callback(GLFWwindow* window, int width, int height)
-{
-    // make sure the viewport matches the new window dimensions; note that width and
-    // height will be significantly larger than specified on retina displays.
-    glViewport(0, 0, width, height);
-}
-
 static void dtor(void* self)
 {
     DNAGame* this = self;
@@ -52,6 +40,36 @@ static void dtor(void* self)
     free(this->title);
     free(this->keys);
     glfwTerminate();
+}
+
+#define TicksPerMillisecond 10000.0
+#define MillisecondsPerTick 1.0 / (TicksPerMillisecond)
+#define TicksPerSecond TicksPerMillisecond * 1000.0 // 10,000,000
+#define SecondsPerTick 1.0 / (TicksPerSecond) // 0.0001
+
+DNAGame* DNAGame_instance;
+
+void DNAGame_key_callback(GLFWwindow* window, int key, int scancode, int action, int mode)
+{
+    // When a user presses the escape key,
+    // we set the WindowShouldClose property to true, closing the application
+    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+        glfwSetWindowShouldClose(window, true);
+    if (key >= 0 && key < 1024) {
+        if (action == GLFW_PRESS)
+            DNAGame_instance->keys[key] = true;
+        else if (action == GLFW_RELEASE)
+            DNAGame_instance->keys[key] = false;
+    }
+}
+
+
+
+void DNAGame_framebuffer_size_callback(GLFWwindow* window, int width, int height)
+{
+    // make sure the viewport matches the new window dimensions; note that width and
+    // height will be significantly larger than specified on retina displays.
+    glViewport(0, 0, width, height);
 }
 
 static uint64_t GetTicks()
@@ -117,6 +135,9 @@ method void* New(DNAGame* this, char* cstr, int width, int height, void* subclas
         exit(-1);
     }
 #endif
+
+    DNAGame_instance = this;
+    glfwSetKeyCallback(this->window, DNAGame_key_callback);
     glfwSwapInterval(1);
 
     glViewport(0, 0, this->width, this->height);

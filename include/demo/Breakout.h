@@ -9,7 +9,7 @@
 
 #include "BallObject.h"
 #include "Collision.h"
-#include "Game.h"
+#include "Demo.h"
 #include "GameLevel.h"
 #include "GameObject.h"
 #include "Particle.h"

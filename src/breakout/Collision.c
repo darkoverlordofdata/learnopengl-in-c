@@ -6,7 +6,6 @@
 ** Creative Commons, either version 4 of the License, or (at your
 ** option) any later version.
 ******************************************************************/
-#pragma once
 #include "Collision.h"
 #include "Collision-private.h"
 // #include "Game-private.h"

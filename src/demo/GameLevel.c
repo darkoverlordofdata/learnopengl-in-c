@@ -7,7 +7,7 @@
 ** option) any later version.
 ******************************************************************/
 #include "GameLevel.h"
-#include "Game.h"
+#include "Demo.h"
 #include "GameLevel-private.h"
 #include "GameObject-private.h"
 #include "GameObject.h"

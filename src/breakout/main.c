@@ -12,9 +12,9 @@
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
 
 // The Width of the screen
-const GLuint SCREEN_WIDTH = 800;
+const int SCREEN_WIDTH = 800;
 // The height of the screen
-const GLuint SCREEN_HEIGHT = 600;
+const int SCREEN_HEIGHT = 600;
 
 // Game Breakout(SCREEN_WIDTH, SCREEN_HEIGHT);
 Game* Breakout;
@@ -47,12 +47,18 @@ int main(int argc, char* argv[])
 #endif
 
     glfwSetKeyCallback(window, key_callback);
+    glfwSwapInterval(1);
+    printf("3\n");
 
     // OpenGL configuration
     glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+    printf("4\n");
     glEnable(GL_CULL_FACE);
+    printf("5\n");
     glEnable(GL_BLEND);
+    printf("6\n");
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    printf("7\n");
 
     // DeltaTime variables
     GLfloat deltaTime = 0.0f;

@@ -10,9 +10,11 @@ int main(int argc, char *argv[])
 
 	CFWRefPool *pool = cfw_new(cfw_refpool);
 
-	Shmupwarz *game = new(Shmupwarz, "Shmupwarz", 720, 480);
+	Run((Shmupwarz *)new(Shmupwarz, "Shmupwarz", 720, 480));
 
-	Run(game);
+	// Shmupwarz *game = new(Shmupwarz, "Shmupwarz", 720, 480);
+
+	// Run(game);
 
 	// cfw_unref(game);
 	cfw_unref(pool);

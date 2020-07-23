@@ -1,25 +1,14 @@
-/*******************************************************************
-** This code is part of Breakout.
-**
-** Breakout is free software: you can redistribute it and/or modify
-** it under the terms of the CC BY 4.0 license as published by
-** Creative Commons, either version 4 of the License, or (at your
-** option) any later version.
-******************************************************************/
-#include "Game.h"
-#include "BallObject-private.h"
-#include "BallObject.h"
-#include "Collision-private.h"
-#include "Collision.h"
-#include "Game-private.h"
-#include "GameLevel-private.h"
-#include "GameLevel.h"
-#include "GameObject-private.h"
+#include <game-private.h>
+#include "cfw.h"
+#include "Demo.h"
+#include "Demo-private.h"
 #include "GameObject.h"
-#include "Particle-private.h"
-#include "Particle.h"
+#include "GameObject-private.h"
+#include "BallObject.h"
+#include "BallObject-private.h"
 
-corefw(Game);
+#define super DNAGame
+corefw(Demo);
 /**
  * Create new game
  */
@@ -27,7 +16,7 @@ static bool ctor(void* self, va_list args) { return true; }
 static bool equal(void* ptr1, void* ptr2) { return ptr1 == ptr2; }
 static uint32_t hash(void* self) { return (uint32_t)self; }
 static void* copy(void* self) { return NULL; }
-static void dtor(void* self) {}
+static void dtor(void* self) { }
 
 // Initial size of the player paddle
 static const Vec2 PLAYER_SIZE = { 100, 20 };
@@ -48,43 +37,39 @@ static GameObject* Player;
 static BallObject* Ball;
 
 
-/**
- * Create Game instance
- * 
- * @param Width of screen
- * @param Height of screen
- * 
- */
-method void* New(
-    Game* this,
-    int Width,
-    int Height)
+////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////
+///// methods
+////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////
+typedef void (*DemoProc)(Demo* this);
+void* New(Demo* this, char* title, int width, int height)
 {
+    static struct DNAGameVtbl overrides = {
+        .Initialize = (DNAGameProc)(DemoProc)(Initialize),
+        .LoadContent = (DNAGameProc)((DemoProc)LoadContent),
+        .Update = (DNAGameProc)((DemoProc)Update),
+        .Draw = (DNAGameProc)((DemoProc)Draw),
+    };
+
+    New((super*)this, title, width, height, this, &overrides);
+
     this->Levels = cfw_new(cfw_array, NULL);
     this->Level = 0;
     this->State = GAME_ACTIVE;
-    this->Width = Width;
-    this->Height = Height;
+    this->width = width;
+    this->height = height;
     ResourceManager = new (DNAResourceManager);
-    return this;
+
+    return (void*)this;
 }
 
-method void SetKey(Game* this, int key, bool value)
+method void Initialize(Demo* this)
 {
-    this->Keys[key] = value;
 }
 
-method void SetState(Game* this, GameState state)
+method void LoadContent(Demo* this)
 {
-    this->State = state;
-}
-
-/**
- * Start the game
- */
-method void Start(Game* this)
-{
-
     // Load shaders
 #ifdef __EMSCRIPTEN__
     LoadShader(ResourceManager, "data/shaders/es/sprite.vs", "data/shaders/es/sprite.fs", "sprite");
@@ -93,7 +78,7 @@ method void Start(Game* this)
 #endif
 
     // Configure shaders
-    Mat projection = glm_ortho(0, (GLfloat)this->Width, (GLfloat)this->Height, 0, -1, 1);
+    Mat projection = glm_ortho(0, (GLfloat)this->width, (GLfloat)this->height, 0, -1, 1);
     DNAShader* shader = GetShader(ResourceManager, "sprite");
     Use(shader);
     SetInteger(shader, "sprite", 0);
@@ -110,102 +95,102 @@ method void Start(Game* this)
     Renderer = new (DNAArrayRenderer, GetShader(ResourceManager, "sprite"));
     // Load levels
 
-    Add(this->Levels, new (GameLevel, "data/levels/one.lvl", this->Width, this->Height * 0.5));
-    Add(this->Levels, new (GameLevel, "data/levels/two.lvl", this->Width, this->Height * 0.5));
-    Add(this->Levels, new (GameLevel, "data/levels/three.lvl", this->Width, this->Height * 0.5));
-    Add(this->Levels, new (GameLevel, "data/levels/four.lvl", this->Width, this->Height * 0.5));
+    Add(this->Levels, new (GameLevel, "data/levels/one.lvl", this->width, this->height * 0.5));
+    Add(this->Levels, new (GameLevel, "data/levels/two.lvl", this->width, this->height * 0.5));
+    Add(this->Levels, new (GameLevel, "data/levels/three.lvl", this->width, this->height * 0.5));
+    Add(this->Levels, new (GameLevel, "data/levels/four.lvl", this->width, this->height * 0.5));
 
     // Configure game objects
-    Vec2 playerPos = (Vec2) { this->Width / 2 - PLAYER_SIZE.x / 2, this->Height - PLAYER_SIZE.y };
+    Vec2 playerPos = (Vec2) { this->width / 2 - PLAYER_SIZE.x / 2, this->height - PLAYER_SIZE.y };
     Player = new (GameObject, "player", playerPos, PLAYER_SIZE, GetTexture(ResourceManager, "paddle"), WHITE);
     Vec2 ballPos = playerPos + (Vec2) { PLAYER_SIZE.x / 2 - BALL_RADIUS, -BALL_RADIUS * 2 };
     Ball = new (BallObject, ballPos, BALL_RADIUS, INITIAL_BALL_VELOCITY, GetTexture(ResourceManager, "face"));
 }
 
-/**
- * Update
- * 
- * @param dt deltat time
- */
-method void Update(Game* this, GLfloat dt)
+method void Update(Demo* this)
 {
     // Update objects
-    Move(Ball, dt, this->Width);
+    Move(Ball, this->delta, this->width);
     // Check for collisions
 
     DoCollisions(this);
-    // Check loss condition
-    if (Ball->Position.x >= this->Height) // Did ball reach bottom edge?
+    // // Check loss condition
+    if (Ball->Position.x >= this->height) // Did ball reach bottom edge?
     {
         ResetLevel(this);
         ResetPlayer(this);
     }
-}
 
-/**
- * ProcessInput
- * 
- * @param dt deltat time
- */
-method void ProcessInput(Game* this, GLfloat dt)
-{
     if (this->State == GAME_ACTIVE) {
-        GLfloat velocity = PLAYER_VELOCITY * dt;
+        GLfloat velocity = PLAYER_VELOCITY * this->delta;
         // Move playerboard
-        if (this->Keys[GLFW_KEY_A] || this->Keys[GLFW_KEY_LEFT]) {
+        if (this->keys[GLFW_KEY_A] || this->keys[GLFW_KEY_LEFT]) {
             if (Player->Position.x >= 0) {
                 Player->Position.x -= velocity;
                 if (Ball->Stuck)
                     Ball->Position.x -= velocity;
             }
         }
-        if (this->Keys[GLFW_KEY_D] || this->Keys[GLFW_KEY_RIGHT]) {
-            if (Player->Position.x <= this->Width - Player->Size.x) {
+        if (this->keys[GLFW_KEY_D] || this->keys[GLFW_KEY_RIGHT]) {
+            if (Player->Position.x <= this->width - Player->Size.x) {
                 Player->Position.x += velocity;
                 if (Ball->Stuck)
                     Ball->Position.x += velocity;
             }
         }
-        if (this->Keys[GLFW_KEY_SPACE])
+        if (this->keys[GLFW_KEY_SPACE])
             Ball->Stuck = false;
     }
+
 }
 
-/**
- * Render
- * 
- */
-method void Render(Game* this)
+method void Draw(Demo* this)
 {
+    float bgd_r = 0.392156f;
+    float bgd_g = 0.584313f;
+    float bgd_b = 0.929411f;
+
+    glClearColor(bgd_r, bgd_g, bgd_b, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT);
+
     if (this->State == GAME_ACTIVE) {
         // Draw background
-        DNARect bounds = { 0, 0, this->Width, this->Height };
+        DNARect bounds = { 0, 0, this->width, this->height };
         Draw(Renderer, GetTexture(ResourceManager, "background"), &bounds, 0.0f, WHITE);
         GameLevel* level = (GameLevel*)Get(this->Levels, this->Level);
         Draw(level, Renderer);
         Draw(Player, Renderer);
         Draw(Ball, Renderer);
     }
+
+
+    glfwSwapBuffers(this->window);
+    glfwPollEvents();
+}
+
+method void Run(Demo* this)
+{
+    Run((super*)this);
 }
 
 /**
  * ResetLevel
  * 
  */
-method void ResetLevel(Game* this)
+method void ResetLevel(Demo* this)
 {
     if (this->Level == 0) {
         GameLevel* level = Get(this->Levels, 0);
-        Load(level, "data/levels/one.lvl", this->Width, this->Height * 0.5f);
+        Load(level, "data/levels/one.lvl", this->width, this->height * 0.5f);
     } else if (this->Level == 1) {
         GameLevel* level = Get(this->Levels, 1);
-        Load(level, "data/levels/two.lvl", this->Width, this->Height * 0.5f);
+        Load(level, "data/levels/two.lvl", this->width, this->height * 0.5f);
     } else if (this->Level == 2) {
         GameLevel* level = Get(this->Levels, 2);
-        Load(level, "data/levels/three.lvl", this->Width, this->Height * 0.5f);
+        Load(level, "data/levels/three.lvl", this->width, this->height * 0.5f);
     } else if (this->Level == 3) {
         GameLevel* level = Get(this->Levels, 3);
-        Load(level, "data/levels/four.lvl", this->Width, this->Height * 0.5f);
+        Load(level, "data/levels/four.lvl", this->width, this->height * 0.5f);
     }
 }
 
@@ -213,18 +198,11 @@ method void ResetLevel(Game* this)
  * ResetPlayer
  * 
  */
-method void ResetPlayer(Game* this)
+method void ResetPlayer(Demo* this)
 {
     Player->Size = PLAYER_SIZE;
-    Player->Position = (Vec2) { this->Width / 2 - PLAYER_SIZE.x / 2, this->Height - PLAYER_SIZE.y };
+    Player->Position = (Vec2) { this->width / 2 - PLAYER_SIZE.x / 2, this->height - PLAYER_SIZE.y };
     Reset(Ball, Player->Position + (Vec2) { PLAYER_SIZE.x / 2 - BALL_RADIUS, -(BALL_RADIUS * 2) }, INITIAL_BALL_VELOCITY);
-}
-
-/**
- * Release game resources
- */
-method void Dispose(Game* this)
-{
 }
 
 //===============================================================//
@@ -263,7 +241,7 @@ static inline Direction ArrayDirection(Vec2 target)
  * @param two second game object to check
  * 
  */
-static inline GLboolean CheckCollision2(Game* this, GameObject* one, GameObject* two) // AABB - AABB collision
+static inline GLboolean CheckCollision2(Demo* this, GameObject* one, GameObject* two) // AABB - AABB collision
 {
     // Collision x-axis?
     bool collisionX = one->Position.x + one->Size.x >= two->Position.x && two->Position.x + two->Size.x >= one->Position.x;
@@ -281,7 +259,7 @@ static inline GLboolean CheckCollision2(Game* this, GameObject* one, GameObject*
  * 
  */
 static inline Collision* CheckCollision(
-    Game* this,
+    Demo* this,
     BallObject* one,
     GameObject* two) // AABB - Circle collision
 {
@@ -310,7 +288,7 @@ static inline Collision* CheckCollision(
  * DoCollisions
  * 
  */
-method void DoCollisions(Game* this)
+method void DoCollisions(Demo* this)
 {
     GameLevel* level = Get(this->Levels, this->Level);
     CFWArray* bricks = level->Bricks;
@@ -371,10 +349,4 @@ method void DoCollisions(Game* this)
     // DSFree(result);
 }
 
-/**
- * ToString
- */
-method char* ToString(Game* this)
-{
-    return "Game";
-}
+#undef super

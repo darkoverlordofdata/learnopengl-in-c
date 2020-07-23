@@ -1,3 +1,4 @@
+
 {
     "version": "2.0.0",
     "tasks": [
@@ -5,15 +6,10 @@
             "label": "build",
             "command": "emcc",
             "args": [
-                "src/polyfill.c", 
-                "src/demo/main.c",
-                "src/demo/Demo.c",
-                "src/demo/BallObject.c", 
-                "src/demo/Collision.c", 
-                "src/demo/GameLevel.c", 
-                "src/demo/GameObject.c",
-                "src/demo/Particle.c",
-                "src/demo/ParticleGenerator.c",
+                "tests/test_oop.c",
+                "tests/oop/animal.c",
+                "tests/oop/cat.c",
+                "tests/oop/dog.c",
                 "libs/dna/src/glad.c",
                 "libs/dna/src/tglm.c",
                 "libs/dna/src/game.c",
@@ -37,7 +33,6 @@
                 "-Ilibs/dna/include",
                 "-Iexternal/stb",
                 "-Iinclude",
-                "-Iinclude/demo",
                 "-s", "WASM=1",
                 "-s", "USE_WEBGL2=1",
                 "-s", "USE_GLFW=3",
@@ -47,18 +42,7 @@
                 "--preload-file", "data/shaders/es/elementrender.vs",
                 "--preload-file", "data/shaders/es/triangle.fs",
                 "--preload-file", "data/shaders/es/triangle.vs",
-                "--preload-file", "data/shaders/es/sprite.fs",
-                "--preload-file", "data/shaders/es/sprite.vs",
-                "--preload-file", "data/textures/block.png",
-                "--preload-file", "data/textures/paddle.png",
-                "--preload-file", "data/textures/block_solid.png",
-                "--preload-file", "data/textures/awesomeface.png",
-                "--preload-file", "data/textures/background.png",
-                "--preload-file", "data/levels/one.lvl",
-                "--preload-file", "data/levels/two.lvl",
-                "--preload-file", "data/levels/three.lvl",
-                "--preload-file", "data/levels/four.lvl",
-
+                "--preload-file", "data/images/background.png",
             ],
 
             "problemMatcher": {

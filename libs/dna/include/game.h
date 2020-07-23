@@ -13,6 +13,8 @@ typedef struct DNAGame DNAGame;
 struct DNAGameVtbl;
 extern const CFWClass* DNAGameClass;
 
+extern DNAGame* DNAGame_instance;
+
 typedef void (*DNAGameProc)(void* self);
 struct DNAGameVtbl {
     void (*Initialize)(void* self);

@@ -119,7 +119,8 @@ var Module = typeof Module !== 'undefined' ? Module : {};
   Module['FS_createPath']('/', 'data', true, true);
 Module['FS_createPath']('/data', 'shaders', true, true);
 Module['FS_createPath']('/data/shaders', 'es', true, true);
-Module['FS_createPath']('/data', 'images', true, true);
+Module['FS_createPath']('/data', 'textures', true, true);
+Module['FS_createPath']('/data', 'levels', true, true);
 
       /** @constructor */
       function DataRequest(start, end, audio) {
@@ -202,7 +203,7 @@ Module['FS_createPath']('/data', 'images', true, true);
     }
   
    }
-   loadPackage({"files": [{"filename": "/data/shaders/es/elementrender.fs", "start": 0, "end": 311, "audio": 0}, {"filename": "/data/shaders/es/elementrender.vs", "start": 311, "end": 629, "audio": 0}, {"filename": "/data/shaders/es/triangle.fs", "start": 629, "end": 739, "audio": 0}, {"filename": "/data/shaders/es/triangle.vs", "start": 739, "end": 911, "audio": 0}, {"filename": "/data/images/background.png", "start": 911, "end": 62242, "audio": 0}], "remote_package_size": 62242, "package_uuid": "204f7739-0375-452d-af91-2007fdc8438d"});
+   loadPackage({"files": [{"filename": "/data/shaders/es/elementrender.fs", "start": 0, "end": 311, "audio": 0}, {"filename": "/data/shaders/es/elementrender.vs", "start": 311, "end": 629, "audio": 0}, {"filename": "/data/shaders/es/triangle.fs", "start": 629, "end": 739, "audio": 0}, {"filename": "/data/shaders/es/triangle.vs", "start": 739, "end": 911, "audio": 0}, {"filename": "/data/shaders/es/sprite.fs", "start": 911, "end": 1174, "audio": 0}, {"filename": "/data/shaders/es/sprite.vs", "start": 1174, "end": 1440, "audio": 0}, {"filename": "/data/textures/block.png", "start": 1440, "end": 24727, "audio": 0}, {"filename": "/data/textures/paddle.png", "start": 24727, "end": 43629, "audio": 0}, {"filename": "/data/textures/block_solid.png", "start": 43629, "end": 92287, "audio": 0}, {"filename": "/data/textures/awesomeface.png", "start": 92287, "end": 136291, "audio": 0}, {"filename": "/data/textures/background.png", "start": 136291, "end": 1453694, "audio": 0}, {"filename": "/data/levels/one.lvl", "start": 1453694, "end": 1453934, "audio": 0}, {"filename": "/data/levels/two.lvl", "start": 1453934, "end": 1454174, "audio": 0}, {"filename": "/data/levels/three.lvl", "start": 1454174, "end": 1454330, "audio": 0}, {"filename": "/data/levels/four.lvl", "start": 1454330, "end": 1454486, "audio": 0}], "remote_package_size": 1454486, "package_uuid": "107c9aee-f7ca-4cb9-837c-c76672259d0f"});
   
   })();
   
@@ -865,8 +866,8 @@ var wasmMemory;
 // In the wasm backend, we polyfill the WebAssembly object,
 // so this creates a (non-native-wasm) table for us.
 var wasmTable = new WebAssembly.Table({
-  'initial': 100,
-  'maximum': 100 + 0,
+  'initial': 121,
+  'maximum': 121 + 0,
   'element': 'anyfunc'
 });
 
@@ -1485,11 +1486,11 @@ function updateGlobalBufferAndViews(buf) {
 }
 
 var STATIC_BASE = 1024,
-    STACK_BASE = 5257104,
+    STACK_BASE = 5257936,
     STACKTOP = STACK_BASE,
-    STACK_MAX = 14224,
-    DYNAMIC_BASE = 5257104,
-    DYNAMICTOP_PTR = 14064;
+    STACK_MAX = 15056,
+    DYNAMIC_BASE = 5257936,
+    DYNAMICTOP_PTR = 14896;
 
 assert(STACK_BASE % 16 === 0, 'stack must start aligned');
 assert(DYNAMIC_BASE % 16 === 0, 'heap must start aligned');
@@ -2051,7 +2052,7 @@ var ASM_CONSTS = {
 
 
 
-// STATICTOP = STATIC_BASE + 13200;
+// STATICTOP = STATIC_BASE + 14032;
 /* global initializers */  __ATINIT__.push({ func: function() { ___wasm_call_ctors() } });
 
 
@@ -6522,7 +6523,7 @@ var ASM_CONSTS = {
   var _abs=Math_abs;
 
   function _emscripten_get_sbrk_ptr() {
-      return 14064;
+      return 14896;
     }
 
   function _emscripten_memcpy_big(dest, src, num) {
@@ -6957,9 +6958,9 @@ var ASM_CONSTS = {
       }
     }
 
-  function _glDrawElements(mode, count, type, indices) {
+  function _glDrawArrays(mode, first, count) {
   
-      GLctx.drawElements(mode, count, type, indices);
+      GLctx.drawArrays(mode, first, count);
   
     }
 
@@ -8092,6 +8093,10 @@ var ASM_CONSTS = {
       return prevcbfun;
     }
 
+  function _glfwSetKeyCallback(winid, cbfun) {
+      return GLFW.setKeyCallback(winid, cbfun);
+    }
+
   function _glfwSetWindowShouldClose(winid, value) {
       var win = GLFW.WindowFromId(winid);
       if (!win) return;
@@ -8241,19 +8246,19 @@ function intArrayToString(array) {
 
 
 var asmGlobalArg = {};
-var asmLibraryArg = { "__assert_fail": ___assert_fail, "__handle_stack_overflow": ___handle_stack_overflow, "__sys_fcntl64": ___sys_fcntl64, "__sys_fstat64": ___sys_fstat64, "__sys_ioctl": ___sys_ioctl, "__sys_open": ___sys_open, "__sys_read": ___sys_read, "__sys_socketcall": ___sys_socketcall, "__sys_stat64": ___sys_stat64, "abs": _abs, "emscripten_get_sbrk_ptr": _emscripten_get_sbrk_ptr, "emscripten_memcpy_big": _emscripten_memcpy_big, "emscripten_resize_heap": _emscripten_resize_heap, "emscripten_set_main_loop_arg": _emscripten_set_main_loop_arg, "exit": _exit, "fd_close": _fd_close, "fd_fdstat_get": _fd_fdstat_get, "fd_read": _fd_read, "fd_seek": _fd_seek, "fd_write": _fd_write, "gettimeofday": _gettimeofday, "glActiveTexture": _glActiveTexture, "glAttachShader": _glAttachShader, "glBindBuffer": _glBindBuffer, "glBindTexture": _glBindTexture, "glBindVertexArray": _glBindVertexArray, "glBlendFunc": _glBlendFunc, "glBufferData": _glBufferData, "glClear": _glClear, "glClearColor": _glClearColor, "glCompileShader": _glCompileShader, "glCreateProgram": _glCreateProgram, "glCreateShader": _glCreateShader, "glDeleteBuffers": _glDeleteBuffers, "glDeleteShader": _glDeleteShader, "glDeleteVertexArrays": _glDeleteVertexArrays, "glDrawElements": _glDrawElements, "glEnable": _glEnable, "glEnableVertexAttribArray": _glEnableVertexAttribArray, "glGenBuffers": _glGenBuffers, "glGenTextures": _glGenTextures, "glGenVertexArrays": _glGenVertexArrays, "glGetProgramInfoLog": _glGetProgramInfoLog, "glGetProgramiv": _glGetProgramiv, "glGetShaderInfoLog": _glGetShaderInfoLog, "glGetShaderiv": _glGetShaderiv, "glGetUniformLocation": _glGetUniformLocation, "glLinkProgram": _glLinkProgram, "glShaderSource": _glShaderSource, "glTexImage2D": _glTexImage2D, "glTexParameteri": _glTexParameteri, "glUniform1i": _glUniform1i, "glUniform3fv": _glUniform3fv, "glUniformMatrix4fv": _glUniformMatrix4fv, "glUseProgram": _glUseProgram, "glVertexAttribPointer": _glVertexAttribPointer, "glViewport": _glViewport, "glfwCreateWindow": _glfwCreateWindow, "glfwGetKey": _glfwGetKey, "glfwInit": _glfwInit, "glfwMakeContextCurrent": _glfwMakeContextCurrent, "glfwPollEvents": _glfwPollEvents, "glfwSetFramebufferSizeCallback": _glfwSetFramebufferSizeCallback, "glfwSetWindowShouldClose": _glfwSetWindowShouldClose, "glfwSwapBuffers": _glfwSwapBuffers, "glfwSwapInterval": _glfwSwapInterval, "glfwTerminate": _glfwTerminate, "glfwWindowHint": _glfwWindowHint, "memory": wasmMemory, "setTempRet0": _setTempRet0, "table": wasmTable, "time": _time };
+var asmLibraryArg = { "__assert_fail": ___assert_fail, "__handle_stack_overflow": ___handle_stack_overflow, "__sys_fcntl64": ___sys_fcntl64, "__sys_fstat64": ___sys_fstat64, "__sys_ioctl": ___sys_ioctl, "__sys_open": ___sys_open, "__sys_read": ___sys_read, "__sys_socketcall": ___sys_socketcall, "__sys_stat64": ___sys_stat64, "abs": _abs, "emscripten_get_sbrk_ptr": _emscripten_get_sbrk_ptr, "emscripten_memcpy_big": _emscripten_memcpy_big, "emscripten_resize_heap": _emscripten_resize_heap, "emscripten_set_main_loop_arg": _emscripten_set_main_loop_arg, "exit": _exit, "fd_close": _fd_close, "fd_fdstat_get": _fd_fdstat_get, "fd_read": _fd_read, "fd_seek": _fd_seek, "fd_write": _fd_write, "gettimeofday": _gettimeofday, "glActiveTexture": _glActiveTexture, "glAttachShader": _glAttachShader, "glBindBuffer": _glBindBuffer, "glBindTexture": _glBindTexture, "glBindVertexArray": _glBindVertexArray, "glBlendFunc": _glBlendFunc, "glBufferData": _glBufferData, "glClear": _glClear, "glClearColor": _glClearColor, "glCompileShader": _glCompileShader, "glCreateProgram": _glCreateProgram, "glCreateShader": _glCreateShader, "glDeleteBuffers": _glDeleteBuffers, "glDeleteShader": _glDeleteShader, "glDeleteVertexArrays": _glDeleteVertexArrays, "glDrawArrays": _glDrawArrays, "glEnable": _glEnable, "glEnableVertexAttribArray": _glEnableVertexAttribArray, "glGenBuffers": _glGenBuffers, "glGenTextures": _glGenTextures, "glGenVertexArrays": _glGenVertexArrays, "glGetProgramInfoLog": _glGetProgramInfoLog, "glGetProgramiv": _glGetProgramiv, "glGetShaderInfoLog": _glGetShaderInfoLog, "glGetShaderiv": _glGetShaderiv, "glGetUniformLocation": _glGetUniformLocation, "glLinkProgram": _glLinkProgram, "glShaderSource": _glShaderSource, "glTexImage2D": _glTexImage2D, "glTexParameteri": _glTexParameteri, "glUniform1i": _glUniform1i, "glUniform3fv": _glUniform3fv, "glUniformMatrix4fv": _glUniformMatrix4fv, "glUseProgram": _glUseProgram, "glVertexAttribPointer": _glVertexAttribPointer, "glViewport": _glViewport, "glfwCreateWindow": _glfwCreateWindow, "glfwGetKey": _glfwGetKey, "glfwInit": _glfwInit, "glfwMakeContextCurrent": _glfwMakeContextCurrent, "glfwPollEvents": _glfwPollEvents, "glfwSetFramebufferSizeCallback": _glfwSetFramebufferSizeCallback, "glfwSetKeyCallback": _glfwSetKeyCallback, "glfwSetWindowShouldClose": _glfwSetWindowShouldClose, "glfwSwapBuffers": _glfwSwapBuffers, "glfwSwapInterval": _glfwSwapInterval, "glfwTerminate": _glfwTerminate, "glfwWindowHint": _glfwWindowHint, "memory": wasmMemory, "setTempRet0": _setTempRet0, "table": wasmTable, "time": _time };
 var asm = createWasm();
 /** @type {function(...*):?} */
 var ___wasm_call_ctors = Module["___wasm_call_ctors"] = createExportWrapper("__wasm_call_ctors");
+
+/** @type {function(...*):?} */
+var _malloc = Module["_malloc"] = createExportWrapper("malloc");
 
 /** @type {function(...*):?} */
 var _main = Module["_main"] = createExportWrapper("main");
 
 /** @type {function(...*):?} */
 var _free = Module["_free"] = createExportWrapper("free");
-
-/** @type {function(...*):?} */
-var _malloc = Module["_malloc"] = createExportWrapper("malloc");
 
 /** @type {function(...*):?} */
 var ___errno_location = Module["___errno_location"] = createExportWrapper("__errno_location");
@@ -8293,6 +8298,9 @@ var dynCall_vi = Module["dynCall_vi"] = createExportWrapper("dynCall_vi");
 
 /** @type {function(...*):?} */
 var dynCall_ii = Module["dynCall_ii"] = createExportWrapper("dynCall_ii");
+
+/** @type {function(...*):?} */
+var dynCall_viiiii = Module["dynCall_viiiii"] = createExportWrapper("dynCall_viiiii");
 
 /** @type {function(...*):?} */
 var dynCall_viii = Module["dynCall_viii"] = createExportWrapper("dynCall_viii");

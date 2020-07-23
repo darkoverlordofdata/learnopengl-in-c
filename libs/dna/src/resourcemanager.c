@@ -86,6 +86,8 @@ method DNAShader* LoadShader(
     const GLchar* fShaderFile,
     const char* name)
 {
+    assert(this != NULL);
+
     cfw_map_set_c(this->Shaders, name, LoadShaderFromFile(this, vShaderFile, fShaderFile));
     return cfw_map_get_c(this->Shaders, name);
 }

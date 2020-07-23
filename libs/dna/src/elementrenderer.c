@@ -82,7 +82,7 @@ method void* New(DNAElementRenderer* this, DNAShader* shader)
  * 
  */
 method void Draw(
-    const DNAElementRenderer* this,
+    DNAElementRenderer* this,
     DNATexture2D* texture,
     DNARect bounds,
     GLfloat rotate,
@@ -92,6 +92,38 @@ method void Draw(
 
     Vec3 size = { bounds.w, bounds.h, 1 };
     Vec3 position = { bounds.x, bounds.y, 0 };
+    Mat model = {
+        1.0f, 0.0f, 0.0f, 0.0f,
+        0.0f, 1.0f, 0.0f, 0.0f,
+        0.0f, 0.0f, 1.0f, 0.0f,
+        0.0f, 0.0f, 0.0f, 1.0f
+    };
+
+    model = glm_translate(model, (Vec3) { position.x, position.y, 0.0f }); // First translate (transformations are: scale happens first, then rotation and then finall translation happens; reversed order)
+    model = glm_translate(model, (Vec3) { 0.5f * size.x, 0.5f * size.y, 0.0f }); // Move origin of rotation to center of quad
+    model = glm_rotate(model, rotate, (Vec3) { 0.0f, 0.0f, 1.0f }); // Then rotate
+    model = glm_translate(model, (Vec3) { -0.5f * size.x, -0.5f * size.y, 0.0f }); // Move origin back
+    model = glm_scale(model, (Vec3) { size.x, size.y, 1.0f }); // Last scale
+
+    Use(this->shader);
+    SetMatrix(this->shader, "model", &model); //, true);
+    SetVector3v(this->shader, "spriteColor", &color, true);
+    glActiveTexture(GL_TEXTURE0);
+    Bind(texture);
+    // DNATexture2D_Bind(texture);
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+}
+
+method void Draw(
+    DNAElementRenderer* this,
+    DNATexture2D* texture,
+    Vec2 position, 
+    Vec2 size, 
+    GLfloat rotate,
+    Vec3 color)
+{
+    // Prepare transformations
+
     Mat model = {
         1.0f, 0.0f, 0.0f, 0.0f,
         0.0f, 1.0f, 0.0f, 0.0f,

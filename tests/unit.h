@@ -37,7 +37,7 @@ static inline int TestCountInc();
 static inline int TestFailInc();
 static inline int TestPassInc();
 
-static first_time = 1;
+static int first_time = 1;
 
 #define Log(x) printf("%s\n", x)
 /**

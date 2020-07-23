@@ -23,19 +23,30 @@ add_subdirectory ( libs/dna )
 #     src/shmupwarz.c
 #     ${SOURCE} )
 add_executable( ${PROJECT_NAME} 
-    src/breakout/main.c 
-    src/breakout/BallObject.c 
-    src/breakout/Collision.c 
-    src/breakout/Game.c 
-    src/breakout/GameLevel.c 
-    src/breakout/GameObject.c 
-    src/breakout/Particle.c 
-    src/breakout/ParticleGenerator.c 
+    src/demo/main.c 
+    src/demo/Demo.c
+    src/demo/BallObject.c 
+    src/demo/Collision.c 
+    src/demo/GameLevel.c 
+    src/demo/GameObject.c 
+    src/demo/Particle.c 
+    src/demo/ParticleGenerator.c 
     ${SOURCE} )
+# add_executable( ${PROJECT_NAME} 
+#     src/breakout/main.c 
+#     src/breakout/BallObject.c 
+#     src/breakout/Collision.c 
+#     src/breakout/Game.c 
+#     src/breakout/GameLevel.c 
+#     src/breakout/GameObject.c 
+#     src/breakout/Particle.c 
+#     src/breakout/ParticleGenerator.c 
+#     ${SOURCE} )
 
 
 include_directories( include )
-include_directories( include/breakout )
+# include_directories( include/breakout )
+include_directories( include/demo )
 include_directories( libs/cfw/include )
 include_directories( libs/dna/include )
 # include_directories( libs/artemis/include )

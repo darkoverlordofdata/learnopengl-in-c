@@ -6,12 +6,12 @@
 ** Creative Commons, either version 4 of the License, or (at your
 ** option) any later version.
 ******************************************************************/
-#include "GameObject-private.h"
-#include "GameObject.h"
-#include "ParticleGenerator-private.h"
-#include "ParticleGenerator.h"
+#include "Collision.h"
+#include "Collision-private.h"
+#include "Demo-private.h"
+#include "Demo.h"
 
-corefw(Particle);
+corefw(Collision);
 /**
  * Create new game
  */
@@ -22,17 +22,16 @@ static void* copy(void* self) { return NULL; }
 static void dtor(void* self) {}
 
 /**
- * Particle Result Tuple
+ * Collision Result Tuple
  * 
  * @param isTrue collided?
  * @param dir direction from
  * @param Vec2 difference point
  */
-method void* New(Particle* this, Vec2 position, Vec2 velocity, Vec4 color, GLfloat life)
+method void* New(Collision* this, bool isTrue, Direction dir, Vec2 vec)
 {
-    this->Color = color;
-    this->Life = life;
-    this->Position = position;
-    this->Velocity = velocity;
+    this->IsTrue = isTrue;
+    this->Dir = dir;
+    this->Vec = vec;
     return this;
 }

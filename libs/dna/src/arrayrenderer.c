@@ -103,7 +103,6 @@ method void Draw(
     SetVector3v(this->shader, "spriteColor", &color, true);
 
     glActiveTexture(GL_TEXTURE0);
-    // DNATexture2D_Bind(texture);
     Bind(texture);
 
     glBindVertexArray(this->VAO);
@@ -111,3 +110,49 @@ method void Draw(
     glBindVertexArray(0);
 }
 
+/**
+ * Draw
+ * 
+ * @param texture the image to render
+ * @param position to render at
+ * @param size to render
+ * @param rotate amount to rotate by
+ * @param color to tint
+ * 
+ */
+method void Draw(
+    DNAArrayRenderer* this,
+    DNATexture2D* texture,
+    Vec2 position, 
+    Vec2 size, 
+    GLfloat rotate,
+    Vec3 color)
+{
+    // Prepare transformations
+    Use(this->shader);
+    Mat model = {
+        1.0f, 0.0f, 0.0f, 0.0f,
+        0.0f, 1.0f, 0.0f, 0.0f,
+        0.0f, 0.0f, 1.0f, 0.0f,
+        0.0f, 0.0f, 0.0f, 1.0f
+    };
+
+    model = glm_translate(model, (Vec3) { position.x, position.y, 0.0f }); // First translate (transformations are: scale happens first, then rotation and then finall translation happens; reversed order)
+    model = glm_translate(model, (Vec3) { 0.5f * size.x, 0.5f * size.y, 0.0f }); // Move origin of rotation to center of quad
+    model = glm_rotate(model, rotate, (Vec3) { 0.0f, 0.0f, 1.0f }); // Then rotate
+    model = glm_translate(model, (Vec3) { -0.5f * size.x, -0.5f * size.y, 0.0f }); // Move origin back
+    model = glm_scale(model, (Vec3) { size.x, size.y, 1.0f }); // Last scale
+
+    SetMatrix(this->shader, "model", &model, true);
+
+    // Render textured quad
+    SetVector3v(this->shader, "spriteColor", &color, true);
+
+    glActiveTexture(GL_TEXTURE0);
+    // DNATexture2D_Bind(texture);
+    Bind(texture);
+
+    glBindVertexArray(this->VAO);
+    glDrawArrays(GL_TRIANGLES, 0, 6);
+    glBindVertexArray(0);
+}
