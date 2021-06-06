@@ -9,3 +9,5 @@ using:
 
 git submodule add -f https://github.com/datenwolf/linmath.h.git external/linmath.h
 git submodule add -f https://github.com/mackyle/blocksruntime.git external/blocksruntime
+git submodule add -f https://github.com/midar/corefw.git external/corefw
+
